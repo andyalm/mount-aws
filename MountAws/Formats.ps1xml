@@ -1,0 +1,25 @@
+<Configuration>
+  <ViewDefinitions>
+    <View>
+      <Name>Profile</Name>
+      <ViewSelectedBy>
+        <TypeName>Amazon.Runtime.CredentialManagement.CredentialProfile</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>Name</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+  </ViewDefinitions>
+</Configuration>
