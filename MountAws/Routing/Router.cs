@@ -4,8 +4,6 @@ namespace MountAws.Routing;
 
 public class Router
 {
-    public static Router Instance { get; } = new();
-
     private readonly List<Route> _routes = new();
     private Type? _rootHandlerType;
 

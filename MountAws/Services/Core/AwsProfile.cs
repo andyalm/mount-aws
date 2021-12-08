@@ -13,6 +13,7 @@ public class AwsProfile : AwsItem
     }
 
     public override string FullPath => _profile.Name;
+    public override string Name => _profile.Name;
     public override object UnderlyingObject => _profile;
     public override string ItemType => "Profile";
     public override bool IsContainer => true;

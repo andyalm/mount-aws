@@ -1,23 +1,26 @@
+using Amazon.EC2;
+
 namespace MountAws.Services.EC2;
 
 public class EC2Handler : PathHandler
 {
     public EC2Handler(string path, IPathHandlerContext context) : base(path, context)
     {
+        
     }
 
     protected override bool ExistsImpl()
     {
-        throw new NotImplementedException();
+        return true;
     }
 
     protected override AwsItem? GetItemImpl()
     {
-        throw new NotImplementedException();
+        return new GenericContainerItem(ParentPath, ItemName);
     }
 
     protected override IEnumerable<AwsItem> GetChildItemsImpl()
     {
-        throw new NotImplementedException();
+        yield return new GenericContainerItem(Path, "instances");
     }
 }

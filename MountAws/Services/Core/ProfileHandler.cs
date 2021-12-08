@@ -1,11 +1,15 @@
+using Amazon;
 using Amazon.Runtime.CredentialManagement;
 
 namespace MountAws;
 
 public class ProfileHandler : PathHandler
 {
-    public ProfileHandler(string path, IPathHandlerContext context) : base(path, context)
+    private readonly CredentialProfile _profile;
+
+    public ProfileHandler(string path, IPathHandlerContext context, CredentialProfile profile) : base(path, context)
     {
+        _profile = profile;
     }
 
     protected override bool ExistsImpl()
@@ -15,17 +19,11 @@ public class ProfileHandler : PathHandler
 
     protected override AwsItem? GetItemImpl()
     {
-        var c = new CredentialProfileStoreChain();
-        if (c.TryGetProfile(ItemName, out var profile))
-        {
-            return new AwsProfile(profile);
-        }
-
-        return null;
+        return new AwsProfile(_profile);
     }
 
     protected override IEnumerable<AwsItem> GetChildItemsImpl()
     {
-        return Enumerable.Empty<AwsItem>();
+        return RegionEndpoint.EnumerableAllRegions.Select(e => new AwsRegion(Path, e));
     }
 }
