@@ -1,22 +1,31 @@
+using Amazon.Runtime.CredentialManagement;
+
 namespace MountAws;
 
-public class ProfileHandler : IPathHandler
+public class ProfileHandler : PathHandler
 {
-    
-    
-    public string Path { get; }
-    public bool Exists()
+    public ProfileHandler(string path, IPathHandlerContext context) : base(path, context)
     {
-        throw new NotImplementedException();
     }
 
-    public AwsItem? GetItem()
+    protected override bool ExistsImpl()
     {
-        throw new NotImplementedException();
+        return GetItem() != null;
     }
 
-    public IEnumerable<AwsItem> GetChildItems(bool useCache = false)
+    protected override AwsItem? GetItemImpl()
     {
-        throw new NotImplementedException();
+        var c = new CredentialProfileStoreChain();
+        if (c.TryGetProfile(ItemName, out var profile))
+        {
+            return new AwsProfile(profile);
+        }
+
+        return null;
+    }
+
+    protected override IEnumerable<AwsItem> GetChildItemsImpl()
+    {
+        return Enumerable.Empty<AwsItem>();
     }
 }

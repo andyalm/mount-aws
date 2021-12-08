@@ -3,6 +3,7 @@ using System.Management.Automation;
 using System.Management.Automation.Provider;
 using Amazon.Runtime.CredentialManagement;
 using Autofac;
+using Autofac.Features.ResolveAnything;
 using MountAws.Routing;
 using MountAws.Services.EC2;
 
@@ -11,6 +12,7 @@ namespace MountAws;
 public class MountAwsProvider : NavigationCmdletProvider, IPathHandlerContext
 {
     private static readonly Cache _cache = new();
+    private static readonly ILifetimeScope _container;
 
     protected override bool IsValidPath(string path) => true;
 
@@ -29,7 +31,13 @@ public class MountAwsProvider : NavigationCmdletProvider, IPathHandlerContext
 
     static MountAwsProvider()
     {
-        Router.Instance.MapRegex<ProfileHandler>("(?<Profile>[a-z0-9-_]+)", route =>
+        var containerBuilder = new ContainerBuilder();
+        containerBuilder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
+
+        _container = containerBuilder.Build();
+
+        Router.Instance.MapRoot<ProfilesHandler>()
+            .MapRegex<ProfileHandler>("(?<Profile>[a-z0-9-_]+)", route =>
         {
             route.RegisterServices((match, builder) =>
             {
@@ -50,32 +58,39 @@ public class MountAwsProvider : NavigationCmdletProvider, IPathHandlerContext
         {
             return false;
         }
-        return GetPathHandler(path).Exists();
+
+        return WithPathHandler(path, handler => handler.Exists());
     }
 
     protected override void GetItem(string path)
     {
-        var item = GetPathHandler(path).GetItem();
-        if (item != null)
+        WithPathHandler(path, handler =>
         {
-            WriteAwsItem(item);
-        }
+            var item = handler.GetItem();
+            if (item != null)
+            {
+                WriteAwsItem(item);
+            }
+        });
     }
 
     protected override void GetChildItems(string path, bool recurse)
     {
-        var items = GetPathHandler(path).GetChildItems(useCache: false);
-        WriteAwsItems(items);
+        WithPathHandler(path, handler =>
+        {
+            var childItems = handler.GetChildItems(useCache: false);
+            WriteAwsItems(childItems);
+        });
     }
     
     protected override bool HasChildItems(string path)
     {
-        return GetPathHandler(path).GetChildItems(useCache:true).Any();
+        return WithPathHandler<bool?>(path, handler => handler.GetChildItems(useCache:true).Any()) ?? false;
     }
 
     protected override bool IsItemContainer(string path)
     {
-        return GetPathHandler(path).GetItem()?.IsContainer ?? false;
+        return WithPathHandler(path, handler => handler.GetItem()?.IsContainer) ?? false;
     }
 
     protected override void GetChildItems(string path, bool recurse, uint depth)
@@ -98,15 +113,36 @@ public class MountAwsProvider : NavigationCmdletProvider, IPathHandlerContext
         WriteItemObject(awsItem.ToPipelineObject(), providerPath, awsItem.IsContainer);
     }
 
-    private IPathHandler GetPathHandler(string path)
+    private TReturn? WithPathHandler<TReturn>(string path, Func<IPathHandler,TReturn> action)
     {
         path = AwsPath.Normalize(path);
-        if (string.IsNullOrEmpty(path))
+
+        try
         {
-            return new ProfilesHandler(path, this);
+            var match = Router.Instance.Match(path);
+            using var lifetimeScope = _container.BeginLifetimeScope(match.ServiceRegistrations);
+        
+            var handler = (IPathHandler)lifetimeScope.Resolve(match.HandlerType,
+                new NamedParameter("path", path),
+                new TypedParameter(typeof(IPathHandlerContext), this));
+        
+            return action(handler);
         }
-        
-        
+        catch (RoutingException ex)
+        {
+            WriteError(new ErrorRecord(ex, "1", ErrorCategory.ObjectNotFound, this));
+            return default;
+        }
+    }
+    
+    private void WithPathHandler(string path, Action<IPathHandler> action)
+    {
+        WithPathHandler<object?>(path, handler =>
+        {
+            action(handler);
+
+            return null;
+        });
     }
     
     public string ToProviderPath(string path)
