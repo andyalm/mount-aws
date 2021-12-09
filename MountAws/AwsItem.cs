@@ -5,7 +5,7 @@ namespace MountAws;
 public abstract class AwsItem
 {
     public abstract string FullPath { get; }
-    public abstract string Name { get; }
+    public abstract string ItemName { get; }
     public abstract object UnderlyingObject { get; }
     
     public abstract string ItemType { get; }
@@ -20,7 +20,11 @@ public abstract class AwsItem
     {
         var psObject = new PSObject(UnderlyingObject);
         psObject.TypeNames.Add(TypeName);
-        psObject.Properties.Add(new PSNoteProperty("Name", Name));
+        var nameProperty = psObject.Properties["ItemName"];
+        if (nameProperty == null)
+        {
+            psObject.Properties.Add(new PSNoteProperty("ItemName", ItemName));
+        }
         psObject.Properties.Add(new PSNoteProperty("ItemType", ItemType));
         CustomizePSObject(psObject);
 

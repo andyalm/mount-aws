@@ -34,6 +34,6 @@ public class EC2InstancesHandler : PathHandler
             MaxResults = 100
         }).GetAwaiter().GetResult();
 
-        return response.Reservations[0].Instances.Select(i => new EC2InstanceItem(Path, i));
+        return response.Reservations.SelectMany(r => r.Instances.Select(i => new EC2InstanceItem(Path, i)));
     }
 }

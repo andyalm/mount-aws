@@ -1,7 +1,6 @@
 using System.Collections.Immutable;
 using System.Text.RegularExpressions;
 using Autofac;
-using Autofac.Core;
 
 namespace MountAws.Routing;
 
@@ -48,16 +47,10 @@ public class Route
         _serviceRegistrations = _serviceRegistrations.Concat(new[] { serviceRegistration });
     }
 
-    public void RegisterParameter(Func<Match, Parameter> getParameter)
-    {
-        
-    }
-
     public void MapRegex<THandler>(string pattern, Action<Route>? createChildRoutes = null) where THandler : IPathHandler
     {
         var fullPattern = $"{Pattern}/{pattern}";
-        var childServiceRegistrations = _serviceRegistrations;
-        var route = new Route(fullPattern, typeof(THandler), childServiceRegistrations);
+        var route = new Route(fullPattern, typeof(THandler), _serviceRegistrations);
         createChildRoutes?.Invoke(route);
         _childRoutes.Add(route);
     }

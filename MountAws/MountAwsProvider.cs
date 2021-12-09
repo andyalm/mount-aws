@@ -3,7 +3,6 @@ using System.Management.Automation;
 using System.Management.Automation.Provider;
 using Amazon;
 using Amazon.EC2;
-using Amazon.EC2.Model;
 using Amazon.Runtime;
 using Amazon.Runtime.CredentialManagement;
 using Autofac;
@@ -36,20 +35,14 @@ public class MountAwsProvider : NavigationCmdletProvider, IPathHandlerContext
 
     static MountAwsProvider()
     {
-        var containerBuilder = new ContainerBuilder();
-        //containerBuilder.RegisterInstance(_router);
-        containerBuilder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
-
-        _container = containerBuilder.Build();
-        
         _router = new Router()
             .MapRoot<ProfilesHandler>()
             .MapRegex<ProfileHandler>("(?<Profile>[a-z0-9-_]+)", profile =>
         {
+            var chain = new CredentialProfileStoreChain();
             profile.RegisterServices((match, builder) =>
             {
                 var profileName = match.Groups["Profile"].Value;
-                var chain = new CredentialProfileStoreChain();
                 if (chain.TryGetProfile(profileName, out var awsProfile))
                 {
                     builder.RegisterInstance(awsProfile);
@@ -64,9 +57,7 @@ public class MountAwsProvider : NavigationCmdletProvider, IPathHandlerContext
                 region.RegisterServices((match, builder) =>
                 {
                     var regionName = match.Groups["Region"].Value;
-                    builder.RegisterInstance(RegionEndpoint.GetBySystemName(regionName));
-                    builder.Register(c => new AmazonEC2Client(c.Resolve<AWSCredentials>(), c.Resolve<RegionEndpoint>()))
-                        .As<IAmazonEC2>();
+                    builder.Register<RegionEndpoint>(c => RegionEndpoint.GetBySystemName(regionName));
                 });
                 region.MapRegex<EC2Handler>("ec2", ec2 =>
                 {
@@ -78,7 +69,15 @@ public class MountAwsProvider : NavigationCmdletProvider, IPathHandlerContext
             });
         });
         
-        
+        var containerBuilder = new ContainerBuilder();
+        containerBuilder.RegisterInstance(_router);
+        containerBuilder.RegisterInstance<RegionEndpoint>(RegionEndpoint.USEast1);
+        containerBuilder.RegisterInstance<AWSCredentials>(new AnonymousAWSCredentials());
+        containerBuilder.RegisterType<AmazonEC2Client>().As<IAmazonEC2>()
+            .UsingConstructor(typeof(AWSCredentials), typeof(RegionEndpoint));
+        containerBuilder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
+
+        _container = containerBuilder.Build();
     }
 
     protected override bool ItemExists(string path)
@@ -112,6 +111,11 @@ public class MountAwsProvider : NavigationCmdletProvider, IPathHandlerContext
         });
     }
     
+    protected override void GetChildItems(string path, bool recurse, uint depth)
+    {
+        GetChildItems(path, recurse);
+    }
+    
     protected override bool HasChildItems(string path)
     {
         return WithPathHandler<bool?>(path, handler => handler.GetChildItems(useCache:true).Any()) ?? false;
@@ -120,11 +124,6 @@ public class MountAwsProvider : NavigationCmdletProvider, IPathHandlerContext
     protected override bool IsItemContainer(string path)
     {
         return WithPathHandler(path, handler => handler.GetItem()?.IsContainer) ?? false;
-    }
-
-    protected override void GetChildItems(string path, bool recurse, uint depth)
-    {
-        GetChildItems(path, recurse);
     }
 
     private void WriteAwsItems<T>(IEnumerable<T> awsItems) where T : AwsItem
@@ -148,12 +147,31 @@ public class MountAwsProvider : NavigationCmdletProvider, IPathHandlerContext
 
         try
         {
+            WriteDebug($"WithPathHandler({path})");
             var match = _router.Match(path);
             using var lifetimeScope = _container.BeginLifetimeScope(match.ServiceRegistrations);
 
+            // foreach (var registration in lifetimeScope.ComponentRegistry.Registrations)
+            // {
+            //     WriteDebug(registration.ToString());
+            //     foreach (var service in registration.Services)
+            //     {
+            //         WriteDebug($"  {service.Description}");
+            //     }
+            // }
+            var credentials = lifetimeScope.Resolve<AWSCredentials>();
+            var credentialsDebug = credentials switch
+            {
+                AnonymousAWSCredentials => "AWSCredentials<Anonymous>",
+                AssumeRoleAWSCredentials assumeRoleCreds => $"AWSCredentials<AssumeRole>({assumeRoleCreds.RoleArn})", 
+                _ => $"AWSCredentials<{credentials.GetType().Name}>({credentials.GetCredentials().AccessKey})"
+            };
+            WriteDebug(credentialsDebug);
+            var region = lifetimeScope.Resolve<RegionEndpoint>();
+            WriteDebug($"RegionEndpoint({region.SystemName})");
             var handler = (IPathHandler)lifetimeScope.Resolve(match.HandlerType,
-                new NamedParameter("path", path),
-                new TypedParameter(typeof(IPathHandlerContext), this));
+                 new NamedParameter("path", path),
+                 new TypedParameter(typeof(IPathHandlerContext), this));
 
             return action(handler);
         }

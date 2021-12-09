@@ -13,8 +13,8 @@ public class AwsRegion : AwsItem
         _regionEndpoint = regionEndpoint;
     }
 
-    public override string FullPath => AwsPath.Combine(_parentPath, Name);
-    public override string Name => _regionEndpoint.SystemName;
+    public override string FullPath => AwsPath.Combine(_parentPath, ItemName);
+    public override string ItemName => _regionEndpoint.SystemName;
     public override object UnderlyingObject => _regionEndpoint;
     public override string ItemType => "Region";
     public override bool IsContainer => true;
