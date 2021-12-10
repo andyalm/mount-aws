@@ -6,12 +6,13 @@ using Amazon.EC2;
 using Amazon.Runtime;
 using Amazon.Runtime.CredentialManagement;
 using Autofac;
+using Autofac.Core;
 using Autofac.Features.ResolveAnything;
 using MountAws.Routing;
 using MountAws.Services.EC2;
 
 namespace MountAws;
-[CmdletProvider("MountAws", ProviderCapabilities.None)]
+[CmdletProvider("MountAws", ProviderCapabilities.Filter | ProviderCapabilities.ExpandWildcards)]
 public class MountAwsProvider : NavigationCmdletProvider, IPathHandlerContext
 {
     private static readonly Cache _cache = new();
@@ -63,7 +64,7 @@ public class MountAwsProvider : NavigationCmdletProvider, IPathHandlerContext
                 {
                     ec2.MapRegex<EC2InstancesHandler>("instances", instances =>
                     {
-                        instances.MapRegex<EC2InstanceHandler>("(?<InstanceId>i-[a-z0-9]+)");
+                        instances.MapRegex<EC2InstanceHandler>(@"(?<InstanceItemName>[a-z0-9-\.]+)");
                     });
                 });
             });
@@ -87,30 +88,64 @@ public class MountAwsProvider : NavigationCmdletProvider, IPathHandlerContext
             return false;
         }
 
-        return WithPathHandler(path, handler => handler.Exists());
+        try
+        {
+            return WithPathHandler(path, handler => handler.Exists());
+        }
+        catch (Exception ex)
+        {
+            WriteDebug(ex.ToString());
+            throw;
+        }
     }
 
     protected override void GetItem(string path)
     {
-        WithPathHandler(path, handler =>
+        try
         {
-            var item = handler.GetItem();
-            if (item != null)
+            WithPathHandler(path, handler =>
             {
-                WriteAwsItem(item);
-            }
-        });
+                var item = handler.GetItem();
+                if (item != null)
+                {
+                    WriteAwsItem(item);
+                }
+            });
+        }
+        catch (Exception ex)
+        {
+            WriteDebug(ex.ToString());
+            throw;
+        }
     }
 
     protected override void GetChildItems(string path, bool recurse)
     {
+        WriteDebug($"IncludeCount: {base.Include.Count}");
         WithPathHandler(path, handler =>
         {
+            if (handler is IGetChildItemParameters handlerWithParams)
+            {
+                handlerWithParams.GetChildItemParameters = DynamicParameters;
+            }
             var childItems = handler.GetChildItems(useCache: false);
             WriteAwsItems(childItems);
         });
     }
-    
+
+    protected override object? GetChildItemsDynamicParameters(string path, bool recurse)
+    {
+        return WithPathHandler(path, handler =>
+        {
+            if (handler is IGetChildItemParameters handlerWithParams)
+            {
+                return handlerWithParams.GetChildItemParameters;
+            }
+
+            return null;
+        });
+    }
+
     protected override void GetChildItems(string path, bool recurse, uint depth)
     {
         GetChildItems(path, recurse);
@@ -144,34 +179,14 @@ public class MountAwsProvider : NavigationCmdletProvider, IPathHandlerContext
     private TReturn? WithPathHandler<TReturn>(string path, Func<IPathHandler,TReturn> action)
     {
         path = AwsPath.Normalize(path);
-
+        RouteMatch? match = null;
         try
-        {
-            WriteDebug($"WithPathHandler({path})");
-            var match = _router.Match(path);
+        { 
+            match = _router.Match(path);
             using var lifetimeScope = _container.BeginLifetimeScope(match.ServiceRegistrations);
-
-            // foreach (var registration in lifetimeScope.ComponentRegistry.Registrations)
-            // {
-            //     WriteDebug(registration.ToString());
-            //     foreach (var service in registration.Services)
-            //     {
-            //         WriteDebug($"  {service.Description}");
-            //     }
-            // }
-            var credentials = lifetimeScope.Resolve<AWSCredentials>();
-            var credentialsDebug = credentials switch
-            {
-                AnonymousAWSCredentials => "AWSCredentials<Anonymous>",
-                AssumeRoleAWSCredentials assumeRoleCreds => $"AWSCredentials<AssumeRole>({assumeRoleCreds.RoleArn})", 
-                _ => $"AWSCredentials<{credentials.GetType().Name}>({credentials.GetCredentials().AccessKey})"
-            };
-            WriteDebug(credentialsDebug);
-            var region = lifetimeScope.Resolve<RegionEndpoint>();
-            WriteDebug($"RegionEndpoint({region.SystemName})");
             var handler = (IPathHandler)lifetimeScope.Resolve(match.HandlerType,
-                 new NamedParameter("path", path),
-                 new TypedParameter(typeof(IPathHandlerContext), this));
+                new NamedParameter("path", path),
+                new TypedParameter(typeof(IPathHandlerContext), this));
 
             return action(handler);
         }
@@ -179,6 +194,13 @@ public class MountAwsProvider : NavigationCmdletProvider, IPathHandlerContext
         {
             WriteError(new ErrorRecord(ex, "1", ErrorCategory.ObjectNotFound, this));
             return default;
+        }
+        catch (DependencyResolutionException ex) when(match != null)
+        {
+            WriteDebug($"Error creating handler {match.HandlerType.Name} with path {path}");
+            WriteDebug(ex.ToString());
+            WriteError(new ErrorRecord(ex, "2", ErrorCategory.NotSpecified, this));
+            throw;
         }
         catch (Exception ex)
         {
@@ -201,5 +223,45 @@ public class MountAwsProvider : NavigationCmdletProvider, IPathHandlerContext
     public string ToProviderPath(string path)
     {
         return $"{ItemSeparator}{path.Replace("/", ItemSeparator.ToString())}";
+    }
+
+    protected override void GetChildNames(string path, ReturnContainers returnContainers)
+    {
+        WriteDebug($"GetChildNames({path}, {returnContainers})");
+        base.GetChildNames(path, returnContainers);
+    }
+
+    protected override string[] ExpandPath(string path)
+    {
+        var normalizedPath = AwsPath.Normalize(path);
+        var handlerPath = AwsPath.GetParent(normalizedPath);
+        var pattern = AwsPath.GetLeaf(normalizedPath);
+        return WithPathHandler(handlerPath, handler =>
+        {
+            WriteDebug($"{handler.GetType().Name}.ExpandPath({pattern})");
+            return handler.ExpandPath(pattern)
+                .Select(ToProviderPath)
+                .Select(p => AwsPath.GetParent(p) == "/" && p.StartsWith("/") ? p.Substring(1) : p)
+                .ToArray();
+        }) ?? Array.Empty<string>();
+
+    }
+
+    protected override bool ConvertPath(string path, string filter, ref string updatedPath, ref string updatedFilter)
+    {
+        WriteDebug($"ConvertPath({path}, {filter})");
+        return base.ConvertPath(path, filter, ref updatedPath, ref updatedFilter);
+    }
+
+    public override string GetResourceString(string baseName, string resourceId)
+    {
+        WriteDebug($"GetResourceString({baseName}, {resourceId})");
+        return base.GetResourceString(baseName, resourceId);
+    }
+
+    protected override string NormalizeRelativePath(string path, string basePath)
+    {
+        WriteDebug($"NormalizeRelativePath({path}, {basePath})");
+        return base.NormalizeRelativePath(path, basePath);
     }
 }

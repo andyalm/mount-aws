@@ -18,6 +18,11 @@ public class AwsPath
         return Path.GetDirectoryName(path)!.Replace(@"\", "/");
     }
 
+    public static string GetLeaf(string path)
+    {
+        return Path.GetFileName(path);
+    }
+
     public static string Combine(params string[] parts)
     {
         return Path.Combine(parts).Replace(@"\", "/");

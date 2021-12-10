@@ -6,4 +6,5 @@ public interface IPathHandler
     bool Exists();
     AwsItem? GetItem();
     IEnumerable<AwsItem> GetChildItems(bool useCache = false);
+    IEnumerable<string> ExpandPath(string path);
 }

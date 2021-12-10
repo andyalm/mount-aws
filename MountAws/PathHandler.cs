@@ -1,4 +1,5 @@
 using System.Management.Automation;
+using System.Text.RegularExpressions;
 
 namespace MountAws;
 
@@ -68,12 +69,16 @@ public abstract class PathHandler : IPathHandler
         return Enumerable.Empty<AwsItem>();
     }
 
-    public virtual IEnumerable<AwsItem> NormalizeChildItems(IEnumerable<AwsItem> items)
-    {
-        return items;
-    }
-
     protected abstract bool ExistsImpl();
     protected abstract AwsItem? GetItemImpl();
     protected abstract IEnumerable<AwsItem> GetChildItemsImpl();
+
+    public virtual IEnumerable<string> ExpandPath(string pattern)
+    {
+        var pathMatcher = new Regex("^" + Regex.Escape(pattern).Replace(@"\*", ".*") + "$", RegexOptions.IgnoreCase);
+        return GetChildItems(useCache: true)
+                .Where(i => pathMatcher.IsMatch(i.FullPath))
+                .Select(i => i.FullPath)
+                .ToArray();
+    }
 }

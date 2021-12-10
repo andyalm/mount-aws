@@ -19,15 +19,27 @@ public class EC2InstanceHandler : PathHandler
 
     protected override AwsItem? GetItemImpl()
     {
-        var response = _ec2.DescribeInstancesAsync(new DescribeInstancesRequest
+        var request = new DescribeInstancesRequest();
+        WriteDebug($"EC2InstanceHandler.GetItem({ItemName})");
+        if (ItemName.StartsWith("i-"))
         {
-            InstanceIds = new List<string>
-            {
-                ItemName
-            }
-        }).GetAwaiter().GetResult();
+            request.InstanceIds.Add(ItemName);
+        }
+        else
+        {
+            var filter = EC2ClientExtensions.ParseFilter(ItemName);
+            WriteDebug($"GetItem({filter.Name}, {filter.Values.First()}");
+            request.Filters.Add(filter);
+        }
+        var response = _ec2.DescribeInstancesAsync(request).GetAwaiter().GetResult();
+        var instances = response.Reservations.SelectMany(r => r.Instances).ToArray();
+        WriteDebug($"Found {instances.Length} instances");
+        if (instances.Length == 1)
+        {
+            return new EC2InstanceItem(ParentPath, instances.First(), ItemName);
+        }
 
-        return new EC2InstanceItem(ParentPath, response.Reservations[0].Instances[0]);
+        return null;
     }
 
     protected override IEnumerable<AwsItem> GetChildItemsImpl()
