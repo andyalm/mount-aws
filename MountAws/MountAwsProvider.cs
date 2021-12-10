@@ -12,7 +12,7 @@ using MountAws.Routing;
 using MountAws.Services.EC2;
 
 namespace MountAws;
-[CmdletProvider("MountAws", ProviderCapabilities.Filter | ProviderCapabilities.ExpandWildcards)]
+[CmdletProvider("MountAws", ProviderCapabilities.ExpandWildcards | ProviderCapabilities.Filter)]
 public class MountAwsProvider : NavigationCmdletProvider, IPathHandlerContext
 {
     private static readonly Cache _cache = new();
@@ -83,6 +83,7 @@ public class MountAwsProvider : NavigationCmdletProvider, IPathHandlerContext
 
     protected override bool ItemExists(string path)
     {
+        //WriteDebug($"ItemExists({path})");
         if (path.Contains("*"))
         {
             return false;
@@ -101,6 +102,7 @@ public class MountAwsProvider : NavigationCmdletProvider, IPathHandlerContext
 
     protected override void GetItem(string path)
     {
+        WriteDebug($"GetItem({path})");
         try
         {
             WithPathHandler(path, handler =>
@@ -121,7 +123,7 @@ public class MountAwsProvider : NavigationCmdletProvider, IPathHandlerContext
 
     protected override void GetChildItems(string path, bool recurse)
     {
-        WriteDebug($"IncludeCount: {base.Include.Count}");
+        WriteDebug($"GetChildItems({path}, {recurse})");
         WithPathHandler(path, handler =>
         {
             if (handler is IGetChildItemParameters handlerWithParams)
@@ -153,11 +155,13 @@ public class MountAwsProvider : NavigationCmdletProvider, IPathHandlerContext
     
     protected override bool HasChildItems(string path)
     {
+        WriteDebug($"HasChildItems({path})");
         return WithPathHandler<bool?>(path, handler => handler.GetChildItems(useCache:true).Any()) ?? false;
     }
 
     protected override bool IsItemContainer(string path)
     {
+        WriteDebug($"IsItemContainer({path})");
         return WithPathHandler(path, handler => handler.GetItem()?.IsContainer) ?? false;
     }
 
@@ -171,8 +175,8 @@ public class MountAwsProvider : NavigationCmdletProvider, IPathHandlerContext
     
     private void WriteAwsItem(AwsItem awsItem)
     {
-        WriteDebug($"WriteItemObject<{awsItem.TypeName}>(,{awsItem.FullPath},{awsItem.IsContainer})");
         var providerPath = ToProviderPath(awsItem.FullPath);
+        WriteDebug($"WriteItemObject<{awsItem.TypeName}>(,{providerPath},{awsItem.IsContainer})");
         WriteItemObject(awsItem.ToPipelineObject(), providerPath, awsItem.IsContainer);
     }
 
@@ -192,7 +196,7 @@ public class MountAwsProvider : NavigationCmdletProvider, IPathHandlerContext
         }
         catch (RoutingException ex)
         {
-            WriteError(new ErrorRecord(ex, "1", ErrorCategory.ObjectNotFound, this));
+            WriteDebug($"RoutingException: {ex.Message}");
             return default;
         }
         catch (DependencyResolutionException ex) when(match != null)
@@ -233,10 +237,11 @@ public class MountAwsProvider : NavigationCmdletProvider, IPathHandlerContext
 
     protected override string[] ExpandPath(string path)
     {
+        WriteDebug($"ExpandPath({path})");
         var normalizedPath = AwsPath.Normalize(path);
         var handlerPath = AwsPath.GetParent(normalizedPath);
         var pattern = AwsPath.GetLeaf(normalizedPath);
-        return WithPathHandler(handlerPath, handler =>
+        var returnValue = WithPathHandler(handlerPath, handler =>
         {
             WriteDebug($"{handler.GetType().Name}.ExpandPath({pattern})");
             return handler.ExpandPath(pattern)
@@ -244,7 +249,12 @@ public class MountAwsProvider : NavigationCmdletProvider, IPathHandlerContext
                 .Select(p => AwsPath.GetParent(p) == "/" && p.StartsWith("/") ? p.Substring(1) : p)
                 .ToArray();
         }) ?? Array.Empty<string>();
+        foreach (var expandedPath in returnValue)
+        {
+            WriteDebug($"  {expandedPath}");
+        }
 
+        return returnValue;
     }
 
     protected override bool ConvertPath(string path, string filter, ref string updatedPath, ref string updatedFilter)

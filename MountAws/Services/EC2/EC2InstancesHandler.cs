@@ -37,8 +37,18 @@ public class EC2InstancesHandler : PathHandler, IGetChildItemParameters<EC2Query
     public override IEnumerable<string> ExpandPath(string pattern)
     {
         return _ec2.QueryInstances(pattern)
-            .Select(instance => GetItemNameForPattern(instance, pattern))
-            .Select(itemName => AwsPath.Combine(Path, itemName));
+            .Select(instance => (Instance: instance,ItemName:GetItemNameForPattern(instance, pattern)))
+            .ForEach(instance => CacheInstance(instance.Instance, instance.ItemName))
+            .Select(instance => AwsPath.Combine(Path, instance.ItemName));
+    }
+
+    private void CacheInstance(Instance instance, string itemName)
+    {
+        var itemNames = new[] { instance.InstanceId, itemName }.Distinct();
+        foreach (var anItemName in itemNames)
+        {
+            Cache.SetItem(new EC2InstanceItem(ParentPath, instance, anItemName));
+        }
     }
 
     private string GetItemNameForPattern(Instance instance, string pattern)

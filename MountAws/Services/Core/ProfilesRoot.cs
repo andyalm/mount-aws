@@ -2,7 +2,7 @@ namespace MountAws;
 
 public class ProfilesRoot : AwsItem
 {
-    public override string FullPath => "/";
+    public override string FullPath => "";
 
     public override string ItemName => "";
     public override object UnderlyingObject => new();

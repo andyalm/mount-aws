@@ -80,7 +80,7 @@ public abstract class PathHandler : IPathHandler
 
     public virtual IEnumerable<string> ExpandPath(string pattern)
     {
-        var pathMatcher = new Regex("^" + Regex.Escape(pattern).Replace(@"\*", ".*") + "$", RegexOptions.IgnoreCase);
+        var pathMatcher = new Regex("^" + Regex.Escape(AwsPath.Combine(Path, pattern)).Replace(@"\*", ".*") + "$", RegexOptions.IgnoreCase);
         return GetChildItems(useCache: true)
                 .Where(i => pathMatcher.IsMatch(i.FullPath))
                 .Select(i => i.FullPath)
