@@ -9,12 +9,7 @@ public static class EC2ClientExtensions
 {
     public static IEnumerable<Instance> QueryInstances(this IAmazonEC2 client, string filter, IEC2QueryParameters? parameters = null)
     {
-        var request = new DescribeInstancesRequest();
-        if (!string.IsNullOrEmpty(filter))
-        {
-            request.Filters.AddRange(ParseFilters(filter));
-        }
-
+        var request = !string.IsNullOrEmpty(filter) ? ParseFilter(filter) : new DescribeInstancesRequest();
         if (parameters?.IPAddress != null)
         {
             request.Filters.Add(IPAddressFilter(parameters.IPAddress));
@@ -24,16 +19,49 @@ public static class EC2ClientExtensions
         return response.Reservations.SelectMany(r => r.Instances);
     }
 
-    private static Filter IPAddressFilter(string ipAddress)
-    {
-        return new Filter("network-interface.addresses.private-ip-address",
-            new List<string> { ResolveEc2IPAddress(ipAddress) });
-    }
-
     public static string? Name(this Instance instance)
     {
         return instance.Tags
             .SingleOrDefault(t => t.Key.Equals("Name", StringComparison.OrdinalIgnoreCase))?.Value;
+    }
+
+    public static DescribeInstancesRequest ParseFilter(string filterString)
+    {
+        var request = new DescribeInstancesRequest();
+        foreach (var filter in filterString.Split(","))
+        {
+            if (filter.StartsWith("i-"))
+            {
+                AddInstanceIdFilter(request, filter);
+            }
+            else if (_ipv4.IsMatch(filter) || _ipHostName.IsMatch(filter))
+            {
+                request.Filters.Add(IPAddressFilter(filter));
+            }
+            else if (filter.Contains('='))
+            {
+                var parts = filter.Split("=");
+                request.Filters.Add(new Filter(parts[0], new List<string> { parts[1] }));
+            }
+            else
+            {
+                request.Filters.Add(new Filter("tag:Name", new List<string> { filter }));
+            }
+        }
+
+        return request;
+    }
+
+    private static void AddInstanceIdFilter(DescribeInstancesRequest request, string filter)
+    {
+        if (filter.Contains("*"))
+        {
+            request.Filters.Add(new Filter("instance-id", new List<string>{filter}));
+        }
+        else
+        {
+            request.InstanceIds.Add(filter);
+        }
     }
 
     private static readonly Regex _ipHostName =
@@ -51,30 +79,10 @@ public static class EC2ClientExtensions
 
         return ip;
     }
-
-    public static Filter ParseFilter(string filter)
+    
+    private static Filter IPAddressFilter(string ipAddress)
     {
-        if (filter.StartsWith("i-"))
-        {
-            return new Filter(filter);
-        }
-
-        if (_ipv4.IsMatch(filter) || _ipHostName.IsMatch(filter))
-        {
-            return IPAddressFilter(filter);
-        }
-        
-        if (filter.Contains('='))
-        {
-            var parts = filter.Split("=");
-            return new Filter(parts[0], new List<string> { parts[1] });
-        }
-
-        return new Filter("tag:Name", new List<string> { filter });
-    }
-
-    private static IEnumerable<Filter> ParseFilters(string filterString)
-    {
-        return filterString.Split(",").Select(ParseFilter);
+        return new Filter("network-interface.addresses.private-ip-address",
+            new List<string> { ResolveEc2IPAddress(ipAddress) });
     }
 }

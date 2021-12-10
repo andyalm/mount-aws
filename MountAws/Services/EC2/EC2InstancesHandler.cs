@@ -36,11 +36,6 @@ public class EC2InstancesHandler : PathHandler, IGetChildItemParameters<EC2Query
 
     public override IEnumerable<string> ExpandPath(string pattern)
     {
-        if (pattern.StartsWith("i-"))
-        {
-            return base.ExpandPath(pattern);
-        }
-        
         return _ec2.QueryInstances(pattern)
             .Select(instance => GetItemNameForPattern(instance, pattern))
             .Select(itemName => AwsPath.Combine(Path, itemName));
@@ -57,4 +52,5 @@ public class EC2InstancesHandler : PathHandler, IGetChildItemParameters<EC2Query
     }
 
     public EC2QueryParameters GetChildItemParameters { get; set; } = new();
+    public override bool CacheChildren => false;
 }

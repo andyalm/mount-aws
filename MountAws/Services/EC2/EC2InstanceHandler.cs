@@ -19,18 +19,7 @@ public class EC2InstanceHandler : PathHandler
 
     protected override AwsItem? GetItemImpl()
     {
-        var request = new DescribeInstancesRequest();
-        WriteDebug($"EC2InstanceHandler.GetItem({ItemName})");
-        if (ItemName.StartsWith("i-"))
-        {
-            request.InstanceIds.Add(ItemName);
-        }
-        else
-        {
-            var filter = EC2ClientExtensions.ParseFilter(ItemName);
-            WriteDebug($"GetItem({filter.Name}, {filter.Values.First()}");
-            request.Filters.Add(filter);
-        }
+        var request = EC2ClientExtensions.ParseFilter(ItemName);
         var response = _ec2.DescribeInstancesAsync(request).GetAwaiter().GetResult();
         var instances = response.Reservations.SelectMany(r => r.Instances).ToArray();
         WriteDebug($"Found {instances.Length} instances");

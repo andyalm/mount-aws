@@ -49,7 +49,7 @@ public abstract class PathHandler : IPathHandler
 
     public IEnumerable<AwsItem> GetChildItems(bool useCache = false)
     {
-        if (useCache && !Context.Force && Cache.TryGetChildItems(Path, out var cachedChildItems))
+        if (useCache && CacheChildren && string.IsNullOrEmpty(Context.Filter) && !Context.Force && Cache.TryGetChildItems(Path, out var cachedChildItems))
         {
             WriteDebug($"True Cache.TryGetChildItems({Path})");
             return cachedChildItems;
@@ -61,7 +61,10 @@ public abstract class PathHandler : IPathHandler
         {
             var childItems = GetChildItemsImpl().ToArray();
             WriteDebug($"Cache.SetChildItems({item.FullPath}, {childItems.Length})");
-            Cache.SetChildItems(item, childItems);
+            if (CacheChildren && string.IsNullOrEmpty(Context.Filter))
+            {
+                Cache.SetChildItems(item, childItems);
+            }
 
             return childItems;
         }
@@ -72,6 +75,8 @@ public abstract class PathHandler : IPathHandler
     protected abstract bool ExistsImpl();
     protected abstract AwsItem? GetItemImpl();
     protected abstract IEnumerable<AwsItem> GetChildItemsImpl();
+
+    public virtual bool CacheChildren { get; } = true;
 
     public virtual IEnumerable<string> ExpandPath(string pattern)
     {
