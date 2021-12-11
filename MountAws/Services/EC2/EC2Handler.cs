@@ -1,9 +1,15 @@
 using Amazon.EC2;
+using MountAws.Services.Core;
 
 namespace MountAws.Services.EC2;
 
 public class EC2Handler : PathHandler
 {
+    public static AwsItem CreateItem(string parentPath)
+    {
+        return new GenericContainerItem(parentPath, "ec2", "Navigate EC2 instances and related objects");
+    }
+    
     public EC2Handler(string path, IPathHandlerContext context) : base(path, context)
     {
         
@@ -16,11 +22,11 @@ public class EC2Handler : PathHandler
 
     protected override AwsItem? GetItemImpl()
     {
-        return new GenericContainerItem(ParentPath, ItemName);
+        return CreateItem(ParentPath);
     }
 
     protected override IEnumerable<AwsItem> GetChildItemsImpl()
     {
-        yield return new GenericContainerItem(Path, "instances");
+        yield return EC2InstancesHandler.CreateItem(Path);
     }
 }

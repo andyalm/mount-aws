@@ -1,4 +1,5 @@
 using Amazon;
+using MountAws.Services.EC2;
 
 namespace MountAws;
 
@@ -26,6 +27,6 @@ public class RegionHandler : PathHandler
 
     protected override IEnumerable<AwsItem> GetChildItemsImpl()
     {
-        yield return new GenericContainerItem(Path, "ec2");
+        yield return EC2Handler.CreateItem(Path);
     }
 }

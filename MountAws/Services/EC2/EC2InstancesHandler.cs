@@ -1,16 +1,23 @@
 using System.Text.RegularExpressions;
 using Amazon.EC2;
 using Amazon.EC2.Model;
+using MountAws.Services.Core;
 
 namespace MountAws.Services.EC2;
 
 public class EC2InstancesHandler : PathHandler, IGetChildItemParameters<EC2QueryParameters>
 {
+    public static AwsItem CreateItem(string parentPath)
+    {
+        return new GenericContainerItem(parentPath, "instances",
+            "Find all the ec2 instances within the current account and region");
+    }
+    
     private readonly IAmazonEC2 _ec2;
 
     public static AwsItem GetItem(string parentPath)
     {
-        return new GenericContainerItem(parentPath, "instances");
+        return CreateItem(parentPath);
     }
     
     public EC2InstancesHandler(string path, IPathHandlerContext context, IAmazonEC2 ec2) : base(path, context)

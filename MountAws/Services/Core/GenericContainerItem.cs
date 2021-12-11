@@ -1,16 +1,21 @@
 using System.Management.Automation;
 
-namespace MountAws;
+namespace MountAws.Services.Core;
 
 public class GenericContainerItem : AwsItem
 {
     private readonly string _parentPath;
 
-    public GenericContainerItem(string parentPath, string name, string itemType = "Container")
+    public GenericContainerItem(string parentPath, string name, string description, string itemType = "Container")
     {
         _parentPath = parentPath;
         ItemName = name;
-        UnderlyingObject = new PSObject();
+        Description = description;
+        UnderlyingObject = new PSObject(new
+        {
+            Name = name,
+            Description = description
+        });
         ItemType = itemType;
     }
 
@@ -18,5 +23,7 @@ public class GenericContainerItem : AwsItem
     public override string ItemName { get; }
     public override object UnderlyingObject { get; }
     public override string ItemType { get; }
+    public string Description { get; }
     public override bool IsContainer => true;
+    public override string TypeName => GetType().FullName!;
 }
