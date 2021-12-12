@@ -309,7 +309,15 @@ public class MountAwsProvider : NavigationCmdletProvider, IPathHandlerContext
 
     protected override string NormalizeRelativePath(string path, string basePath)
     {
-        WriteDebug($"NormalizeRelativePath({path}, {basePath})");
-        return base.NormalizeRelativePath(path, basePath);
+        var returnValue = base.NormalizeRelativePath(path, basePath);
+        //HACK to make tab completion on top level directories work (I'm calling it a hack because I don't understand why its necessary)
+        if (returnValue.StartsWith(ItemSeparator) && basePath == ItemSeparator.ToString())
+        {
+            returnValue = returnValue.Substring(1);
+        }
+
+        WriteDebug($"{returnValue} NormalizeRelativePath({path}, {basePath})");
+
+        return returnValue;
     }
 }
