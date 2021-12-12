@@ -47,7 +47,7 @@ public abstract class PathHandler : IPathHandler
         return item;
     }
 
-    public IEnumerable<AwsItem> GetChildItems(bool useCache = false)
+    public IEnumerable<AwsItem> GetChildItems(bool useCache = true)
     {
         if (useCache && CacheChildren && string.IsNullOrEmpty(Context.Filter) && !Context.Force && Cache.TryGetChildItems(Path, out var cachedChildItems))
         {

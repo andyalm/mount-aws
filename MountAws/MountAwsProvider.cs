@@ -3,6 +3,7 @@ using System.Management.Automation;
 using System.Management.Automation.Provider;
 using Amazon;
 using Amazon.EC2;
+using Amazon.ElasticLoadBalancingV2;
 using Amazon.Runtime;
 using Amazon.Runtime.CredentialManagement;
 using Autofac;
@@ -10,6 +11,7 @@ using Autofac.Core;
 using Autofac.Features.ResolveAnything;
 using MountAws.Routing;
 using MountAws.Services.EC2;
+using MountAws.Services.ELBV2;
 
 namespace MountAws;
 [CmdletProvider("MountAws", ProviderCapabilities.ExpandWildcards | ProviderCapabilities.Filter)]
@@ -67,6 +69,40 @@ public class MountAwsProvider : NavigationCmdletProvider, IPathHandlerContext
                         instances.MapRegex<EC2InstanceHandler>(@"(?<InstanceItemName>[a-z0-9-\.]+)");
                     });
                 });
+                region.MapRegex<ELBV2Handler>("elbv2", elbv2 =>
+                {
+                    elbv2.MapRegex<LoadBalancersHandler>("load-balancers", loadBalancers =>
+                    {
+                        loadBalancers.MapRegex<LoadBalancerHandler>(@"(?<LoadBalancerName>[a-z0-9-]+)", loadBalancer =>
+                        {
+                            loadBalancer.MapRegex<ListenerHandler>(@"(?<ListenerPort>[a-z0-9]+)", listener =>
+                            {
+                                listener.MapRegex<DefaultActionsHandler>("default-actions", defaultActions =>
+                                {
+                                    defaultActions.MapRegex<DefaultActionHandler>("(?<DefaultActionName>[a-z0-9-]+)",
+                                        defaultAction =>
+                                        {
+                                            defaultAction.MapRegex<TargetGroupHandler>("(?<TargetGroupName>[a-z0-9-]+)");
+                                        });
+                                });
+                                listener.MapRegex<RulesHandler>("rules", rules =>
+                                {
+                                    rules.MapRegex<RuleHandler>("(?<RulePriority>[a-z0-9]+)", rule =>
+                                    {
+                                        rule.MapRegex<RuleActionHandler>("(?<RuleActionName>[a-z0-9-]+)", ruleAction =>
+                                        {
+                                            ruleAction.MapRegex<TargetGroupHandler>("(?<TargetGroupName>[a-z0-9-]+)",
+                                                targetGroup =>
+                                                {
+                                                    targetGroup.MapRegex<TargetHealthHandler>(@"(?<TargetHealthId>[a-z0-9-_:|]+)");
+                                                });
+                                        });
+                                    });
+                                });
+                            });
+                        });
+                    });
+                });
             });
         });
         
@@ -75,6 +111,8 @@ public class MountAwsProvider : NavigationCmdletProvider, IPathHandlerContext
         containerBuilder.RegisterInstance<RegionEndpoint>(RegionEndpoint.USEast1);
         containerBuilder.RegisterInstance<AWSCredentials>(new AnonymousAWSCredentials());
         containerBuilder.RegisterType<AmazonEC2Client>().As<IAmazonEC2>()
+            .UsingConstructor(typeof(AWSCredentials), typeof(RegionEndpoint));
+        containerBuilder.RegisterType<AmazonElasticLoadBalancingV2Client>().As<IAmazonElasticLoadBalancingV2>()
             .UsingConstructor(typeof(AWSCredentials), typeof(RegionEndpoint));
         containerBuilder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
 

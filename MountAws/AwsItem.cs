@@ -20,10 +20,16 @@ public abstract class AwsItem
     {
         var psObject = new PSObject(UnderlyingObject);
         psObject.TypeNames.Add(TypeName);
-        var nameProperty = psObject.Properties["ItemName"];
-        if (nameProperty == null)
+        var itemNameProperty = psObject.Properties["ItemName"];
+        if (itemNameProperty == null)
         {
             psObject.Properties.Add(new PSNoteProperty("ItemName", ItemName));
+        }
+
+        var nameProperty = psObject.Properties["Name"];
+        if (nameProperty == null)
+        {
+            psObject.Properties.Add(new PSNoteProperty("Name", ItemName));
         }
         psObject.Properties.Add(new PSNoteProperty("ItemType", ItemType));
         CustomizePSObject(psObject);
