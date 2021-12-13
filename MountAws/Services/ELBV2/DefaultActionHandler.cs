@@ -1,4 +1,5 @@
 using Amazon.ElasticLoadBalancingV2;
+using MountAnything;
 
 namespace MountAws.Services.ELBV2;
 
@@ -16,7 +17,7 @@ public class DefaultActionHandler : PathHandler
         return GetItem() != null;
     }
 
-    protected override AwsItem? GetItemImpl()
+    protected override Item? GetItemImpl()
     {
         var defaultActionsHandler = new DefaultActionsHandler(ParentPath, Context, _elbv2);
         return defaultActionsHandler
@@ -24,13 +25,13 @@ public class DefaultActionHandler : PathHandler
             .SingleOrDefault(i => i.ItemName.Equals(ItemName, StringComparison.OrdinalIgnoreCase));
     }
 
-    protected override IEnumerable<AwsItem> GetChildItemsImpl()
+    protected override IEnumerable<Item> GetChildItemsImpl()
     {
         if (GetItem() is ActionItem item)
         {
             return item.GetChildren(_elbv2);
         }
         
-        return Enumerable.Empty<AwsItem>();
+        return Enumerable.Empty<Item>();
     }
 }

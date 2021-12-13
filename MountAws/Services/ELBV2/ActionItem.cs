@@ -1,10 +1,11 @@
 using System.Management.Automation;
 using Amazon.ElasticLoadBalancingV2;
+using MountAnything;
 using Action = Amazon.ElasticLoadBalancingV2.Model.Action;
 
 namespace MountAws.Services.ELBV2;
 
-public abstract class ActionItem : AwsItem
+public abstract class ActionItem : Item
 {
     public static ActionItem Create(string parentPath, Action action)
     {
@@ -28,18 +29,15 @@ public abstract class ActionItem : AwsItem
         return new DefaultActionItem(parentPath, action);
     }
     
-    public string ParentPath { get; }
     public Action Action { get; }
 
     public override string TypeName => "MountAws.Services.ELBV2.ActionItem";
 
-    protected ActionItem(string parentPath, Action action)
+    protected ActionItem(string parentPath, Action action) : base(parentPath)
     {
-        ParentPath = parentPath;
         Action = action;
     }
     public abstract string Description { get; }
-    public override string FullPath => AwsPath.Combine(ParentPath, ItemName);
     public override object UnderlyingObject => Action;
 
     public override void CustomizePSObject(PSObject psObject)
@@ -47,8 +45,8 @@ public abstract class ActionItem : AwsItem
         psObject.Properties.Add(new PSNoteProperty("Description", Description));
     }
 
-    public virtual IEnumerable<AwsItem> GetChildren(IAmazonElasticLoadBalancingV2 elbv2)
+    public virtual IEnumerable<Item> GetChildren(IAmazonElasticLoadBalancingV2 elbv2)
     {
-        return Enumerable.Empty<AwsItem>();
+        return Enumerable.Empty<Item>();
     }
 }

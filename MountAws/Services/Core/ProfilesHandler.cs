@@ -1,4 +1,5 @@
 using Amazon.Runtime.CredentialManagement;
+using MountAnything;
 
 namespace MountAws;
 
@@ -13,12 +14,12 @@ public class ProfilesHandler : PathHandler
         return true;
     }
 
-    protected override AwsItem? GetItemImpl()
+    protected override Item? GetItemImpl()
     {
         return new ProfilesRoot();
     }
 
-    protected override IEnumerable<AwsItem> GetChildItemsImpl()
+    protected override IEnumerable<Item> GetChildItemsImpl()
     {
         var c = new CredentialProfileStoreChain();
         return c.ListProfiles().Select(p => new AwsProfile(p));

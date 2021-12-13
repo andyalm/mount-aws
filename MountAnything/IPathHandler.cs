@@ -1,10 +1,10 @@
-namespace MountAws;
+namespace MountAnything;
 
 public interface IPathHandler
 {
     string Path { get; }
     bool Exists();
-    AwsItem? GetItem();
-    IEnumerable<AwsItem> GetChildItems(bool useCache = false);
+    Item? GetItem();
+    IEnumerable<Item> GetChildItems(bool useCache = false);
     IEnumerable<string> ExpandPath(string path);
 }

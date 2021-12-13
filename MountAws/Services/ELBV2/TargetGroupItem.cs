@@ -1,20 +1,18 @@
 using System.Management.Automation;
 using Amazon.ElasticLoadBalancingV2.Model;
+using MountAnything;
 
 namespace MountAws.Services.ELBV2;
 
-public class TargetGroupItem : AwsItem
+public class TargetGroupItem : Item
 {
-    private readonly string _parentPath;
     public TargetGroup TargetGroup { get; }
 
-    public TargetGroupItem(string parentPath, TargetGroup targetGroup)
+    public TargetGroupItem(string parentPath, TargetGroup targetGroup) : base(parentPath)
     {
-        _parentPath = parentPath;
         TargetGroup = targetGroup;
     }
 
-    public override string FullPath => AwsPath.Combine(_parentPath, ItemName);
     public override string ItemName => TargetGroup.TargetGroupName;
     public override object UnderlyingObject => TargetGroup;
     public override string ItemType => "TargetGroup";

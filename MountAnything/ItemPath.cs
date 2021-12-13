@@ -1,6 +1,6 @@
-namespace MountAws;
+namespace MountAnything;
 
-public class AwsPath
+public static class ItemPath
 {
     public static string Normalize(string path)
     {

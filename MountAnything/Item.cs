@@ -1,13 +1,19 @@
 using System.Management.Automation;
 
-namespace MountAws;
+namespace MountAnything;
 
-public abstract class AwsItem
+public abstract class Item
 {
-    public abstract string FullPath { get; }
+    protected Item(string parentPath)
+    {
+        ParentPath = parentPath;
+    }
+    
+    public string ParentPath { get; }
+
+    public string FullPath => ItemPath.Combine(ParentPath, ItemName);
     public abstract string ItemName { get; }
     public abstract object UnderlyingObject { get; }
-    
     public abstract string ItemType { get; }
     
     public abstract bool IsContainer { get; }

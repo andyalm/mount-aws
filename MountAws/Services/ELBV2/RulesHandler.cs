@@ -1,5 +1,6 @@
 using Amazon.ElasticLoadBalancingV2;
 using Amazon.ElasticLoadBalancingV2.Model;
+using MountAnything;
 using MountAws.Services.Core;
 
 namespace MountAws.Services.ELBV2;
@@ -8,7 +9,7 @@ public class RulesHandler : PathHandler
 {
     private readonly IAmazonElasticLoadBalancingV2 _elbv2;
 
-    public static AwsItem CreateItem(string parentPath)
+    public static Item CreateItem(string parentPath)
     {
         return new GenericContainerItem(parentPath, "rules",
             "List the rules attached to the load balancer listener");
@@ -24,18 +25,18 @@ public class RulesHandler : PathHandler
         return true;
     }
 
-    protected override AwsItem? GetItemImpl()
+    protected override Item? GetItemImpl()
     {
         return CreateItem(ParentPath);
     }
 
-    protected override IEnumerable<AwsItem> GetChildItemsImpl()
+    protected override IEnumerable<Item> GetChildItemsImpl()
     {
         var listenerHandler = new ListenerHandler(ParentPath, Context, _elbv2);
         var listener = listenerHandler.GetItem() as ListenerItem;
         if (listener == null)
         {
-            return Enumerable.Empty<AwsItem>();
+            return Enumerable.Empty<Item>();
         }
 
         var response = _elbv2.DescribeRulesAsync(new DescribeRulesRequest

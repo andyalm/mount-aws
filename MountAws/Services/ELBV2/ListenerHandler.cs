@@ -1,4 +1,5 @@
 using Amazon.ElasticLoadBalancingV2;
+using MountAnything;
 
 namespace MountAws.Services.ELBV2;
 
@@ -16,7 +17,7 @@ public class ListenerHandler : PathHandler
         return GetItem() != null;
     }
 
-    protected override AwsItem? GetItemImpl()
+    protected override Item? GetItemImpl()
     {
         var loadBalancerHandler = new LoadBalancerHandler(ParentPath, Context, _elbv2);
         var loadBalancerItem = loadBalancerHandler.GetItem() as LoadBalancerItem;
@@ -34,7 +35,7 @@ public class ListenerHandler : PathHandler
         return null;
     }
 
-    protected override IEnumerable<AwsItem> GetChildItemsImpl()
+    protected override IEnumerable<Item> GetChildItemsImpl()
     {
         yield return DefaultActionsHandler.CreateItem(Path);
         yield return RulesHandler.CreateItem(Path);

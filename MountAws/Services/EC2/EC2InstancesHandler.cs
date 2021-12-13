@@ -1,13 +1,14 @@
 using System.Text.RegularExpressions;
 using Amazon.EC2;
 using Amazon.EC2.Model;
+using MountAnything;
 using MountAws.Services.Core;
 
 namespace MountAws.Services.EC2;
 
 public class EC2InstancesHandler : PathHandler, IGetChildItemParameters<EC2QueryParameters>
 {
-    public static AwsItem CreateItem(string parentPath)
+    public static Item CreateItem(string parentPath)
     {
         return new GenericContainerItem(parentPath, "instances",
             "Find all the ec2 instances within the current account and region");
@@ -15,7 +16,7 @@ public class EC2InstancesHandler : PathHandler, IGetChildItemParameters<EC2Query
     
     private readonly IAmazonEC2 _ec2;
 
-    public static AwsItem GetItem(string parentPath)
+    public static Item GetItem(string parentPath)
     {
         return CreateItem(parentPath);
     }
@@ -30,12 +31,12 @@ public class EC2InstancesHandler : PathHandler, IGetChildItemParameters<EC2Query
         return true;
     }
 
-    protected override AwsItem? GetItemImpl()
+    protected override Item? GetItemImpl()
     {
         return GetItem(ParentPath);
     }
 
-    protected override IEnumerable<AwsItem> GetChildItemsImpl()
+    protected override IEnumerable<Item> GetChildItemsImpl()
     {
         return _ec2.QueryInstances(Context.Filter, GetChildItemParameters)
             .Select(i => new EC2InstanceItem(Path, i));
@@ -46,7 +47,7 @@ public class EC2InstancesHandler : PathHandler, IGetChildItemParameters<EC2Query
         return _ec2.QueryInstances(pattern)
             .Select(instance => (Instance: instance,ItemName:GetItemNameForPattern(instance, pattern)))
             .ForEach(instance => CacheInstance(instance.Instance, instance.ItemName))
-            .Select(instance => AwsPath.Combine(Path, instance.ItemName));
+            .Select(instance => ItemPath.Combine(Path, instance.ItemName));
     }
 
     private void CacheInstance(Instance instance, string itemName)

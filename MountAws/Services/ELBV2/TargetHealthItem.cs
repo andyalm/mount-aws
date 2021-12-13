@@ -1,21 +1,18 @@
 using System.Management.Automation;
 using Amazon.ElasticLoadBalancingV2.Model;
+using MountAnything;
 
 namespace MountAws.Services.ELBV2;
 
-public class TargetHealthItem : AwsItem
+public class TargetHealthItem : Item
 {
-    private readonly string _parentPath;
     public TargetHealthDescription TargetHealth { get; }
 
-    public TargetHealthItem(string parentPath, TargetHealthDescription targetHealth)
+    public TargetHealthItem(string parentPath, TargetHealthDescription targetHealth) : base(parentPath)
     {
-        _parentPath = parentPath;
         TargetHealth = targetHealth;
     }
-
-    public override string FullPath => AwsPath.Combine(_parentPath, ItemName);
-
+    
     public override string ItemName => TargetHealth.Target.Port > 0
         ? $"{TargetHealth.Target.Id}:{TargetHealth.Target.Port}"
         : TargetHealth.Target.Id.Replace("/", "|");

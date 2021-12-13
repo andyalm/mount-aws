@@ -1,9 +1,13 @@
+using MountAnything;
+
 namespace MountAws;
 
-public class ProfilesRoot : AwsItem
+public class ProfilesRoot : Item
 {
-    public override string FullPath => "";
-
+    public ProfilesRoot() : base(string.Empty)
+    {
+        
+    }
     public override string ItemName => "";
     public override object UnderlyingObject => new();
     public override string ItemType => "Root";

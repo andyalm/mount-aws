@@ -1,4 +1,5 @@
 using Amazon.ElasticLoadBalancingV2;
+using MountAnything;
 
 namespace MountAws.Services.ELBV2;
 
@@ -16,13 +17,13 @@ public class TargetHealthHandler : PathHandler
         return GetItem() != null;
     }
 
-    protected override AwsItem? GetItemImpl()
+    protected override Item? GetItemImpl()
     {
         var targetGroupHandler = new TargetGroupHandler(ParentPath, Context, _elbv2);
         return targetGroupHandler.GetChildItems().SingleOrDefault(i => i.ItemName == ItemName);
     }
 
-    protected override IEnumerable<AwsItem> GetChildItemsImpl()
+    protected override IEnumerable<Item> GetChildItemsImpl()
     {
         yield break;
     }

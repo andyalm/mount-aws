@@ -1,4 +1,5 @@
 using Amazon.ElasticLoadBalancingV2;
+using MountAnything;
 using MountAws.Services.Core;
 
 namespace MountAws.Services.ELBV2;
@@ -7,7 +8,7 @@ public class DefaultActionsHandler : PathHandler
 {
     private readonly IAmazonElasticLoadBalancingV2 _elbv2;
 
-    public static AwsItem CreateItem(string parentPath)
+    public static Item CreateItem(string parentPath)
     {
         return new GenericContainerItem(parentPath, "default-actions",
             "List the default actions for the load balancer listener");
@@ -23,18 +24,18 @@ public class DefaultActionsHandler : PathHandler
         return true;
     }
 
-    protected override AwsItem? GetItemImpl()
+    protected override Item? GetItemImpl()
     {
         return CreateItem(ParentPath);
     }
 
-    protected override IEnumerable<AwsItem> GetChildItemsImpl()
+    protected override IEnumerable<Item> GetChildItemsImpl()
     {
         var listenerHandler = new ListenerHandler(ParentPath, Context, _elbv2);
         var listener = listenerHandler.GetItem() as ListenerItem;
         if (listener == null)
         {
-            return Enumerable.Empty<AwsItem>();
+            return Enumerable.Empty<Item>();
         }
 
         return listener.Listener.DefaultActions.Select(a => ActionItem.Create(Path, a));

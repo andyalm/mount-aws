@@ -1,5 +1,6 @@
 using Amazon;
 using Amazon.Runtime.CredentialManagement;
+using MountAnything;
 
 namespace MountAws;
 
@@ -17,12 +18,12 @@ public class ProfileHandler : PathHandler
         return GetItem() != null;
     }
 
-    protected override AwsItem? GetItemImpl()
+    protected override Item? GetItemImpl()
     {
         return new AwsProfile(_profile);
     }
 
-    protected override IEnumerable<AwsItem> GetChildItemsImpl()
+    protected override IEnumerable<Item> GetChildItemsImpl()
     {
         return RegionEndpoint.EnumerableAllRegions.Select(e => new AwsRegion(Path, e));
     }

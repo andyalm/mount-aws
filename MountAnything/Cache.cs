@@ -1,10 +1,10 @@
-namespace MountAws;
+namespace MountAnything;
 
 public class Cache
 {
     private readonly Dictionary<string, CachedItem> _objects = new(StringComparer.OrdinalIgnoreCase);
 
-    public void SetItem(AwsItem item)
+    public void SetItem(Item item)
     {
         if(_objects.TryGetValue(item.FullPath, out var cachedItem))
         {
@@ -16,7 +16,7 @@ public class Cache
         }
     }
 
-    public bool TryGetItem(string path, out AwsItem cachedObject)
+    public bool TryGetItem(string path, out Item cachedObject)
     {
         if (_objects.TryGetValue(path, out var cachedItem))
         {
@@ -28,7 +28,7 @@ public class Cache
         return false;
     }
 
-    public bool TryGetItem<T>(string path, out T cachedItem) where T : AwsItem
+    public bool TryGetItem<T>(string path, out T cachedItem) where T : Item
     {
         if (TryGetItem(path, out var untypedCachedItem) && untypedCachedItem is T cachedTypedObject)
         {
@@ -40,7 +40,7 @@ public class Cache
         return false;
     }
     
-    public void SetChildItems(AwsItem item, IEnumerable<AwsItem> childItems)
+    public void SetChildItems(Item item, IEnumerable<Item> childItems)
     {
         SetItem(item);
         foreach (var childItem in childItems)
@@ -51,7 +51,7 @@ public class Cache
         cachedItem.ChildPaths = childItems.Select(i => i.FullPath).ToList();
     }
 
-    public bool TryGetChildItems(string path, out IEnumerable<AwsItem> childItems)
+    public bool TryGetChildItems(string path, out IEnumerable<Item> childItems)
     {
         if (_objects.TryGetValue(path, out var cachedItem) && cachedItem.ChildPaths != null)
         {
@@ -65,13 +65,13 @@ public class Cache
     
     private class CachedItem
     {
-        public CachedItem(AwsItem item)
+        public CachedItem(Item item)
         {
             Item = item;
             ChildPaths = null;
         }
         
-        public AwsItem Item { get; set; }
+        public Item Item { get; set; }
         public List<string>? ChildPaths { get; set; }
     }
 }

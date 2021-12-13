@@ -1,4 +1,5 @@
 using Amazon.ElasticLoadBalancingV2;
+using MountAnything;
 using Action = Amazon.ElasticLoadBalancingV2.Model.Action;
 
 namespace MountAws.Services.ELBV2;
@@ -21,7 +22,7 @@ public class ForwardActionItem : ActionItem
     public string TargetGroupArn { get; }
     public string TargetGroupName { get; }
 
-    public override IEnumerable<AwsItem> GetChildren(IAmazonElasticLoadBalancingV2 elbv2)
+    public override IEnumerable<Item> GetChildren(IAmazonElasticLoadBalancingV2 elbv2)
     {
         return new[]
         {

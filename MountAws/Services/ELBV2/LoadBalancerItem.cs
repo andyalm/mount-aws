@@ -1,19 +1,17 @@
 using Amazon.ElasticLoadBalancingV2.Model;
+using MountAnything;
 
 namespace MountAws.Services.ELBV2;
 
-public class LoadBalancerItem : AwsItem
+public class LoadBalancerItem : Item
 {
-    private readonly string _parentPath;
     public LoadBalancer LoadBalancer { get; }
 
-    public LoadBalancerItem(string parentPath, LoadBalancer loadBalancer)
+    public LoadBalancerItem(string parentPath, LoadBalancer loadBalancer) : base(parentPath)
     {
-        _parentPath = parentPath;
         LoadBalancer = loadBalancer;
     }
 
-    public override string FullPath => AwsPath.Combine(_parentPath, ItemName);
     public override string ItemName => LoadBalancer.LoadBalancerName;
     public override object UnderlyingObject => LoadBalancer;
     public override string ItemType => "LoadBalancer";

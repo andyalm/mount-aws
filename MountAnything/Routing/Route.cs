@@ -2,7 +2,7 @@ using System.Collections.Immutable;
 using System.Text.RegularExpressions;
 using Autofac;
 
-namespace MountAws.Routing;
+namespace MountAnything.Routing;
 
 public class Route
 {

@@ -1,14 +1,12 @@
 using System.Management.Automation;
+using MountAnything;
 
 namespace MountAws.Services.Core;
 
-public class GenericContainerItem : AwsItem
+public class GenericContainerItem : Item
 {
-    private readonly string _parentPath;
-
-    public GenericContainerItem(string parentPath, string name, string description, string itemType = "Container")
+    public GenericContainerItem(string parentPath, string name, string description, string itemType = "Container") : base(parentPath)
     {
-        _parentPath = parentPath;
         ItemName = name;
         Description = description;
         UnderlyingObject = new PSObject(new
@@ -19,7 +17,6 @@ public class GenericContainerItem : AwsItem
         ItemType = itemType;
     }
 
-    public override string FullPath => AwsPath.Combine(_parentPath, ItemName);
     public override string ItemName { get; }
     public override object UnderlyingObject { get; }
     public override string ItemType { get; }

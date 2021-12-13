@@ -1,4 +1,4 @@
-namespace MountAws.Routing;
+namespace MountAnything.Routing;
 
 public class RoutingException : ApplicationException
 {

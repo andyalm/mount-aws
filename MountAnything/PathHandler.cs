@@ -1,7 +1,7 @@
 using System.Management.Automation;
 using System.Text.RegularExpressions;
 
-namespace MountAws;
+namespace MountAnything;
 
 public abstract class PathHandler : IPathHandler
 {
@@ -30,7 +30,7 @@ public abstract class PathHandler : IPathHandler
         return ExistsImpl();
     }
 
-    public AwsItem? GetItem()
+    public Item? GetItem()
     {
         if (!Context.Force && Cache.TryGetItem(Path, out var cachedItem))
         {
@@ -47,7 +47,7 @@ public abstract class PathHandler : IPathHandler
         return item;
     }
 
-    public IEnumerable<AwsItem> GetChildItems(bool useCache = true)
+    public IEnumerable<Item> GetChildItems(bool useCache = true)
     {
         if (useCache && CacheChildren && string.IsNullOrEmpty(Context.Filter) && !Context.Force && Cache.TryGetChildItems(Path, out var cachedChildItems))
         {
@@ -69,18 +69,18 @@ public abstract class PathHandler : IPathHandler
             return childItems;
         }
         
-        return Enumerable.Empty<AwsItem>();
+        return Enumerable.Empty<Item>();
     }
 
     protected abstract bool ExistsImpl();
-    protected abstract AwsItem? GetItemImpl();
-    protected abstract IEnumerable<AwsItem> GetChildItemsImpl();
+    protected abstract Item? GetItemImpl();
+    protected abstract IEnumerable<Item> GetChildItemsImpl();
 
     public virtual bool CacheChildren { get; } = true;
 
     public virtual IEnumerable<string> ExpandPath(string pattern)
     {
-        var pathMatcher = new Regex("^" + Regex.Escape(AwsPath.Combine(Path, pattern)).Replace(@"\*", ".*") + "$", RegexOptions.IgnoreCase);
+        var pathMatcher = new Regex("^" + Regex.Escape(ItemPath.Combine(Path, pattern)).Replace(@"\*", ".*") + "$", RegexOptions.IgnoreCase);
         return GetChildItems(useCache: true)
                 .Where(i => pathMatcher.IsMatch(i.FullPath))
                 .Select(i => i.FullPath)

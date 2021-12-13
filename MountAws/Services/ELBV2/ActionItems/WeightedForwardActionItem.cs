@@ -1,5 +1,6 @@
 using Amazon.ElasticLoadBalancingV2;
 using Amazon.ElasticLoadBalancingV2.Model;
+using MountAnything;
 using Action = Amazon.ElasticLoadBalancingV2.Model.Action;
 
 namespace MountAws.Services.ELBV2;
@@ -23,7 +24,7 @@ public class WeightedForwardActionItem : ActionItem
     public TargetGroupTuple[] WeightedTargetGroups { get; }
     public string[] WeightDescriptions { get; }
 
-    public override IEnumerable<AwsItem> GetChildren(IAmazonElasticLoadBalancingV2 elbv2)
+    public override IEnumerable<Item> GetChildren(IAmazonElasticLoadBalancingV2 elbv2)
     {
         return WeightedTargetGroups.Select(t =>
             new WeightedTargetGroupItem(FullPath, elbv2.GetTargetGroup(t.TargetGroupArn), t.Weight));

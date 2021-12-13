@@ -1,20 +1,18 @@
 using System.Management.Automation;
 using Amazon.ElasticLoadBalancingV2.Model;
+using MountAnything;
 
 namespace MountAws.Services.ELBV2;
 
-public class RuleItem : AwsItem
+public class RuleItem : Item
 {
-    private readonly string _parentPath;
     public Rule Rule { get; }
 
-    public RuleItem(string parentPath, Rule rule)
+    public RuleItem(string parentPath, Rule rule) : base(parentPath)
     {
-        _parentPath = parentPath;
         Rule = rule;
     }
 
-    public override string FullPath => AwsPath.Combine(_parentPath, ItemName);
     public override string ItemName => Rule.Priority;
     public override object UnderlyingObject => Rule;
     public override string ItemType => "Rule";

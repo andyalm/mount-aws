@@ -1,5 +1,6 @@
 using Amazon.ElasticLoadBalancingV2;
 using Amazon.ElasticLoadBalancingV2.Model;
+using MountAnything;
 
 namespace MountAws.Services.ELBV2;
 
@@ -17,7 +18,7 @@ public class LoadBalancerHandler : PathHandler
         return GetItem() != null;
     }
 
-    protected override AwsItem? GetItemImpl()
+    protected override Item? GetItemImpl()
     {
         var loadBalancer = _elbv2.GetLoadBalancer(ItemName);
         if (loadBalancer != null)
@@ -28,7 +29,7 @@ public class LoadBalancerHandler : PathHandler
         return null;
     }
 
-    protected override IEnumerable<AwsItem> GetChildItemsImpl()
+    protected override IEnumerable<Item> GetChildItemsImpl()
     {
         var loadBalancer = ((LoadBalancerItem)GetItem()!).LoadBalancer;
         var request = new DescribeListenersRequest

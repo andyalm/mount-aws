@@ -1,4 +1,5 @@
 using Amazon;
+using MountAnything;
 using MountAws.Services.EC2;
 using MountAws.Services.ELBV2;
 
@@ -15,7 +16,7 @@ public class RegionHandler : PathHandler
         return GetItem() != null;
     }
 
-    protected override AwsItem? GetItemImpl()
+    protected override Item? GetItemImpl()
     {
         var regionEndpoint = RegionEndpoint.GetBySystemName(ItemName);
         if (regionEndpoint != null && (regionEndpoint.SystemName == "global" || regionEndpoint.DisplayName != "Unknown"))
@@ -26,7 +27,7 @@ public class RegionHandler : PathHandler
         return null;
     }
 
-    protected override IEnumerable<AwsItem> GetChildItemsImpl()
+    protected override IEnumerable<Item> GetChildItemsImpl()
     {
         yield return EC2Handler.CreateItem(Path);
         yield return ELBV2Handler.CreateItem(Path);

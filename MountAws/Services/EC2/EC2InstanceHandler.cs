@@ -1,5 +1,6 @@
 using Amazon.EC2;
 using Amazon.EC2.Model;
+using MountAnything;
 
 namespace MountAws.Services.EC2;
 
@@ -17,7 +18,7 @@ public class EC2InstanceHandler : PathHandler
         return GetItem() != null;
     }
 
-    protected override AwsItem? GetItemImpl()
+    protected override Item? GetItemImpl()
     {
         var request = EC2ClientExtensions.ParseFilter(ItemName);
         var response = _ec2.DescribeInstancesAsync(request).GetAwaiter().GetResult();
@@ -31,8 +32,8 @@ public class EC2InstanceHandler : PathHandler
         return null;
     }
 
-    protected override IEnumerable<AwsItem> GetChildItemsImpl()
+    protected override IEnumerable<Item> GetChildItemsImpl()
     {
-        return Enumerable.Empty<AwsItem>();
+        return Enumerable.Empty<Item>();
     }
 }

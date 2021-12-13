@@ -1,7 +1,7 @@
 using System.Collections.Immutable;
 using Autofac;
 
-namespace MountAws.Routing;
+namespace MountAnything.Routing;
 
 public record RouteMatch(string Path, Type HandlerType)
 {

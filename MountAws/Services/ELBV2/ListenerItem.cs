@@ -1,19 +1,17 @@
 using Amazon.ElasticLoadBalancingV2.Model;
+using MountAnything;
 
 namespace MountAws.Services.ELBV2;
 
-public class ListenerItem : AwsItem
+public class ListenerItem : Item
 {
-    private readonly string _parentPath;
     public Listener Listener { get; }
 
-    public ListenerItem(string parentPath, Listener listener)
+    public ListenerItem(string parentPath, Listener listener) : base(parentPath)
     {
-        _parentPath = parentPath;
         Listener = listener;
     }
 
-    public override string FullPath => AwsPath.Combine(_parentPath, ItemName);
     public override string ItemName => Listener.Port.ToString();
     public override object UnderlyingObject => Listener;
     public override string ItemType => "Listener";

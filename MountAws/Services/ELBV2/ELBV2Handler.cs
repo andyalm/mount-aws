@@ -1,10 +1,11 @@
+using MountAnything;
 using MountAws.Services.Core;
 
 namespace MountAws.Services.ELBV2;
 
 public class ELBV2Handler : PathHandler
 {
-    public static AwsItem CreateItem(string parentPath)
+    public static Item CreateItem(string parentPath)
     {
         return new GenericContainerItem(parentPath, "elbv2",
             "Navigate load balancers and associated objects");
@@ -19,12 +20,12 @@ public class ELBV2Handler : PathHandler
         return true;
     }
 
-    protected override AwsItem? GetItemImpl()
+    protected override Item? GetItemImpl()
     {
         return CreateItem(ParentPath);
     }
 
-    protected override IEnumerable<AwsItem> GetChildItemsImpl()
+    protected override IEnumerable<Item> GetChildItemsImpl()
     {
         yield return LoadBalancersHandler.CreateItem(Path);
     }

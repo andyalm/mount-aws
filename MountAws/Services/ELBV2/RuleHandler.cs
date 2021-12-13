@@ -1,4 +1,5 @@
 using Amazon.ElasticLoadBalancingV2;
+using MountAnything;
 
 namespace MountAws.Services.ELBV2;
 
@@ -16,18 +17,18 @@ public class RuleHandler : PathHandler
         return GetItem() != null;
     }
 
-    protected override AwsItem? GetItemImpl()
+    protected override Item? GetItemImpl()
     {
         var rulesHandler = new RulesHandler(ParentPath, Context, _elbv2);
         return rulesHandler.GetChildItems().FirstOrDefault(i => i.ItemName == ItemName) as RuleItem;
     }
 
-    protected override IEnumerable<AwsItem> GetChildItemsImpl()
+    protected override IEnumerable<Item> GetChildItemsImpl()
     {
         var rule = GetItem() as RuleItem;
         if (rule == null)
         {
-            return Enumerable.Empty<AwsItem>();
+            return Enumerable.Empty<Item>();
         }
 
         return rule.Rule.Actions.Select(a => ActionItem.Create(Path, a));
