@@ -6,7 +6,7 @@ using MountAws.Services.Core;
 
 namespace MountAws.Services.EC2;
 
-public class EC2InstancesHandler : PathHandler, IGetChildItemParameters<EC2QueryParameters>
+public class EC2InstancesHandler : PathHandler
 {
     public static Item CreateItem(string parentPath)
     {
@@ -38,37 +38,15 @@ public class EC2InstancesHandler : PathHandler, IGetChildItemParameters<EC2Query
 
     protected override IEnumerable<Item> GetChildItemsImpl()
     {
-        return _ec2.QueryInstances(Context.Filter, GetChildItemParameters)
+        return _ec2.QueryInstances()
             .Select(i => new EC2InstanceItem(Path, i));
     }
 
-    public override IEnumerable<string> ExpandPath(string pattern)
+    public override IEnumerable<Item> GetChildItems(string filter)
     {
-        return _ec2.QueryInstances(pattern)
-            .Select(instance => (Instance: instance,ItemName:GetItemNameForPattern(instance, pattern)))
-            .ForEach(instance => CacheInstance(instance.Instance, instance.ItemName))
-            .Select(instance => ItemPath.Combine(Path, instance.ItemName));
+        return _ec2.QueryInstances(filter)
+            .Select(instance => new EC2InstanceItem(Path, instance));
     }
 
-    private void CacheInstance(Instance instance, string itemName)
-    {
-        var itemNames = new[] { instance.InstanceId, itemName }.Distinct();
-        foreach (var anItemName in itemNames)
-        {
-            Cache.SetItem(new EC2InstanceItem(ParentPath, instance, anItemName));
-        }
-    }
-
-    private string GetItemNameForPattern(Instance instance, string pattern)
-    {
-        if (pattern.StartsWith("ip-") || Regex.IsMatch(pattern, @"^[0-9\.\*]+$"))
-        {
-            return instance.PrivateIpAddress;
-        }
-
-        return instance.InstanceId;
-    }
-
-    public EC2QueryParameters GetChildItemParameters { get; set; } = new();
     public override bool CacheChildren => false;
 }

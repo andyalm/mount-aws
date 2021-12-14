@@ -6,13 +6,16 @@ public class Cache
 
     public void SetItem(Item item)
     {
-        if(_objects.TryGetValue(item.FullPath, out var cachedItem))
+        foreach (var path in item.CacheablePaths)
         {
-            cachedItem.Item = item;
-        }
-        else
-        {
-            _objects[item.FullPath] = new CachedItem(item);
+            if(_objects.TryGetValue(path, out var cachedItem))
+            {
+                cachedItem.Item = item;
+            }
+            else
+            {
+                _objects[path] = new CachedItem(item);
+            }
         }
     }
 

@@ -7,13 +7,10 @@ namespace MountAws.Services.EC2;
 
 public static class EC2ClientExtensions
 {
-    public static IEnumerable<Instance> QueryInstances(this IAmazonEC2 client, string filter, IEC2QueryParameters? parameters = null)
+    public static IEnumerable<Instance> QueryInstances(this IAmazonEC2 client, string? filter = null)
     {
         var request = !string.IsNullOrEmpty(filter) ? ParseFilter(filter) : new DescribeInstancesRequest();
-        if (parameters?.IPAddress != null)
-        {
-            request.Filters.Add(IPAddressFilter(parameters.IPAddress));
-        }
+        
         var response = client.DescribeInstancesAsync(request).GetAwaiter().GetResult();
 
         return response.Reservations.SelectMany(r => r.Instances);

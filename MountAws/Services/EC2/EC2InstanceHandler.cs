@@ -26,7 +26,7 @@ public class EC2InstanceHandler : PathHandler
         WriteDebug($"Found {instances.Length} instances");
         if (instances.Length == 1)
         {
-            return new EC2InstanceItem(ParentPath, instances.First(), ItemName);
+            return new EC2InstanceItem(ParentPath, instances.First());
         }
 
         return null;

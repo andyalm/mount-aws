@@ -83,7 +83,9 @@ public abstract class MountAnythingProvider : NavigationCmdletProvider, IPathHan
             {
                 handlerWithParams.GetChildItemParameters = DynamicParameters;
             }
-            var childItems = handler.GetChildItems(useCache: false);
+            var childItems = string.IsNullOrEmpty(Filter)
+                ? handler.GetChildItems(useCache: false)
+                : handler.GetChildItems(Filter);
             WriteItems(childItems);
         });
     }
@@ -118,19 +120,20 @@ public abstract class MountAnythingProvider : NavigationCmdletProvider, IPathHan
         return WithPathHandler(path, handler => handler.GetItem()?.IsContainer) ?? false;
     }
 
-    private void WriteItems<T>(IEnumerable<T> awsItems) where T : Item
+    private void WriteItems<T>(IEnumerable<T> items) where T : Item
     {
-        foreach (var awsItem in awsItems)
+        foreach (var item in items)
         {
-            WriteItem(awsItem);
+            WriteItem(item);
         }
     }
     
-    private void WriteItem(Item awsItem)
+    private void WriteItem(Item item)
     {
-        var providerPath = ToProviderPath(awsItem.FullPath);
-        WriteDebug($"WriteItemObject<{awsItem.TypeName}>(,{providerPath},{awsItem.IsContainer})");
-        WriteItemObject(awsItem.ToPipelineObject(), providerPath, awsItem.IsContainer);
+        Cache.SetItem(item);
+        var providerPath = ToProviderPath(item.FullPath);
+        WriteDebug($"WriteItemObject<{item.TypeName}>(,{providerPath},{item.IsContainer})");
+        WriteItemObject(item.ToPipelineObject(), providerPath, item.IsContainer);
     }
 
     private TReturn? WithPathHandler<TReturn>(string path, Func<IPathHandler,TReturn> action)
@@ -191,8 +194,8 @@ public abstract class MountAnythingProvider : NavigationCmdletProvider, IPathHan
         var returnValue = WithPathHandler(handlerPath, handler =>
         {
             WriteDebug($"{handler.GetType().Name}.ExpandPath({pattern})");
-            return handler.ExpandPath(pattern)
-                .Select(ToProviderPath)
+            return handler.GetChildItems(pattern)
+                .Select(i => ToProviderPath(i.FullPath))
                 .Select(p => ItemPath.GetParent(p) == "/" && p.StartsWith("/") ? p.Substring(1) : p)
                 .ToArray();
         }) ?? Array.Empty<string>();

@@ -6,5 +6,4 @@ public interface IPathHandlerContext
 
     void WriteDebug(string message);
     bool Force { get; }
-    string Filter { get; }
 }

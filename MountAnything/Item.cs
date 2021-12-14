@@ -19,6 +19,20 @@ public abstract class Item
     public abstract bool IsContainer { get; }
 
     public virtual string TypeName => UnderlyingObject.GetType().FullName!;
+    
+    public virtual IEnumerable<string> Aliases => Enumerable.Empty<string>();
+
+    public IEnumerable<string> CacheablePaths
+    {
+        get
+        {
+            yield return FullPath;
+            foreach (var alias in Aliases)
+            {
+                yield return ItemPath.Combine(ParentPath, alias);
+            }
+        }
+    }
 
     public virtual void CustomizePSObject(PSObject psObject) {}
 

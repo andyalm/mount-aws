@@ -49,7 +49,7 @@ public abstract class PathHandler : IPathHandler
 
     public IEnumerable<Item> GetChildItems(bool useCache = true)
     {
-        if (useCache && CacheChildren && string.IsNullOrEmpty(Context.Filter) && !Context.Force && Cache.TryGetChildItems(Path, out var cachedChildItems))
+        if (useCache && CacheChildren && !Context.Force && Cache.TryGetChildItems(Path, out var cachedChildItems))
         {
             WriteDebug($"True Cache.TryGetChildItems({Path})");
             return cachedChildItems;
@@ -61,7 +61,7 @@ public abstract class PathHandler : IPathHandler
         {
             var childItems = GetChildItemsImpl().ToArray();
             WriteDebug($"Cache.SetChildItems({item.FullPath}, {childItems.Length})");
-            if (CacheChildren && string.IsNullOrEmpty(Context.Filter))
+            if (CacheChildren)
             {
                 Cache.SetChildItems(item, childItems);
             }
@@ -77,13 +77,11 @@ public abstract class PathHandler : IPathHandler
     protected abstract IEnumerable<Item> GetChildItemsImpl();
 
     public virtual bool CacheChildren { get; } = true;
-
-    public virtual IEnumerable<string> ExpandPath(string pattern)
+    
+    public virtual IEnumerable<Item> GetChildItems(string filter)
     {
-        var pathMatcher = new Regex("^" + Regex.Escape(ItemPath.Combine(Path, pattern)).Replace(@"\*", ".*") + "$", RegexOptions.IgnoreCase);
+        var pathMatcher = new Regex("^" + Regex.Escape(ItemPath.Combine(Path, filter)).Replace(@"\*", ".*") + "$", RegexOptions.IgnoreCase);
         return GetChildItems(useCache: true)
-                .Where(i => pathMatcher.IsMatch(i.FullPath))
-                .Select(i => i.FullPath)
-                .ToArray();
+            .Where(i => pathMatcher.IsMatch(i.FullPath));
     }
 }
