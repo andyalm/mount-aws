@@ -14,7 +14,7 @@ on:
 jobs:
   # This workflow contains a single job called "build"
   publish:
-    if: github.repository == 'andyalm/mount-gitlab'
+    if: github.repository == 'andyalm/mount-aws'
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
