@@ -5,7 +5,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-    <PublishDir>$(MSBuildProjectDirectory)\..\bin\</PublishDir>
+    <PublishDir>$(MSBuildProjectDirectory)\..\bin\MountAws\</PublishDir>
   </PropertyGroup>
 
   <ItemGroup>
