@@ -1,7 +1,5 @@
-﻿using System.Collections.ObjectModel;
-using System.Management.Automation;
+﻿using System.Management.Automation;
 using System.Management.Automation.Provider;
-using Autofac;
 using Autofac.Core;
 using MountAnything.Routing;
 
@@ -9,11 +7,28 @@ namespace MountAnything;
 public abstract class MountAnythingProvider : NavigationCmdletProvider, IPathHandlerContext
 {
     private static readonly Cache _cache = new();
-
+    private static Router? _router;
     protected override bool IsValidPath(string path) => true;
-    
-    public abstract ILifetimeScope Container { get; }
-    public abstract Router Router { get; }
+    public abstract Router CreateRouter();
+
+    private Router Router
+    {
+        get
+        {
+            if (_router == null)
+            {
+                lock (GetType())
+                {
+                    if (_router == null)
+                    {
+                        _router = CreateRouter();
+                    }
+                }
+            }
+
+            return _router;
+        }
+    }
 
     public Cache Cache => _cache;
     
@@ -123,14 +138,8 @@ public abstract class MountAnythingProvider : NavigationCmdletProvider, IPathHan
         path = ItemPath.Normalize(path);
         RouteMatch? match = null;
         try
-        { 
-            match = Router.Match(path);
-            using var lifetimeScope = Container.BeginLifetimeScope(match.ServiceRegistrations);
-            var handler = (IPathHandler)lifetimeScope.Resolve(match.HandlerType,
-                new NamedParameter("path", path),
-                new TypedParameter(typeof(IPathHandlerContext), this));
-
-            return action(handler);
+        {
+            return Router.RouteToHandler(path, this, action);
         }
         catch (RoutingException ex)
         {

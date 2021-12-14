@@ -4,47 +4,53 @@ using Autofac;
 
 namespace MountAnything.Routing;
 
-public class Route
+public class Route : IRouter
 {
-    private IEnumerable<Action<Match, ContainerBuilder>> _serviceRegistrations;
+    private Action<RouteMatch, ContainerBuilder> _serviceRegistrations;
     private readonly List<Route> _childRoutes = new();
     public string Pattern { get; }
     public Regex Regex { get; }
     public Type HandlerType { get; }
 
-    public Route(string regex, Type handlerType, IEnumerable<Action<Match,ContainerBuilder>>? serviceRegistrations = null)
+    public Route(string regex, Type handlerType, Action<RouteMatch,ContainerBuilder>? serviceRegistrations = null)
     {
         Pattern = regex;
         Regex = new Regex("^" + regex + "$", RegexOptions.IgnoreCase);
         HandlerType = handlerType;
-        _serviceRegistrations = serviceRegistrations ?? Enumerable.Empty<Action<Match, ContainerBuilder>>();
+        _serviceRegistrations = serviceRegistrations ?? ((_, _) => {});
     }
     
-    public bool TryMatch(string path, out RouteMatch match)
+    public bool TryGetResolver(string path, out HandlerResolver resolver)
     {
         var regexMatch = Regex.Match(path);
         if (regexMatch.Success)
         {
-            match = ToRouteMatch(path, regexMatch);
+            var routeMatch = new RouteMatch(path, HandlerType)
+            {
+                Values = regexMatch.Groups.Keys
+                    .Select(key => new KeyValuePair<string, string>(key, regexMatch.Groups[key].Value))
+                    .ToImmutableDictionary(StringComparer.OrdinalIgnoreCase)
+            };
+            resolver = GetResolver(routeMatch);
             return true;
         }
 
         foreach (var childRoute in _childRoutes)
         {
-            if (childRoute.TryMatch(path, out var childMatch))
+            if (childRoute.TryGetResolver(path, out var childServiceRegistrations))
             {
-                match = childMatch;
+                resolver = childServiceRegistrations;
                 return true;
             }
         }
 
-        match = default!;
+        resolver = default!;
         return false;
     }
 
-    public void RegisterServices(Action<Match, ContainerBuilder> serviceRegistration)
+    public void RegisterServices(Action<RouteMatch, ContainerBuilder> serviceRegistration)
     {
-        _serviceRegistrations = _serviceRegistrations.Concat(new[] { serviceRegistration });
+        _serviceRegistrations += serviceRegistration;
     }
 
     public void MapRegex<THandler>(string pattern, Action<Route>? createChildRoutes = null) where THandler : IPathHandler
@@ -55,20 +61,13 @@ public class Route
         _childRoutes.Add(route);
     }
 
-    private RouteMatch ToRouteMatch(string path, Match regexMatch)
+    private HandlerResolver GetResolver(RouteMatch match)
     {
-        return new RouteMatch(path, HandlerType)
-        {
-            Values = regexMatch.Groups.Keys
-                .Select(key => new KeyValuePair<string, string>(key, regexMatch.Groups[key].Value))
-                .ToImmutableDictionary(StringComparer.OrdinalIgnoreCase),
-            ServiceRegistrations = (builder) =>
+        return new HandlerResolver(
+            match.HandlerType,
+            (builder) =>
             {
-                foreach (var serviceRegistration in _serviceRegistrations)
-                {
-                    serviceRegistration.Invoke(regexMatch, builder);
-                }
-            }
-        };
+                _serviceRegistrations.Invoke(match, builder);
+            });
     }
 }

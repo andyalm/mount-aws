@@ -7,7 +7,6 @@ using Amazon.ElasticLoadBalancingV2;
 using Amazon.Runtime;
 using Amazon.Runtime.CredentialManagement;
 using Autofac;
-using Autofac.Features.ResolveAnything;
 using MountAnything;
 using MountAnything.Routing;
 using MountAws.Services.EC2;
@@ -17,12 +16,6 @@ namespace MountAws;
 [CmdletProvider("MountAws", ProviderCapabilities.ExpandWildcards | ProviderCapabilities.Filter)]
 public class MountAwsProvider : MountAnythingProvider
 {
-    private static readonly ILifetimeScope _container;
-    private static readonly Router _router;
-    
-    public override ILifetimeScope Container => _container;
-    public override Router Router => _router;
-
     protected override Collection<PSDriveInfo> InitializeDefaultDrives()
     {
         return new Collection<PSDriveInfo>
@@ -32,16 +25,24 @@ public class MountAwsProvider : MountAnythingProvider
         };
     }
 
-    static MountAwsProvider()
+    public override Router CreateRouter()
     {
-        _router = new Router()
-            .MapRoot<ProfilesHandler>()
-            .MapRegex<ProfileHandler>("(?<Profile>[a-z0-9-_]+)", profile =>
+        var router = Router.Create<ProfilesHandler>();
+        router.RegisterServices(builder =>
+        {
+            builder.RegisterInstance<RegionEndpoint>(RegionEndpoint.USEast1);
+            builder.RegisterInstance<AWSCredentials>(new AnonymousAWSCredentials());
+            builder.RegisterType<AmazonEC2Client>().As<IAmazonEC2>()
+                .UsingConstructor(typeof(AWSCredentials), typeof(RegionEndpoint));
+            builder.RegisterType<AmazonElasticLoadBalancingV2Client>().As<IAmazonElasticLoadBalancingV2>()
+                .UsingConstructor(typeof(AWSCredentials), typeof(RegionEndpoint));
+        });
+        router.MapRegex<ProfileHandler>("(?<Profile>[a-z0-9-_]+)", profile =>
         {
             var chain = new CredentialProfileStoreChain();
             profile.RegisterServices((match, builder) =>
             {
-                var profileName = match.Groups["Profile"].Value;
+                var profileName = match.Values["Profile"];
                 if (chain.TryGetProfile(profileName, out var awsProfile))
                 {
                     builder.RegisterInstance(awsProfile);
@@ -55,43 +56,41 @@ public class MountAwsProvider : MountAnythingProvider
             {
                 region.RegisterServices((match, builder) =>
                 {
-                    var regionName = match.Groups["Region"].Value;
+                    var regionName = match.Values["Region"];
                     builder.Register<RegionEndpoint>(c => RegionEndpoint.GetBySystemName(regionName));
                 });
-                region.MapRegex<EC2Handler>("ec2", ec2 =>
+                region.MapLiteral<EC2Handler>("ec2", ec2 =>
                 {
                     ec2.MapRegex<EC2InstancesHandler>("instances", instances =>
                     {
-                        instances.MapRegex<EC2InstanceHandler>(@"(?<InstanceItemName>[a-z0-9-\.]+)");
+                        instances.Map<EC2InstanceHandler>();
                     });
                 });
-                region.MapRegex<ELBV2Handler>("elbv2", elbv2 =>
+                region.MapLiteral<ELBV2Handler>("elbv2", elbv2 =>
                 {
-                    elbv2.MapRegex<LoadBalancersHandler>("load-balancers", loadBalancers =>
+                    elbv2.MapLiteral<LoadBalancersHandler>("load-balancers", loadBalancers =>
                     {
-                        loadBalancers.MapRegex<LoadBalancerHandler>(@"(?<LoadBalancerName>[a-z0-9-]+)", loadBalancer =>
+                        loadBalancers.Map<LoadBalancerHandler>(loadBalancer =>
                         {
-                            loadBalancer.MapRegex<ListenerHandler>(@"(?<ListenerPort>[a-z0-9]+)", listener =>
+                            loadBalancer.Map<ListenerHandler>(listener =>
                             {
-                                listener.MapRegex<DefaultActionsHandler>("default-actions", defaultActions =>
+                                listener.MapLiteral<DefaultActionsHandler>("default-actions", defaultActions =>
                                 {
-                                    defaultActions.MapRegex<DefaultActionHandler>("(?<DefaultActionName>[a-z0-9-]+)",
-                                        defaultAction =>
-                                        {
-                                            defaultAction.MapRegex<TargetGroupHandler>("(?<TargetGroupName>[a-z0-9-]+)");
-                                        });
-                                });
-                                listener.MapRegex<RulesHandler>("rules", rules =>
-                                {
-                                    rules.MapRegex<RuleHandler>("(?<RulePriority>[a-z0-9]+)", rule =>
+                                    defaultActions.Map<DefaultActionHandler>(defaultAction =>
                                     {
-                                        rule.MapRegex<RuleActionHandler>("(?<RuleActionName>[a-z0-9-]+)", ruleAction =>
+                                        defaultAction.Map<TargetGroupHandler>();
+                                    });
+                                });
+                                listener.MapLiteral<RulesHandler>("rules", rules =>
+                                {
+                                    rules.Map<RuleHandler>(rule =>
+                                    {
+                                        rule.Map<RuleActionHandler>(ruleAction =>
                                         {
-                                            ruleAction.MapRegex<TargetGroupHandler>("(?<TargetGroupName>[a-z0-9-]+)",
-                                                targetGroup =>
-                                                {
-                                                    targetGroup.MapRegex<TargetHealthHandler>(@"(?<TargetHealthId>[a-z0-9-_:|]+)");
-                                                });
+                                            ruleAction.Map<TargetGroupHandler>(targetGroup =>
+                                            {
+                                                targetGroup.Map<TargetHealthHandler>();
+                                            });
                                         });
                                     });
                                 });
@@ -101,17 +100,7 @@ public class MountAwsProvider : MountAnythingProvider
                 });
             });
         });
-        
-        var containerBuilder = new ContainerBuilder();
-        containerBuilder.RegisterInstance(_router);
-        containerBuilder.RegisterInstance<RegionEndpoint>(RegionEndpoint.USEast1);
-        containerBuilder.RegisterInstance<AWSCredentials>(new AnonymousAWSCredentials());
-        containerBuilder.RegisterType<AmazonEC2Client>().As<IAmazonEC2>()
-            .UsingConstructor(typeof(AWSCredentials), typeof(RegionEndpoint));
-        containerBuilder.RegisterType<AmazonElasticLoadBalancingV2Client>().As<IAmazonElasticLoadBalancingV2>()
-            .UsingConstructor(typeof(AWSCredentials), typeof(RegionEndpoint));
-        containerBuilder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
 
-        _container = containerBuilder.Build();
+        return router;
     }
 }
