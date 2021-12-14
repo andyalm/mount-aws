@@ -38,4 +38,8 @@
     <Exec Command="pwsh CreateManifest.ps1 $(OutputPath)" WorkingDirectory="$(MSBuildProjectDirectory)" />
   </Target>
 
+  <Target Name="CopyModuleToPublishOutput" AfterTargets="Publish">
+    <Exec Command="pwsh CreateManifest.ps1 $(PublishDir)" WorkingDirectory="$(MSBuildProjectDirectory)" />
+  </Target>
+
 </Project>
