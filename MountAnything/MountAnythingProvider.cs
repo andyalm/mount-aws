@@ -33,7 +33,7 @@ public abstract class MountAnythingProvider : NavigationCmdletProvider, IPathHan
     public Cache Cache => _cache;
     
     bool IPathHandlerContext.Force => base.Force.IsPresent;
-  
+
     protected override bool ItemExists(string path)
     {
         //WriteDebug($"ItemExists({path})");

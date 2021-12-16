@@ -4,12 +4,12 @@ using MountAnything;
 
 namespace MountAws.Services.ECS;
 
-public class ServiceTaskHandler : PathHandler
+public class TaskHandler : PathHandler
 {
     private readonly IAmazonECS _ecs;
     private readonly CurrentCluster _currentCluster;
 
-    public ServiceTaskHandler(string path, IPathHandlerContext context, IAmazonECS ecs, CurrentCluster currentCluster) : base(path, context)
+    public TaskHandler(string path, IPathHandlerContext context, IAmazonECS ecs, CurrentCluster currentCluster) : base(path, context)
     {
         _ecs = ecs;
         _currentCluster = currentCluster;

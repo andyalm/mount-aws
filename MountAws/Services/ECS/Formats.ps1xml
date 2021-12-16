@@ -75,6 +75,8 @@
           </TableColumnHeader>
           <TableColumnHeader>
           </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
         </TableHeaders>
         <TableRowEntries>
           <TableRowEntry>
@@ -83,10 +85,44 @@
                 <PropertyName>Name</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
+                <PropertyName>Group</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
                 <PropertyName>StartedAt</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>AvailabilityZone</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <View>
+      <Name>ECSContainerInstance</Name>
+      <ViewSelectedBy>
+        <TypeName>Amazon.ECS.Model.ContainerInstance</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+          </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>Name</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Ec2InstanceId</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>RunningTasksCount</PropertyName>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>

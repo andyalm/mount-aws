@@ -80,11 +80,18 @@ public class MountAwsProvider : MountAnythingProvider
                             {
                                 builder.RegisterInstance(new CurrentCluster(match.Values["CurrentCluster"]));
                             });
+                            cluster.MapLiteral<ContainerInstancesHandler>("container-instances", containerInstances =>
+                            {
+                                containerInstances.Map<ContainerInstanceHandler>(containerInstance =>
+                                {
+                                    containerInstance.Map<TaskHandler>();
+                                });
+                            });
                             cluster.MapLiteral<ServicesHandler>("services", services =>
                             {
                                 services.Map<ServiceHandler>(service =>
                                 {
-                                    service.Map<ServiceTaskHandler>();
+                                    service.Map<TaskHandler>();
                                 });
                             });
                         });

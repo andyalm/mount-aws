@@ -31,5 +31,6 @@ public class ClusterHandler : PathHandler
     protected override IEnumerable<Item> GetChildItemsImpl()
     {
         yield return ServicesHandler.CreateItem(Path);
+        yield return ContainerInstancesHandler.CreateItem(Path);
     }
 }
