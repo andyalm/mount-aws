@@ -3,6 +3,7 @@ using System.Management.Automation;
 using System.Management.Automation.Provider;
 using Amazon;
 using Amazon.EC2;
+using Amazon.ECS;
 using Amazon.ElasticLoadBalancingV2;
 using Amazon.Runtime;
 using Amazon.Runtime.CredentialManagement;
@@ -10,6 +11,7 @@ using Autofac;
 using MountAnything;
 using MountAnything.Routing;
 using MountAws.Services.EC2;
+using MountAws.Services.ECS;
 using MountAws.Services.ELBV2;
 
 namespace MountAws;
@@ -36,6 +38,8 @@ public class MountAwsProvider : MountAnythingProvider
                 .UsingConstructor(typeof(AWSCredentials), typeof(RegionEndpoint));
             builder.RegisterType<AmazonElasticLoadBalancingV2Client>().As<IAmazonElasticLoadBalancingV2>()
                 .UsingConstructor(typeof(AWSCredentials), typeof(RegionEndpoint));
+            builder.RegisterType<AmazonECSClient>().As<IAmazonECS>()
+                .UsingConstructor(typeof(AWSCredentials), typeof(RegionEndpoint));
         });
         router.MapRegex<ProfileHandler>("(?<Profile>[a-z0-9-_]+)", profile =>
         {
@@ -61,9 +65,32 @@ public class MountAwsProvider : MountAnythingProvider
                 });
                 region.MapLiteral<EC2Handler>("ec2", ec2 =>
                 {
-                    ec2.MapRegex<EC2InstancesHandler>("instances", instances =>
+                    ec2.MapLiteral<EC2InstancesHandler>("instances", instances =>
                     {
                         instances.Map<EC2InstanceHandler>();
+                    });
+                });
+                region.MapLiteral<ECSRootHandler>("ecs", ecs =>
+                {
+                    ecs.MapLiteral<ClustersHandler>("clusters", clusters =>
+                    {
+                        clusters.Map<ClusterHandler>("CurrentCluster", cluster =>
+                        {
+                            cluster.RegisterServices((match, builder) =>
+                            {
+                                builder.RegisterInstance(new CurrentCluster(match.Values["CurrentCluster"]));
+                            });
+                            cluster.MapLiteral<ServicesHandler>("services", services =>
+                            {
+                                services.Map<ServiceHandler>(service =>
+                                {
+                                    service.MapLiteral<ServiceTasksHandler>("tasks", tasks =>
+                                    {
+                                        tasks.Map<ServiceTaskHandler>();
+                                    });
+                                });
+                            });
+                        });
                     });
                 });
                 region.MapLiteral<ELBV2Handler>("elbv2", elbv2 =>

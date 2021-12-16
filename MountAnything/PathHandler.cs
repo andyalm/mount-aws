@@ -72,7 +72,7 @@ public abstract class PathHandler : IPathHandler
         return Enumerable.Empty<Item>();
     }
 
-    protected abstract bool ExistsImpl();
+    protected virtual bool ExistsImpl() => GetItem() != null;
     protected abstract Item? GetItemImpl();
     protected abstract IEnumerable<Item> GetChildItemsImpl();
 

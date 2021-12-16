@@ -1,6 +1,7 @@
 using Amazon;
 using MountAnything;
 using MountAws.Services.EC2;
+using MountAws.Services.ECS;
 using MountAws.Services.ELBV2;
 
 namespace MountAws;
@@ -30,6 +31,7 @@ public class RegionHandler : PathHandler
     protected override IEnumerable<Item> GetChildItemsImpl()
     {
         yield return EC2Handler.CreateItem(Path);
+        yield return ECSRootHandler.CreateItem(Path);
         yield return ELBV2Handler.CreateItem(Path);
     }
 }
