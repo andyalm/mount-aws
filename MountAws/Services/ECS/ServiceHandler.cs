@@ -2,6 +2,8 @@ using Amazon.ECS;
 using Amazon.ECS.Model;
 using MountAnything;
 
+using static MountAws.PagingHelper;
+
 namespace MountAws.Services.ECS;
 
 public class ServiceHandler : PathHandler
@@ -34,6 +36,30 @@ public class ServiceHandler : PathHandler
 
     protected override IEnumerable<Item> GetChildItemsImpl()
     {
-        yield return ServiceTasksHandler.CreateItem(Path);
+        var taskArns = GetWithPaging(nextToken =>
+        {
+            var response = _ecs.ListTasksAsync(new ListTasksRequest
+            {
+                Cluster = _currentCluster.Name,
+                ServiceName = ItemName,
+                NextToken = nextToken
+            }).GetAwaiter().GetResult();
+
+            return new PaginatedResponse<string>
+            {
+                PageOfResults = response.TaskArns.ToArray(),
+                NextToken = nextToken
+            };
+        });
+
+        return taskArns.Chunk(10).SelectMany(taskArnChunk =>
+        {
+            return _ecs.DescribeTasksAsync(new DescribeTasksRequest
+            {
+                Cluster = _currentCluster.Name,
+                Include = new List<string> { "TAGS" },
+                Tasks = taskArnChunk.ToList()
+            }).GetAwaiter().GetResult().Tasks;
+        }).Select(t => new TaskItem(Path, t));
     }
 }

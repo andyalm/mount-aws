@@ -84,10 +84,7 @@ public class MountAwsProvider : MountAnythingProvider
                             {
                                 services.Map<ServiceHandler>(service =>
                                 {
-                                    service.MapLiteral<ServiceTasksHandler>("tasks", tasks =>
-                                    {
-                                        tasks.Map<ServiceTaskHandler>();
-                                    });
+                                    service.Map<ServiceTaskHandler>();
                                 });
                             });
                         });
