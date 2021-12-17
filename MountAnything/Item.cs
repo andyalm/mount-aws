@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Management.Automation;
 
 namespace MountAnything;
@@ -36,7 +37,7 @@ public abstract class Item
 
     public virtual void CustomizePSObject(PSObject psObject) {}
 
-    public PSObject ToPipelineObject()
+    public PSObject ToPipelineObject(Func<string,string> pathResolver)
     {
         var psObject = new PSObject(UnderlyingObject);
         psObject.TypeNames.Add(TypeName);
@@ -52,8 +53,21 @@ public abstract class Item
             psObject.Properties.Add(new PSNoteProperty("Name", ItemName));
         }
         psObject.Properties.Add(new PSNoteProperty("ItemType", ItemType));
+        foreach (var link in Links)
+        {
+            psObject.Properties.Add(new PSNoteProperty(link.Key, link.Value.ToPipelineObject(pathResolver)));
+        }
+
+        var linkObject = new PSObject();
+        foreach (var link in Links)
+        {
+            linkObject.Properties.Add(new PSNoteProperty(link.Key, pathResolver(link.Value.FullPath)));
+        }
+        psObject.Properties.Add(new PSNoteProperty(nameof(Links), linkObject));
         CustomizePSObject(psObject);
 
         return psObject;
     }
+    
+    public ImmutableDictionary<string,Item> Links { get; protected init; } = ImmutableDictionary<string, Item>.Empty;
 }

@@ -9,10 +9,13 @@ public abstract class PathHandler : IPathHandler
     {
         Path = path;
         Context = context;
+        LinkGenerator = new LinkGenerator(path);
     }
     
     public string Path { get; }
     protected IPathHandlerContext Context { get; }
+    
+    protected LinkGenerator LinkGenerator { get; }
 
     protected Cache Cache => Context.Cache;
     protected void WriteDebug(string message) => Context.WriteDebug(message);

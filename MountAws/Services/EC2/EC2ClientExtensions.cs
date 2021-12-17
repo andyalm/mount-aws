@@ -22,6 +22,22 @@ public static class EC2ClientExtensions
             .SingleOrDefault(t => t.Key.Equals("Name", StringComparison.OrdinalIgnoreCase))?.Value;
     }
 
+    public static IEnumerable<Instance> GetInstancesByIds(this IAmazonEC2 ec2, IEnumerable<string> instanceIds)
+    {
+        var instanceIdList = instanceIds.ToList();
+        if (instanceIdList.Count == 0)
+        {
+            return Enumerable.Empty<Instance>();
+        }
+        
+        var response = ec2.DescribeInstancesAsync(new DescribeInstancesRequest
+            {
+                InstanceIds = instanceIdList
+            }).GetAwaiter().GetResult();
+
+        return response.Reservations.SelectMany(r => r.Instances);
+    }
+
     public static DescribeInstancesRequest ParseFilter(string filterString)
     {
         var request = new DescribeInstancesRequest();

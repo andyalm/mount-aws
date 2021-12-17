@@ -17,6 +17,11 @@ public class Cache
                 _objects[path] = new CachedItem(item);
             }
         }
+
+        foreach (var linkedItem in item.Links.Values)
+        {
+            SetItem(linkedItem);
+        }
     }
 
     public bool TryGetItem(string path, out Item cachedObject)

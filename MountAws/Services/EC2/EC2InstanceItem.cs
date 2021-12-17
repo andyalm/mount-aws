@@ -14,7 +14,7 @@ public class EC2InstanceItem : Item
 
     public override string ItemName => _ec2Instance.InstanceId;
     public override object UnderlyingObject => _ec2Instance;
-    public override string ItemType => "EC2Instance";
+    public override string ItemType => "Instance";
     public override bool IsContainer => false;
 
     public override IEnumerable<string> Aliases

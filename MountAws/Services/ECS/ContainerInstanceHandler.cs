@@ -1,7 +1,8 @@
+using Amazon.EC2;
 using Amazon.ECS;
 using Amazon.ECS.Model;
 using MountAnything;
-
+using MountAws.Services.EC2;
 using static MountAws.PagingHelper;
 
 namespace MountAws.Services.ECS;
@@ -11,11 +12,13 @@ public class ContainerInstanceHandler : PathHandler
     public static List<string> Include = new() { "TAGS", "CONTAINER_INSTANCE_HEALTH" };
 
     private readonly IAmazonECS _ecs;
+    private readonly IAmazonEC2 _ec2;
     private readonly CurrentCluster _currentCluster;
 
-    public ContainerInstanceHandler(string path, IPathHandlerContext context, IAmazonECS ecs, CurrentCluster currentCluster) : base(path, context)
+    public ContainerInstanceHandler(string path, IPathHandlerContext context, IAmazonECS ecs, IAmazonEC2 ec2, CurrentCluster currentCluster) : base(path, context)
     {
         _ecs = ecs;
+        _ec2 = ec2;
         _currentCluster = currentCluster;
     }
 
@@ -34,7 +37,9 @@ public class ContainerInstanceHandler : PathHandler
         }).GetAwaiter().GetResult().ContainerInstances.FirstOrDefault();
         if (containerInstance != null)
         {
-            return new ContainerInstanceItem(ParentPath, containerInstance);
+            var ec2Item = GetEC2Item(containerInstance.Ec2InstanceId);
+            
+            return new ContainerInstanceItem(ParentPath, containerInstance, ec2Item);
         }
 
         return null;
@@ -43,8 +48,29 @@ public class ContainerInstanceHandler : PathHandler
     private Item? GetByEc2InstanceId()
     {
         var containerInstance = _ecs.QueryContainerInstances(_currentCluster.Name, ItemName).FirstOrDefault();
+        if (containerInstance == null)
+        {
+            return null;
+        }
 
-        return containerInstance != null ? new ContainerInstanceItem(ParentPath, containerInstance) : null;
+        var ec2Item = GetEC2Item(containerInstance.Ec2InstanceId);
+        return new ContainerInstanceItem(ParentPath, containerInstance, ec2Item);
+    }
+
+    private EC2InstanceItem? GetEC2Item(string ec2InstanceId)
+    {
+        if (string.IsNullOrEmpty(ec2InstanceId))
+        {
+            return null;
+        }
+        
+        var ec2Instance = _ec2.QueryInstances(ec2InstanceId).SingleOrDefault();
+        if (ec2Instance == null)
+        {
+            return null;
+        }
+        
+        return LinkGenerator.EC2Instance(ec2Instance);
     }
 
     protected override IEnumerable<Item> GetChildItemsImpl()

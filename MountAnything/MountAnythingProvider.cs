@@ -133,7 +133,7 @@ public abstract class MountAnythingProvider : NavigationCmdletProvider, IPathHan
         Cache.SetItem(item);
         var providerPath = ToProviderPath(item.FullPath);
         WriteDebug($"WriteItemObject<{item.TypeName}>(,{providerPath},{item.IsContainer})");
-        WriteItemObject(item.ToPipelineObject(), providerPath, item.IsContainer);
+        WriteItemObject(item.ToPipelineObject(ToFullyQualifiedProviderPath), providerPath, item.IsContainer);
     }
 
     private TReturn? WithPathHandler<TReturn>(string path, Func<IPathHandler,TReturn> action)
@@ -177,6 +177,11 @@ public abstract class MountAnythingProvider : NavigationCmdletProvider, IPathHan
     public string ToProviderPath(string path)
     {
         return $"{ItemSeparator}{path.Replace("/", ItemSeparator.ToString())}";
+    }
+
+    public string ToFullyQualifiedProviderPath(string path)
+    {
+        return $"{PSDriveInfo.Name}:{ToProviderPath(path)}";
     }
 
     protected override void GetChildNames(string path, ReturnContainers returnContainers)
