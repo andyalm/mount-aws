@@ -33,25 +33,15 @@ public class Router : IRouter
         _serviceRegistrations += serviceRegistration;
     }
 
-    public void RouteToHandler(string path, IPathHandlerContext context, Action<IPathHandler> action)
-    {
-        RouteToHandler<object?>(path, context, handler =>
-        {
-            action(handler);
-
-            return null;
-        });
-    }
-
-    public TReturn RouteToHandler<TReturn>(string path, IPathHandlerContext context, Func<IPathHandler,TReturn> action)
+    public (IPathHandler Handler, ILifetimeScope Container) RouteToHandler(string path, IPathHandlerContext context)
     {
         var resolver = GetResolver(path);
-        using var lifetimeScope = _rootContainer.Value.BeginLifetimeScope(resolver.ServiceRegistrations);
+        var lifetimeScope = _rootContainer.Value.BeginLifetimeScope(resolver.ServiceRegistrations);
         var handler = (IPathHandler)lifetimeScope.Resolve(resolver.HandlerType,
             new NamedParameter("path", path),
             new TypedParameter(typeof(IPathHandlerContext), context));
 
-        return action(handler);
+        return (handler, lifetimeScope);
     }
 
     private HandlerResolver GetResolver(string path)

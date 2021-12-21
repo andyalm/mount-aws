@@ -1,3 +1,5 @@
+using System.Management.Automation;
+
 namespace MountAnything;
 
 public interface IPathHandlerContext
@@ -6,4 +8,5 @@ public interface IPathHandlerContext
 
     void WriteDebug(string message);
     bool Force { get; }
+    CommandInvocationIntrinsics InvokeCommand { get; }
 }

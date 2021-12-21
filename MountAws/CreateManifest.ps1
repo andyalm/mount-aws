@@ -18,7 +18,7 @@ New-ModuleManifest -Path $(Join-Path $Directory MountAws.psd1) `
     -Copyright '(c) 2021 Andy Alm. All rights reserved.' `
     -Description 'An experimental powershell provider that allows you to browse various aws services as a filesystem' `
     -PowerShellVersion '7.2' `
-    -FormatsToProcess @('Formats.ps1xml', 'Services/ECS/Formats.ps1xml', 'Services/ELBV2/Formats.ps1xml') `
+    -FormatsToProcess @('Formats.ps1xml', 'Services/ECS/Formats.ps1xml', 'Services/ELBV2/Formats.ps1xml', 'Services/S3/Formats.ps1xml') `
     -RequiredModules @() `
     -FunctionsToExport @() `
     -VariablesToExport @() `

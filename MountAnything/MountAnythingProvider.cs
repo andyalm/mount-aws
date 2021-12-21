@@ -1,10 +1,15 @@
-﻿using System.Management.Automation;
+﻿using System.Collections;
+using System.Management.Automation;
 using System.Management.Automation.Provider;
+using Autofac;
 using Autofac.Core;
+using MountAnything.Content;
 using MountAnything.Routing;
 
 namespace MountAnything;
-public abstract class MountAnythingProvider : NavigationCmdletProvider, IPathHandlerContext
+public abstract class MountAnythingProvider : NavigationCmdletProvider,
+    IPathHandlerContext,
+    IContentCmdletProvider
 {
     private static readonly Cache _cache = new();
     private static Router? _router;
@@ -120,6 +125,21 @@ public abstract class MountAnythingProvider : NavigationCmdletProvider, IPathHan
         return WithPathHandler(path, handler => handler.GetItem()?.IsContainer) ?? false;
     }
 
+    protected override void RemoveItem(string path, bool recurse)
+    {
+        WithPathHandler(path, handler =>
+        {
+            if (handler is IRemoveItemHandler removeItemHandler)
+            {
+                removeItemHandler.RemoveItem();
+            }
+            else
+            {
+                throw new InvalidOperationException($"MountAws does not currently support removing this item");
+            }
+        });
+    }
+
     private void WriteItems<T>(IEnumerable<T> items) where T : Item
     {
         foreach (var item in items)
@@ -136,25 +156,26 @@ public abstract class MountAnythingProvider : NavigationCmdletProvider, IPathHan
         WriteItemObject(item.ToPipelineObject(ToFullyQualifiedProviderPath), providerPath, item.IsContainer);
     }
 
-    private TReturn? WithPathHandler<TReturn>(string path, Func<IPathHandler,TReturn> action)
+    private (IPathHandler Handler, ILifetimeScope Container) GetPathHandler(string path)
     {
         path = ItemPath.Normalize(path);
-        RouteMatch? match = null;
+        return Router.RouteToHandler(path, this);
+    }
+
+    private TReturn? WithPathHandler<TReturn>(string path, Func<IPathHandler,TReturn> action)
+    {
         try
         {
-            return Router.RouteToHandler(path, this, action);
+            var (handler, container) = GetPathHandler(path);
+            using (container)
+            {
+                return action(handler);
+            }
         }
         catch (RoutingException ex)
         {
             WriteDebug($"RoutingException: {ex.Message}");
             return default;
-        }
-        catch (DependencyResolutionException ex) when(match != null)
-        {
-            WriteDebug($"Error creating handler {match.HandlerType.Name} with path {path}");
-            WriteDebug(ex.ToString());
-            WriteError(new ErrorRecord(ex, "2", ErrorCategory.NotSpecified, this));
-            throw;
         }
         catch (Exception ex)
         {
@@ -237,4 +258,54 @@ public abstract class MountAnythingProvider : NavigationCmdletProvider, IPathHan
 
         return returnValue;
     }
+
+    #region Content
+
+    public void ClearContent(string path)
+    {
+        using var contentWriter = GetContentWriter(path);
+        contentWriter.Write(new ArrayList());
+        contentWriter.Close();
+    }
+
+    public object? ClearContentDynamicParameters(string path)
+    {
+        return null;
+    }
+
+    public IContentReader GetContentReader(string path)
+    {
+        var (handler, container) = GetPathHandler(path);
+        if (handler is IContentReaderHandler contentReadHandler)
+        {
+            return new HandlerDisposingProxy(container, contentReadHandler.GetContentReader());
+        }
+
+        container.Dispose();
+        throw new InvalidOperationException("This item does not support reading content");
+    }
+
+    public object? GetContentReaderDynamicParameters(string path)
+    {
+        return null;
+    }
+
+    public IContentWriter GetContentWriter(string path)
+    {
+        var (handler, container) = GetPathHandler(path);
+        if (handler is IContentWriterHandler contentWriteHandler)
+        {
+            return new HandlerDisposingProxy(container, contentWriteHandler.GetContentWriter());
+        }
+
+        container.Dispose();
+        throw new InvalidOperationException("This item does not support writing content");
+    }
+
+    public object? GetContentWriterDynamicParameters(string path)
+    {
+        return null;
+    }
+
+    #endregion
 }
