@@ -7,7 +7,10 @@ using MountAnything.Content;
 
 namespace MountAws.Services.S3;
 
-public class ObjectHandler : PathHandler, IContentReaderHandler, IContentWriterHandler, IRemoveItemHandler
+public class ObjectHandler : PathHandler, IContentReaderHandler,
+    IContentWriterHandler,
+    INewItemHandler,
+    IRemoveItemHandler
 {
     private readonly ObjectPath _objectPath;
     private readonly CurrentBucket _currentBucket;
@@ -57,6 +60,16 @@ public class ObjectHandler : PathHandler, IContentReaderHandler, IContentWriterH
     public IContentWriter GetContentWriter()
     {
         return new ObjectContentWriter(_s3, _currentBucket.Name, _objectPath.Value);
+    }
+
+    public void NewItem(string itemTypeName, object? newItemValue)
+    {
+        _s3.PutObjectAsync(new PutObjectRequest
+        {
+            BucketName = _currentBucket.Name,
+            Key = _objectPath.Value,
+            ContentBody = newItemValue?.ToString()
+        }).GetAwaiter().GetResult();
     }
 
     public void RemoveItem()

@@ -46,7 +46,7 @@ public class HandlerDisposingProxy : IContentReader, IContentWriter
         _writer?.Seek(offset, origin);
     }
     
-    public IList Read(long readCount) => _reader.Read(readCount);
+    public IList Read(long readCount) => _reader!.Read(readCount);
 
-    public IList Write(IList content) => _writer.Write(content);
+    public IList Write(IList content) => _writer!.Write(content);
 }

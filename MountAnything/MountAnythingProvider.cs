@@ -125,6 +125,21 @@ public abstract class MountAnythingProvider : NavigationCmdletProvider,
         return WithPathHandler(path, handler => handler.GetItem()?.IsContainer) ?? false;
     }
 
+    protected override void NewItem(string path, string itemTypeName, object? newItemValue)
+    {
+        WithPathHandler(path, handler =>
+        {
+            if (handler is INewItemHandler newItemHandler)
+            {
+                newItemHandler.NewItem(itemTypeName, newItemValue);
+            }
+            else
+            {
+                throw new InvalidOperationException($"MountAws does not currently support creating this item");
+            }
+        });
+    }
+
     protected override void RemoveItem(string path, bool recurse)
     {
         WithPathHandler(path, handler =>
