@@ -1,17 +1,6 @@
 namespace MountAnything;
 
-public interface IGetChildItemParameters
+public interface IGetChildItemParameters<in T> where T : new()
 {
-    object GetChildItemParameters { get; set; }
-}
-
-public interface IGetChildItemParameters<T> : IGetChildItemParameters where T : notnull
-{
-    object IGetChildItemParameters.GetChildItemParameters
-    {
-        get => GetChildItemParameters;
-        set => GetChildItemParameters = (T)value;
-    }
-
-    new T GetChildItemParameters { get; set; }
+    T GetChildItemParameters { set; }
 }

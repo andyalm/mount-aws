@@ -43,8 +43,8 @@ public class Router : IRouter
 
         return (handler, lifetimeScope);
     }
-
-    private HandlerResolver GetResolver(string path)
+    
+    public HandlerResolver GetResolver(string path)
     {
         if (string.IsNullOrEmpty(path) && _rootHandlerType != null)
         {

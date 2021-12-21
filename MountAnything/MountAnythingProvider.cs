@@ -2,7 +2,6 @@
 using System.Management.Automation;
 using System.Management.Automation.Provider;
 using Autofac;
-using Autofac.Core;
 using MountAnything.Content;
 using MountAnything.Routing;
 
@@ -84,10 +83,7 @@ public abstract class MountAnythingProvider : NavigationCmdletProvider,
         WriteDebug($"GetChildItems({path}, {recurse})");
         WithPathHandler(path, handler =>
         {
-            if (handler is IGetChildItemParameters handlerWithParams)
-            {
-                handlerWithParams.GetChildItemParameters = DynamicParameters;
-            }
+            handler.SetDynamicParameters(typeof(IGetChildItemParameters<>), DynamicParameters);
             var childItems = string.IsNullOrEmpty(Filter)
                 ? handler.GetChildItems(useCache: false)
                 : handler.GetChildItems(Filter);
@@ -97,15 +93,15 @@ public abstract class MountAnythingProvider : NavigationCmdletProvider,
 
     protected override object? GetChildItemsDynamicParameters(string path, bool recurse)
     {
-        return WithPathHandler(path, handler =>
+        try
         {
-            if (handler is IGetChildItemParameters handlerWithParams)
-            {
-                return handlerWithParams.GetChildItemParameters;
-            }
-
+            return GetDynamicParameters(path, typeof(IGetChildItemParameters<>));
+        }
+        catch (Exception ex)
+        {
+            WriteDebug(ex.ToString());
             return null;
-        });
+        }
     }
 
     protected override void GetChildItems(string path, bool recurse, uint depth)
@@ -208,6 +204,14 @@ public abstract class MountAnythingProvider : NavigationCmdletProvider,
 
             return null;
         });
+    }
+    
+    private object? GetDynamicParameters(string path, Type handlerParameterInterface)
+    {
+        path = ItemPath.Normalize(path);
+        var handlerResolver = Router.GetResolver(path);
+
+        return handlerResolver.CreateDynamicParameters(handlerParameterInterface);
     }
     
     public string ToProviderPath(string path)
