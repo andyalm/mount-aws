@@ -13,6 +13,7 @@ using Autofac;
 using MountAnything;
 using MountAnything.Routing;
 using MountAws.Services.EC2;
+using MountAws.Services.ECR;
 using MountAws.Services.ECS;
 using MountAws.Services.ELBV2;
 using MountAws.Services.S3;
@@ -75,6 +76,7 @@ public class MountAwsProvider : MountAnythingProvider
                         instances.Map<EC2InstanceHandler>();
                     });
                 });
+                region.MapECR();
                 region.MapLiteral<ECSRootHandler>("ecs", ecs =>
                 {
                     ecs.MapLiteral<ClustersHandler>("clusters", clusters =>
