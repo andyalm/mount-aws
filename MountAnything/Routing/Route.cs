@@ -22,6 +22,15 @@ public class Route : IRouter
     
     public bool TryGetResolver(string path, out HandlerResolver resolver)
     {
+        foreach (var childRoute in _childRoutes)
+        {
+            if (childRoute.TryGetResolver(path, out var childServiceRegistrations))
+            {
+                resolver = childServiceRegistrations;
+                return true;
+            }
+        }
+        
         var regexMatch = Regex.Match(path);
         if (regexMatch.Success)
         {
@@ -33,15 +42,6 @@ public class Route : IRouter
             };
             resolver = GetResolver(routeMatch);
             return true;
-        }
-
-        foreach (var childRoute in _childRoutes)
-        {
-            if (childRoute.TryGetResolver(path, out var childServiceRegistrations))
-            {
-                resolver = childServiceRegistrations;
-                return true;
-            }
         }
 
         resolver = default!;

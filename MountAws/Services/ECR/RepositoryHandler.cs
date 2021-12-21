@@ -48,6 +48,12 @@ public class RepositoryHandler : PathHandler
 
     protected override IEnumerable<Item> GetChildItemsImpl()
     {
+        var item = GetItem() as RepositoryItem;
+        if (item?.Repository != null)
+        {
+            return new[] { ImageTagsHandler.CreateItem(Path) };
+        }
+        
         return _ecr.GetChildRepositories(Path, _repositoryPath.Value);
     }
 }

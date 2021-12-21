@@ -23,6 +23,10 @@ public static class Routes
                 {
                     builder.RegisterInstance(new RepositoryPath(match.Values["RepositoryPath"]));
                 });
+                repository.MapLiteral<ImageTagsHandler>("image-tags", imageTags =>
+                {
+                    imageTags.Map<ImageTagHandler>();
+                });
             });
         });
     }

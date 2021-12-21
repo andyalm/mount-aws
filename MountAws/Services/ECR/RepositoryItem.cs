@@ -17,9 +17,11 @@ public class RepositoryItem : Item
         ItemName = ItemPath.GetLeaf(repository.RepositoryName);
         UnderlyingObject = repository;
         ItemType = "Repository";
+        Repository = repository;
         RepositoryUri = repository.RepositoryUri;
     }
 
+    public Repository? Repository { get; }
     public override string ItemName { get; }
     public override object UnderlyingObject { get; }
     public override string ItemType { get; }
