@@ -1,17 +1,16 @@
 using System.Collections;
 using System.Management.Automation.Provider;
-using Amazon.S3;
-using Amazon.S3.Model;
+using MountAws.Api.S3;
 
 namespace MountAws.Services.S3;
 
 public class ObjectContentWriter : IContentWriter
 {
-    private readonly IAmazonS3 _s3;
+    private readonly IS3Api _s3;
     private readonly string _bucketName;
     private readonly string _objectKey;
 
-    public ObjectContentWriter(IAmazonS3 s3, string bucketName, string objectKey)
+    public ObjectContentWriter(IS3Api s3, string bucketName, string objectKey)
     {
         _s3 = s3;
         _bucketName = bucketName;
@@ -35,12 +34,7 @@ public class ObjectContentWriter : IContentWriter
 
     public IList Write(IList content)
     {
-        _s3.PutObjectAsync(new PutObjectRequest
-        {
-            BucketName = _bucketName,
-            Key = _objectKey,
-            ContentBody = string.Join(Environment.NewLine, content.Cast<string>()),
-        }).GetAwaiter().GetResult();
+        _s3.PutObject(_bucketName, _objectKey, string.Join(Environment.NewLine, content.Cast<string>()));
 
         return content;
     }

@@ -1,38 +1,26 @@
-using Amazon.S3.Model;
+using System.Management.Automation;
 using MountAnything;
+using MountAws.Api;
 
 namespace MountAws.Services.S3;
 
-public class ObjectItem : Item
+public class ObjectItem : AwsItem
 {
-    private readonly object _object;
-    
-    public ObjectItem(string parentPath, S3Object @object) : base(parentPath)
+    public ObjectItem(string parentPath, PSObject s3Object) : base(parentPath, s3Object)
     {
-        _object = @object;
-        ItemName = ItemPath.GetLeaf(@object.Key);
+        ItemName = ItemPath.GetLeaf(s3Object.Property<string>("Key")!);
         ItemType = "File";
         IsContainer = false;
     }
     
-    public ObjectItem(string parentPath, GetObjectResponse response) : base(parentPath)
+    public ObjectItem(string parentPath, string prefix) : base(parentPath, new PSObject())
     {
-        _object = response;
-        ItemName = ItemPath.GetLeaf(response.Key);
-        ItemType = "File";
-        IsContainer = false;
-    }
-    
-    public ObjectItem(string parentPath, string prefix) : base(parentPath)
-    {
-        _object = new { };
         ItemName = ItemPath.GetLeaf(prefix.TrimEnd('/'));
         ItemType = "Directory";
         IsContainer = true;
     }
 
     public override string ItemName { get; }
-    public override object UnderlyingObject => _object;
     public override string ItemType { get; }
     public override string TypeName => "MountAws.Services.S3.ObjectItem";
     public override bool IsContainer { get; }

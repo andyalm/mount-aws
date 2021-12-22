@@ -1,17 +1,17 @@
-using Amazon.S3;
-using Amazon.S3.Model;
 using MountAnything;
+using MountAws.Api.S3;
+using ListObjectsRequest = MountAws.Api.S3.ListObjectsRequest;
 
 namespace MountAws.Services.S3;
 
 public static class S3ClientExtensions
 {
-    public static IEnumerable<Item> ListChildItems(this IAmazonS3 s3,
+    public static IEnumerable<Item> ListChildItems(this IS3Api s3,
         string bucketName, string parentPath,
         string? prefix = null,
         int? maxResults = null)
     {
-        var request = new ListObjectsV2Request
+        var request = new ListObjectsRequest
         {
             Delimiter = "/",
             BucketName = bucketName,
@@ -21,9 +21,8 @@ public static class S3ClientExtensions
         {
             request.MaxKeys = maxResults.Value;
         }
-        var response = s3.ListObjectsV2Async(request)
-            .GetAwaiter()
-            .GetResult();
+
+        var response = s3.ListObjects(request);
 
         foreach (var commonPrefix in response.CommonPrefixes)
         {

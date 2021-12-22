@@ -1,5 +1,3 @@
-using System.Management.Automation;
-using Amazon.S3.Model;
 using MountAnything;
 
 namespace MountAws.Services.S3;

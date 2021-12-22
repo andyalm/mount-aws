@@ -1,12 +1,12 @@
-using Amazon.S3;
 using MountAnything;
+using MountAws.Api.S3;
 using MountAws.Services.Core;
 
 namespace MountAws.Services.S3;
 
 public class BucketsHandler : PathHandler
 {
-    private readonly IAmazonS3 _s3;
+    private readonly IS3Api _s3;
 
     public static Item CreateItem(string parentPath)
     {
@@ -14,7 +14,7 @@ public class BucketsHandler : PathHandler
             "The s3 buckets in the current account/region");
     }
     
-    public BucketsHandler(string path, IPathHandlerContext context, IAmazonS3 s3) : base(path, context)
+    public BucketsHandler(string path, IPathHandlerContext context, IS3Api s3) : base(path, context)
     {
         _s3 = s3;
     }
@@ -26,10 +26,7 @@ public class BucketsHandler : PathHandler
 
     protected override IEnumerable<Item> GetChildItemsImpl()
     {
-        return _s3.ListBucketsAsync()
-            .GetAwaiter()
-            .GetResult()
-            .Buckets
-            .Select(b => new BucketItem(Path, b.BucketName));
+        return _s3.ListBuckets()
+            .Select(b => new BucketItem(Path, b));
     }
 }

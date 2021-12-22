@@ -1,6 +1,3 @@
-using Amazon.Internal;
-using Amazon.Runtime;
-using Amazon.S3;
 using Autofac;
 using MountAnything.Routing;
 

@@ -8,7 +8,6 @@ using Amazon.ElasticLoadBalancingV2;
 using Amazon.Internal;
 using Amazon.Runtime;
 using Amazon.Runtime.CredentialManagement;
-using Amazon.S3;
 using Autofac;
 using MountAnything;
 using MountAnything.Routing;
@@ -45,8 +44,6 @@ public class MountAwsProvider : MountAnythingProvider
             builder.RegisterType<AmazonElasticLoadBalancingV2Client>().As<IAmazonElasticLoadBalancingV2>()
                 .UsingConstructor(typeof(AWSCredentials), typeof(RegionEndpoint));
             builder.RegisterType<AmazonECSClient>().As<IAmazonECS>()
-                .UsingConstructor(typeof(AWSCredentials), typeof(RegionEndpoint));
-            builder.RegisterType<AmazonS3Client>().As<IAmazonS3>()
                 .UsingConstructor(typeof(AWSCredentials), typeof(RegionEndpoint));
         });
         router.MapRegex<ProfileHandler>("(?<Profile>[a-z0-9-_]+)", profile =>
