@@ -1,30 +1,32 @@
 using Amazon;
-using Amazon.Runtime.CredentialManagement;
 using MountAnything;
+using MountAws.Api;
 
 namespace MountAws;
 
 public class ProfileHandler : PathHandler
 {
-    private readonly CredentialProfile _profile;
+    private readonly ICoreApi _api;
+    private readonly CurrentProfile _currentProfile;
 
-    public ProfileHandler(string path, IPathHandlerContext context, CredentialProfile profile) : base(path, context)
+    public ProfileHandler(string path, IPathHandlerContext context, ICoreApi api, CurrentProfile currentProfile) : base(path, context)
     {
-        _profile = profile;
-    }
-
-    protected override bool ExistsImpl()
-    {
-        return GetItem() != null;
+        _api = api;
+        _currentProfile = currentProfile;
     }
 
     protected override Item? GetItemImpl()
     {
-        return new AwsProfile(_profile);
+        if(_api.TryGetProfile(_currentProfile.Value, out var profile))
+        {
+            return new ProfileItem(profile);
+        }
+
+        return null;
     }
 
     protected override IEnumerable<Item> GetChildItemsImpl()
     {
-        return RegionEndpoint.EnumerableAllRegions.Select(e => new AwsRegion(Path, e));
+        return _api.ListRegions().Select(r => new RegionItem(Path, r));
     }
 }

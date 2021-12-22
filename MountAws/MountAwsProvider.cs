@@ -12,6 +12,7 @@ using Amazon.S3;
 using Autofac;
 using MountAnything;
 using MountAnything.Routing;
+using MountAws.Api;
 using MountAws.Services.EC2;
 using MountAws.Services.ECR;
 using MountAws.Services.ECS;
@@ -36,6 +37,7 @@ public class MountAwsProvider : MountAnythingProvider
         var router = Router.Create<ProfilesHandler>();
         router.RegisterServices(builder =>
         {
+            builder.RegisterInstance(new CurrentRegion("us-east-1"));
             builder.RegisterInstance<RegionEndpoint>(RegionEndpoint.USEast1);
             builder.RegisterInstance<AWSCredentials>(new AnonymousAWSCredentials());
             builder.RegisterType<AmazonEC2Client>().As<IAmazonEC2>()
@@ -53,6 +55,7 @@ public class MountAwsProvider : MountAnythingProvider
             profile.RegisterServices((match, builder) =>
             {
                 var profileName = match.Values["Profile"];
+                builder.RegisterInstance(new CurrentProfile(profileName));
                 if (chain.TryGetProfile(profileName, out var awsProfile))
                 {
                     builder.RegisterInstance(awsProfile);
@@ -67,6 +70,7 @@ public class MountAwsProvider : MountAnythingProvider
                 region.RegisterServices((match, builder) =>
                 {
                     var regionName = match.Values["Region"];
+                    builder.RegisterInstance(new CurrentRegion(regionName));
                     builder.Register<RegionEndpoint>(c => RegionEndpoint.GetBySystemName(regionName));
                 });
                 region.MapLiteral<EC2Handler>("ec2", ec2 =>

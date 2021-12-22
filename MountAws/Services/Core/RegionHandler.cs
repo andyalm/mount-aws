@@ -1,5 +1,6 @@
 using Amazon;
 using MountAnything;
+using MountAws.Api;
 using MountAws.Services.EC2;
 using MountAws.Services.ECR;
 using MountAws.Services.ECS;
@@ -10,23 +11,20 @@ namespace MountAws;
 
 public class RegionHandler : PathHandler
 {
-    public RegionHandler(string path, IPathHandlerContext context) : base(path, context)
-    {
-    }
+    private readonly ICoreApi _api;
 
-    protected override bool ExistsImpl()
+    public RegionHandler(string path, IPathHandlerContext context, ICoreApi api) : base(path, context)
     {
-        return GetItem() != null;
+        _api = api;
     }
 
     protected override Item? GetItemImpl()
     {
-        var regionEndpoint = RegionEndpoint.GetBySystemName(ItemName);
-        if (regionEndpoint != null && (regionEndpoint.SystemName == "global" || regionEndpoint.DisplayName != "Unknown"))
+        if (_api.TryGetRegion(ItemName, out var region) && region.Property<string>("DisplayName") != "Unknown")
         {
-            return new AwsRegion(ParentPath, regionEndpoint);
+            return new RegionItem(ParentPath, region);
         }
-
+        
         return null;
     }
 
