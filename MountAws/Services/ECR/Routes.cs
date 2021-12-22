@@ -1,6 +1,3 @@
-using Amazon;
-using Amazon.ECR;
-using Amazon.Runtime;
 using Autofac;
 using MountAnything.Routing;
 
@@ -12,11 +9,6 @@ public static class Routes
     {
         route.MapLiteral<ECRRootHandler>("ecr", ecr =>
         {
-            ecr.RegisterServices((match, builder) =>
-            {
-                builder.RegisterType<AmazonECRClient>().As<IAmazonECR>()
-                    .UsingConstructor(typeof(AWSCredentials), typeof(RegionEndpoint));
-            });
             ecr.MapRegex<RepositoryHandler>(@"(?<RepositoryPath>.+)", repository =>
             {
                 repository.RegisterServices((match, builder) =>

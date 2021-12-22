@@ -1,24 +1,22 @@
-using Amazon.ECR;
-using Amazon.ECR.Model;
+using System.Management.Automation;
 using MountAnything;
+using MountAws.Api;
+using MountAws.Api.Ecr;
 using static MountAws.PagingHelper;
 
 namespace MountAws.Services.ECR;
 
 public static class ECRClientExtensions
 {
-    public static IEnumerable<RepositoryItem> GetChildRepositories(this IAmazonECR ecr, string parentPath, string? prefix = null)
+    public static IEnumerable<RepositoryItem> GetChildRepositories(this IEcrApi ecr, string parentPath, string? prefix = null)
     {
         var allRepositories = GetWithPaging(nextToken =>
         {
-            var response = ecr.DescribeRepositoriesAsync(new DescribeRepositoriesRequest
-            {
-                NextToken = nextToken
-            }).GetAwaiter().GetResult();
+            var response = ecr.DescribeRepositories(nextToken);
 
-            return new PaginatedResponse<Repository>
+            return new PaginatedResponse<PSObject>
             {
-                PageOfResults = response.Repositories.ToArray(),
+                PageOfResults = response.Repositories,
                 NextToken = response.NextToken
             };
         });
@@ -26,10 +24,10 @@ public static class ECRClientExtensions
         {
             return allRepositories.Select(r =>
             {
-                if (r.RepositoryName.Contains(ItemPath.Separator))
+                if (r.Property<string>("RepositoryName")!.Contains(ItemPath.Separator))
                 {
                     return new RepositoryItem(parentPath,
-                        r.RepositoryName.Split(ItemPath.Separator.ToString()).First());
+                        r.Property<string>("RepositoryName")!.Split(ItemPath.Separator.ToString()).First());
                 }
                 else
                 {
@@ -38,10 +36,10 @@ public static class ECRClientExtensions
             }).DistinctBy(r => r.ItemName);
         }
 
-        return allRepositories.Where(r => r.RepositoryName.StartsWith($"{prefix}{ItemPath.Separator}"))
+        return allRepositories.Where(r => r.Property<string>("RepositoryName")!.StartsWith($"{prefix}{ItemPath.Separator}"))
             .Select(r =>
             {
-                var itemName = r.RepositoryName.Substring(prefix.Length + 1);
+                var itemName = r.Property<string>("RepositoryName")!.Substring(prefix.Length + 1);
                 if (itemName.Contains(ItemPath.Separator))
                 {
                     return new RepositoryItem(parentPath, itemName.Split(ItemPath.Separator.ToString()).First());

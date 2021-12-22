@@ -1,6 +1,6 @@
-using Amazon.ECR;
-using Amazon.ECR.Model;
+using System.Management.Automation;
 using MountAnything;
+using MountAws.Api.Ecr;
 using MountAws.Services.Core;
 
 using static MountAws.PagingHelper;
@@ -15,10 +15,10 @@ public class ImageTagsHandler : PathHandler
             "Navigate the docker image tags for this repository");
     }
     
-    private readonly IAmazonECR _ecr;
+    private readonly IEcrApi _ecr;
     private readonly RepositoryPath _repositoryPath;
 
-    public ImageTagsHandler(string path, IPathHandlerContext context, IAmazonECR ecr, RepositoryPath repositoryPath) : base(path, context)
+    public ImageTagsHandler(string path, IPathHandlerContext context, IEcrApi ecr, RepositoryPath repositoryPath) : base(path, context)
     {
         _ecr = ecr;
         _repositoryPath = repositoryPath;
@@ -33,28 +33,20 @@ public class ImageTagsHandler : PathHandler
     {
         var repositoryHandler = new RepositoryHandler(ParentPath, Context, _ecr, _repositoryPath);
         var repositoryItem = repositoryHandler.GetItem() as RepositoryItem;
-        if (repositoryItem?.Repository == null)
+        if (repositoryItem?.ItemType != "Repository")
         {
             return Enumerable.Empty<Item>();
         }
         
         return GetWithPaging(nextToken =>
         {
-            var response = _ecr.ListImagesAsync(new ListImagesRequest
-            {
-                RepositoryName = _repositoryPath.Value,
-                NextToken = nextToken,
-                Filter = new ListImagesFilter
-                {
-                    TagStatus = TagStatus.TAGGED
-                }
-            }).GetAwaiter().GetResult();
+            var response = _ecr.ListTaggedImages(_repositoryPath.Value, nextToken);
 
-            return new PaginatedResponse<ImageIdentifier>
+            return new PaginatedResponse<PSObject>
             {
-                PageOfResults = response.ImageIds.ToArray(),
+                PageOfResults = response.ImageIds,
                 NextToken = response.NextToken
             };
-        }).Select(i => new ImageTagItem(Path, repositoryItem.Repository, i));
+        }).Select(i => new ImageTagItem(Path, repositoryItem.Object, i));
     }
 }

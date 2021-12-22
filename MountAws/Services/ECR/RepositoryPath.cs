@@ -1,16 +1,8 @@
+using MountAws.Api;
+
 namespace MountAws.Services.ECR;
 
-public class RepositoryPath
+public class RepositoryPath : TypedString
 {
-    public string Value { get; }
-    
-    public RepositoryPath(string value)
-    {
-        Value = value;
-    }
-
-    public override string ToString()
-    {
-        return Value;
-    }
+    public RepositoryPath(string value) : base(value) { }
 }

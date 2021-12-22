@@ -1,15 +1,15 @@
-using Amazon.ECR;
-using Amazon.ECR.Model;
+using System.Management.Automation;
 using MountAnything;
+using MountAws.Api.Ecr;
 
 namespace MountAws.Services.ECR;
 
 public class RepositoryHandler : PathHandler
 {
-    private readonly IAmazonECR _ecr;
+    private readonly IEcrApi _ecr;
     private readonly RepositoryPath _repositoryPath;
 
-    public RepositoryHandler(string path, IPathHandlerContext context, IAmazonECR ecr, RepositoryPath repositoryPath) : base(path, context)
+    public RepositoryHandler(string path, IPathHandlerContext context, IEcrApi ecr, RepositoryPath repositoryPath) : base(path, context)
     {
         _ecr = ecr;
         _repositoryPath = repositoryPath;
@@ -17,15 +17,12 @@ public class RepositoryHandler : PathHandler
 
     protected override Item? GetItemImpl()
     {
-        Repository? repository = null;
+        PSObject? repository = null;
         try
         {
-            repository = _ecr.DescribeRepositoriesAsync(new DescribeRepositoriesRequest
-            {
-                RepositoryNames = new List<string>{_repositoryPath.Value}
-            }).GetAwaiter().GetResult().Repositories.SingleOrDefault();
+            repository = _ecr.DescribeRepository(_repositoryPath.Value);
         }
-        catch (RepositoryNotFoundException ex)
+        catch (Api.Ecr.RepositoryNotFoundException ex)
         {
             WriteDebug(ex.ToString());
         }
@@ -49,7 +46,7 @@ public class RepositoryHandler : PathHandler
     protected override IEnumerable<Item> GetChildItemsImpl()
     {
         var item = GetItem() as RepositoryItem;
-        if (item?.Repository != null)
+        if (item?.ItemType == EcrItemTypes.Repository)
         {
             return new[] { ImageTagsHandler.CreateItem(Path) };
         }

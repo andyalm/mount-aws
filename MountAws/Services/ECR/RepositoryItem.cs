@@ -1,29 +1,24 @@
-using Amazon.ECR.Model;
+using System.Management.Automation;
 using MountAnything;
+using MountAws.Api;
 
 namespace MountAws.Services.ECR;
 
-public class RepositoryItem : Item
+public class RepositoryItem : AwsItem
 {
-    public RepositoryItem(string parentPath, string prefix) : base(parentPath)
+    public RepositoryItem(string parentPath, string prefix) : base(parentPath, new PSObject())
     {
         ItemName = prefix;
-        UnderlyingObject = new { };
         ItemType = "Directory";
     }
 
-    public RepositoryItem(string parentPath, Repository repository) : base(parentPath)
+    public RepositoryItem(string parentPath, PSObject repository) : base(parentPath, repository)
     {
-        ItemName = ItemPath.GetLeaf(repository.RepositoryName);
-        UnderlyingObject = repository;
+        ItemName = ItemPath.GetLeaf(repository.Property<string>("RepositoryName")!);
         ItemType = "Repository";
-        Repository = repository;
-        RepositoryUri = repository.RepositoryUri;
+        RepositoryUri = repository.Property<string>(nameof(RepositoryUri));
     }
-
-    public Repository? Repository { get; }
     public override string ItemName { get; }
-    public override object UnderlyingObject { get; }
     public override string ItemType { get; }
     public override string TypeName => typeof(RepositoryItem).FullName!;
     public override bool IsContainer => true;
