@@ -31,17 +31,15 @@ public class ImageTagsHandler : PathHandler
 
     protected override IEnumerable<Item> GetChildItemsImpl()
     {
-        WriteDebug("ImageTagsHandler.GetChildItems");
         var repositoryHandler = new RepositoryHandler(ParentPath, Context, _ecr, _repositoryPath);
         var repositoryItem = repositoryHandler.GetItem() as RepositoryItem;
-        // if (repositoryItem?.Repository == null)
-        // {
-        //     return Enumerable.Empty<Item>();
-        // }
+        if (repositoryItem?.Repository == null)
+        {
+            return Enumerable.Empty<Item>();
+        }
         
         return GetWithPaging(nextToken =>
         {
-            WriteDebug($"ListImages({_repositoryPath.Value})");
             var response = _ecr.ListImagesAsync(new ListImagesRequest
             {
                 RepositoryName = _repositoryPath.Value,
