@@ -4,19 +4,19 @@ using MountAws.Api;
 
 namespace MountAws.Services.S3;
 
-public class ObjectItem : AwsItem
+public class ObjectItem : Item
 {
     public ObjectItem(string parentPath, PSObject s3Object) : base(parentPath, s3Object)
     {
         ItemName = ItemPath.GetLeaf(s3Object.Property<string>("Key")!);
-        ItemType = "File";
+        ItemType = S3ItemTypes.File;
         IsContainer = false;
     }
     
     public ObjectItem(string parentPath, string prefix) : base(parentPath, new PSObject())
     {
         ItemName = ItemPath.GetLeaf(prefix.TrimEnd('/'));
-        ItemType = "Directory";
+        ItemType = S3ItemTypes.Directory;
         IsContainer = true;
     }
 

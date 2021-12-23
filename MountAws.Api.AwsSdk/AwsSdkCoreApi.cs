@@ -1,6 +1,7 @@
 ﻿using System.Management.Automation;
 using Amazon;
 using Amazon.Runtime.CredentialManagement;
+using MountAnything;
 
 namespace MountAws.Api.AwsSdk;
 public class AwsSdkCoreApi : ICoreApi

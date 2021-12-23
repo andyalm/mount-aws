@@ -1,10 +1,9 @@
-using Amazon;
 using MountAnything;
 using MountAws.Api;
-using MountAws.Services.EC2;
-using MountAws.Services.ECR;
-using MountAws.Services.ECS;
-using MountAws.Services.ELBV2;
+using MountAws.Services.Ec2;
+using MountAws.Services.Ecr;
+using MountAws.Services.Ecs;
+using MountAws.Services.Elbv2;
 using MountAws.Services.S3;
 
 namespace MountAws;
@@ -30,8 +29,8 @@ public class RegionHandler : PathHandler
 
     protected override IEnumerable<Item> GetChildItemsImpl()
     {
-        yield return EC2Handler.CreateItem(Path);
-        yield return ECRRootHandler.CreateItem(Path);
+        yield return Ec2RootHandler.CreateItem(Path);
+        yield return EcrRootHandler.CreateItem(Path);
         yield return ECSRootHandler.CreateItem(Path);
         yield return Elbv2RootHandler.CreateItem(Path);
         yield return S3RootHandler.CreateItem(Path);

@@ -1,8 +1,9 @@
 using System.Management.Automation;
+using MountAnything;
 
 namespace MountAws;
 
-public class RegionItem : AwsItem
+public class RegionItem : Item
 {
     public RegionItem(string parentPath, PSObject regionEndpoint) :  base(parentPath, regionEndpoint)
     {

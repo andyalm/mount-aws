@@ -4,6 +4,12 @@ namespace MountAws.Api.Ecr;
 
 public class DescribeRepositoriesResponse
 {
-    public PSObject[] Repositories { get; init; }
-    public string NextToken { get; init; }
+    public DescribeRepositoriesResponse(IEnumerable<PSObject> repositories, string? nextToken)
+    {
+        Repositories = repositories.ToArray();
+        NextToken = nextToken;
+    }
+
+    public PSObject[] Repositories { get; }
+    public string? NextToken { get; }
 }

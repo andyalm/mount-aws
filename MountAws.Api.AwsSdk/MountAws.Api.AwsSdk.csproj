@@ -8,6 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MountAnything\MountAnything.csproj" />
     <ProjectReference Include="..\MountAws.Api\MountAws.Api.csproj" />
   </ItemGroup>
   

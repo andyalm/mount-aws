@@ -1,6 +1,7 @@
 using System.Management.Automation;
 using Amazon.ECR;
 using Amazon.ECR.Model;
+using MountAnything;
 using MountAws.Api.Ecr;
 using DescribeRepositoriesResponse = MountAws.Api.Ecr.DescribeRepositoriesResponse;
 using ListImagesResponse = MountAws.Api.Ecr.ListImagesResponse;
@@ -39,11 +40,10 @@ public class AwsSdkEcrApi : IEcrApi
             NextToken = nextToken
         }).GetAwaiter().GetResult();
 
-        return new DescribeRepositoriesResponse
-        {
-            Repositories = response.Repositories.ToPSObjects().ToArray(),
-            NextToken = response.NextToken
-        };
+        return new DescribeRepositoriesResponse(
+            response.Repositories.ToPSObjects(),
+            response.NextToken
+        );
     }
 
     public ListImagesResponse ListTaggedImages(string repositoryName, string? nextToken = null)

@@ -1,10 +1,9 @@
 using System.Management.Automation;
-using Amazon.Runtime.CredentialManagement;
 using MountAnything;
 
 namespace MountAws;
 
-public class ProfileItem : AwsItem
+public class ProfileItem : Item
 {
     public ProfileItem(PSObject profile) : base(string.Empty, profile)
     {

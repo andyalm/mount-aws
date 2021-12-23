@@ -2,7 +2,7 @@ using System.Management.Automation;
 using MountAws.Api.Elbv2;
 using DescribeTargetGroupsRequest = MountAws.Api.Elbv2.DescribeTargetGroupsRequest;
 
-namespace MountAws.Services.ELBV2;
+namespace MountAws.Services.Elbv2;
 
 public static class Elbv2ApiExtensions
 {

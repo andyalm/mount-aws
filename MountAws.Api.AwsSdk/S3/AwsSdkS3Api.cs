@@ -2,6 +2,7 @@ using System.Management.Automation;
 using System.Net;
 using Amazon.S3;
 using Amazon.S3.Model;
+using MountAnything;
 using MountAws.Api.S3;
 using ListObjectsRequest = MountAws.Api.S3.ListObjectsRequest;
 using ListObjectsResponse = MountAws.Api.S3.ListObjectsResponse;

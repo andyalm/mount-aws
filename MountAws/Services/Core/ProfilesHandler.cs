@@ -1,4 +1,3 @@
-using Amazon.Runtime.CredentialManagement;
 using MountAnything;
 using MountAws.Api;
 
