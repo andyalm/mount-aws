@@ -4,6 +4,12 @@ namespace MountAws.Api.S3;
 
 public class ListObjectsResponse
 {
-    public string[] CommonPrefixes { get; init; }
-    public PSObject[] S3Objects { get; init; }
+    public ListObjectsResponse(string[] commonPrefixes, PSObject[] s3Objects)
+    {
+        CommonPrefixes = commonPrefixes;
+        S3Objects = s3Objects;
+    }
+
+    public string[] CommonPrefixes { get; }
+    public PSObject[] S3Objects { get; }
 }

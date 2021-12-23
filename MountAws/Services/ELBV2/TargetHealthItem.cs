@@ -1,31 +1,37 @@
 using System.Management.Automation;
-using Amazon.ElasticLoadBalancingV2.Model;
-using MountAnything;
+using MountAws.Api;
 
 namespace MountAws.Services.ELBV2;
 
-public class TargetHealthItem : Item
+public class TargetHealthItem : AwsItem
 {
-    public TargetHealthDescription TargetHealth { get; }
-
-    public TargetHealthItem(string parentPath, TargetHealthDescription targetHealth) : base(parentPath)
+    private PSObject Target { get; }
+    private PSObject? TargetHealth { get; }
+    public TargetHealthItem(string parentPath, PSObject targetHealth) : base(parentPath, targetHealth)
     {
-        TargetHealth = targetHealth;
-    }
-    
-    public override string ItemName => TargetHealth.Target.Port > 0
-        ? $"{TargetHealth.Target.Id}:{TargetHealth.Target.Port}"
-        : TargetHealth.Target.Id.Replace("/", "|");
+        Target = Property<PSObject>("Target")!;
+        if (Target.Property<int>("Port") > 0)
+        {
+            ItemName = $"{Target.Property<string>("Id")}:{Target.Property<int>("Port")}";
+            Port = Target.Property<string>("Port");
+        }
+        else
+        {
+            ItemName = Target.Property<string>("Id")!.Replace("/", "|");
+        }
 
-    public override object UnderlyingObject => TargetHealth;
+        TargetHealth = Property<PSObject>("TargetHealth");
+    }
+
+    public override string ItemName { get; }
     public override string ItemType => "Target";
     public override bool IsContainer => false;
 
-    public string Id => TargetHealth.Target.Id;
-    public string? Port => TargetHealth.Target.Port > 0 ? TargetHealth.Target.Port.ToString() : null;
-    public string? HealthStatus => TargetHealth.TargetHealth?.State?.Value;
-    public string? HealthReason => TargetHealth.TargetHealth?.Reason?.Value;
-    public string? HealthDescription => TargetHealth.TargetHealth?.Description;
+    public string Id => Target.Property<string>("Id")!;
+    public string? Port { get; }
+    public string? HealthStatus => TargetHealth?.Property<object>("State")?.ToString();
+    public string? HealthReason => TargetHealth?.Property<object>("Reason")?.ToString();
+    public string? HealthDescription => TargetHealth?.Property<string>("Description");
 
     public override void CustomizePSObject(PSObject psObject)
     {

@@ -96,10 +96,9 @@ public class AwsSdkS3Api : IS3Api
             .GetAwaiter()
             .GetResult();
 
-        return new ListObjectsResponse
-        {
-            CommonPrefixes = sdkResponse.CommonPrefixes.ToArray(),
-            S3Objects = sdkResponse.S3Objects.ToPSObjects().ToArray()
-        };
+        return new ListObjectsResponse(
+            sdkResponse.CommonPrefixes.ToArray(),
+            sdkResponse.S3Objects.ToPSObjects().ToArray()
+        );
     }
 }

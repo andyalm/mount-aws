@@ -1,13 +1,15 @@
-using Amazon.ElasticLoadBalancingV2;
-using Amazon.ElasticLoadBalancingV2.Model;
+using System.Management.Automation;
 using MountAnything;
+using MountAws.Api.Elbv2;
 using MountAws.Services.Core;
+
+using static MountAws.PagingHelper;
 
 namespace MountAws.Services.ELBV2;
 
 public class LoadBalancersHandler : PathHandler
 {
-    private readonly IAmazonElasticLoadBalancingV2 _elbv2;
+    private readonly IElbv2Api _elbv2;
 
     public static Item CreateItem(string parentPath)
     {
@@ -15,7 +17,7 @@ public class LoadBalancersHandler : PathHandler
             "List and filter the load balancers within the current account and region");
     }
     
-    public LoadBalancersHandler(string path, IPathHandlerContext context, IAmazonElasticLoadBalancingV2 elbv2) : base(path, context)
+    public LoadBalancersHandler(string path, IPathHandlerContext context, IElbv2Api elbv2) : base(path, context)
     {
         _elbv2 = elbv2;
     }
@@ -32,8 +34,15 @@ public class LoadBalancersHandler : PathHandler
 
     protected override IEnumerable<Item> GetChildItemsImpl()
     {
-        var request = new DescribeLoadBalancersRequest();
-        var response = _elbv2.DescribeLoadBalancersAsync(request).GetAwaiter().GetResult();
-        return response.LoadBalancers.Select(lb => new LoadBalancerItem(Path, lb));
+        return GetWithPaging(nextToken =>
+            {
+                var response = _elbv2.DescribeLoadBalancers(nextToken);
+
+                return new PaginatedResponse<PSObject>
+                {
+                    PageOfResults = response.LoadBalancers,
+                    NextToken = response.NextToken
+                };
+            }).Select(lb => new LoadBalancerItem(Path, lb));
     }
 }

@@ -4,6 +4,12 @@ namespace MountAws.Api.Ecr;
 
 public class ListImagesResponse
 {
-    public PSObject[] ImageIds { get; init; }
-    public string NextToken { get; init; }
+    public ListImagesResponse(PSObject[] imageIds, string nextToken)
+    {
+        ImageIds = imageIds;
+        NextToken = nextToken;
+    }
+
+    public PSObject[] ImageIds { get;  }
+    public string NextToken { get; }
 }

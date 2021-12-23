@@ -1,20 +1,15 @@
-using Amazon.ElasticLoadBalancingV2;
 using MountAnything;
+using MountAws.Api.Elbv2;
 
 namespace MountAws.Services.ELBV2;
 
 public class TargetHealthHandler : PathHandler
 {
-    private readonly IAmazonElasticLoadBalancingV2 _elbv2;
+    private readonly IElbv2Api _elbv2;
 
-    public TargetHealthHandler(string path, IPathHandlerContext context, IAmazonElasticLoadBalancingV2 elbv2) : base(path, context)
+    public TargetHealthHandler(string path, IPathHandlerContext context, IElbv2Api elbv2) : base(path, context)
     {
         _elbv2 = elbv2;
-    }
-
-    protected override bool ExistsImpl()
-    {
-        return GetItem() != null;
     }
 
     protected override Item? GetItemImpl()

@@ -1,16 +1,15 @@
-using Action = Amazon.ElasticLoadBalancingV2.Model.Action;
+using System.Management.Automation;
 
 namespace MountAws.Services.ELBV2;
 
 public class DefaultActionItem : ActionItem
 {
-    public DefaultActionItem(string parentPath, Action action) : base(parentPath, action)
+    public DefaultActionItem(string parentPath, PSObject action) : base(parentPath, action)
     {
     }
 
-    public override string ItemName => Action.Type;
-    public override string ItemType => "Action";
+    public override string ItemName => Property<string>("Type")!;
+    public override string ItemType => Elbv2ItemTypes.Action;
     public override bool IsContainer => false;
-    
-    public override string Description => Action.Type;
+    public override string Description => Property<string>("Type")!;
 }

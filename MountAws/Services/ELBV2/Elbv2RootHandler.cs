@@ -3,7 +3,7 @@ using MountAws.Services.Core;
 
 namespace MountAws.Services.ELBV2;
 
-public class ELBV2Handler : PathHandler
+public class Elbv2RootHandler : PathHandler
 {
     public static Item CreateItem(string parentPath)
     {
@@ -11,7 +11,7 @@ public class ELBV2Handler : PathHandler
             "Navigate load balancers and associated objects");
     }
     
-    public ELBV2Handler(string path, IPathHandlerContext context) : base(path, context)
+    public Elbv2RootHandler(string path, IPathHandlerContext context) : base(path, context)
     {
     }
 

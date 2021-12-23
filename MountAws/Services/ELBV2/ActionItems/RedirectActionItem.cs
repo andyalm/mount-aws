@@ -1,20 +1,19 @@
 using System.Management.Automation;
 using System.Text;
-using Amazon.ElasticLoadBalancingV2.Model;
-using Action = Amazon.ElasticLoadBalancingV2.Model.Action;
+using MountAws.Api;
 
 namespace MountAws.Services.ELBV2;
 
 public class RedirectActionItem : ActionItem
 {
-    public RedirectActionItem(string parentPath, Action action) : base(parentPath, action)
+    public RedirectActionItem(string parentPath, PSObject action) : base(parentPath, action)
     {
-        RedirectLocation = BuildRedirectLocation(action.RedirectConfig);
+        RedirectLocation = BuildRedirectLocation(action.Property<PSObject>("RedirectConfig")!);
     }
 
     public string RedirectLocation { get; }
-    public override string ItemName => Action.Type.ToString();
-    public override string ItemType => "RedirectAction";
+    public override string ItemName => Property<string>("Type")!;
+    public override string ItemType => Elbv2ItemTypes.RedirectAction;
     public override bool IsContainer => false;
     public override string Description => $"Redirects to {RedirectLocation}";
 
@@ -24,30 +23,30 @@ public class RedirectActionItem : ActionItem
         psObject.Properties.Add(new PSNoteProperty(nameof(RedirectLocation), RedirectLocation));
     }
 
-    public string BuildRedirectLocation(RedirectActionConfig redirectConfig)
+    public string BuildRedirectLocation(PSObject redirectConfig)
     {
         var builder = new StringBuilder();
-        if (!string.IsNullOrEmpty(redirectConfig.Host))
+        if (!string.IsNullOrEmpty(redirectConfig.Property<string>("Host")))
         {
-            builder.Append($"{redirectConfig.Protocol.ToLower()}://");
-            builder.Append(redirectConfig.Host);
+            builder.Append($"{redirectConfig.Property<string>("Protocol")!.ToLower()}://");
+            builder.Append(redirectConfig.Property<string>("Host"));
         }
 
-        if (!string.IsNullOrEmpty(redirectConfig.Port))
+        if (!string.IsNullOrEmpty(redirectConfig.Property<string>("Port")))
         {
             builder.Append(':');
-            builder.Append(redirectConfig.Port);
+            builder.Append(redirectConfig.Property<string>("Port"));
         }
 
-        if (!string.IsNullOrEmpty(redirectConfig.Path))
+        if (!string.IsNullOrEmpty(redirectConfig.Property<string>("Path")))
         {
-            builder.Append(redirectConfig.Path);
+            builder.Append(redirectConfig.Property<string>("Path"));
         }
 
-        if (!string.IsNullOrEmpty(redirectConfig.Query))
+        if (!string.IsNullOrEmpty(redirectConfig.Property<string>("Query")))
         {
             builder.Append("?");
-            builder.Append(redirectConfig.Query);
+            builder.Append(redirectConfig.Property<string>("Query"));
         }
 
         return builder.ToString();

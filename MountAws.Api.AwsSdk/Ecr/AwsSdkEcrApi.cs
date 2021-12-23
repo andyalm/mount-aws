@@ -58,10 +58,9 @@ public class AwsSdkEcrApi : IEcrApi
             NextToken = nextToken
         }).GetAwaiter().GetResult();
 
-        return new ListImagesResponse
-        {
-            ImageIds = response.ImageIds.ToPSObjects().ToArray(),
-            NextToken = response.NextToken
-        };
+        return new ListImagesResponse(
+            response.ImageIds.ToPSObjects().ToArray(),
+            response.NextToken
+        );
     }
 }

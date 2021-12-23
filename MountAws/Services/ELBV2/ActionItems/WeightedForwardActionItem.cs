@@ -1,17 +1,19 @@
-using Amazon.ElasticLoadBalancingV2;
-using Amazon.ElasticLoadBalancingV2.Model;
+using System.Management.Automation;
 using MountAnything;
-using Action = Amazon.ElasticLoadBalancingV2.Model.Action;
+using MountAws.Api;
+using MountAws.Api.Elbv2;
 
 namespace MountAws.Services.ELBV2;
 
 public class WeightedForwardActionItem : ActionItem
 {
-    public WeightedForwardActionItem(string parentPath, Action action) : base(parentPath, action)
+    public WeightedForwardActionItem(string parentPath, PSObject action) : base(parentPath, action)
     {
-        WeightedTargetGroups = action.ForwardConfig.TargetGroups.ToArray();
-        WeightDescriptions = action.ForwardConfig.TargetGroups
-            .Select(t => $"{t.Weight}:${ELBV2Extensions.TargetGroupName(t.TargetGroupArn)}")
+        WeightedTargetGroups = action.Property<PSObject>("ForwardConfig")!
+            .Property<IEnumerable<PSObject>>("TargetGroups")!
+            .ToArray();
+        WeightDescriptions = WeightedTargetGroups
+            .Select(t => $"{t.Property<string>("Weight")}:${Elbv2ApiExtensions.TargetGroupName(t.Property<string>("TargetGroupArn")!)}")
             .ToArray();
     }
 
@@ -21,12 +23,12 @@ public class WeightedForwardActionItem : ActionItem
 
     public override string Description => $"Forward with weights {string.Join(",", WeightDescriptions)}";
     
-    public TargetGroupTuple[] WeightedTargetGroups { get; }
+    public PSObject[] WeightedTargetGroups { get; }
     public string[] WeightDescriptions { get; }
 
-    public override IEnumerable<Item> GetChildren(IAmazonElasticLoadBalancingV2 elbv2)
+    public override IEnumerable<Item> GetChildren(IElbv2Api elbv2)
     {
         return WeightedTargetGroups.Select(t =>
-            new WeightedTargetGroupItem(FullPath, elbv2.GetTargetGroup(t.TargetGroupArn), t.Weight));
+            new WeightedTargetGroupItem(FullPath, elbv2.GetTargetGroup(t.Property<string>("TargetGroupArn")!), t.Property<int>("Weight")));
     }
 }

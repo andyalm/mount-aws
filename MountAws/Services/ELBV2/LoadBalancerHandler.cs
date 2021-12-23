@@ -1,14 +1,14 @@
-using Amazon.ElasticLoadBalancingV2;
-using Amazon.ElasticLoadBalancingV2.Model;
 using MountAnything;
+using MountAws.Api.Elbv2;
+using LoadBalancerNotFoundException = MountAws.Api.Elbv2.LoadBalancerNotFoundException;
 
 namespace MountAws.Services.ELBV2;
 
 public class LoadBalancerHandler : PathHandler
 {
-    private readonly IAmazonElasticLoadBalancingV2 _elbv2;
+    private readonly IElbv2Api _elbv2;
 
-    public LoadBalancerHandler(string path, IPathHandlerContext context, IAmazonElasticLoadBalancingV2 elbv2) : base(path, context)
+    public LoadBalancerHandler(string path, IPathHandlerContext context, IElbv2Api elbv2) : base(path, context)
     {
         _elbv2 = elbv2;
     }
@@ -20,26 +20,27 @@ public class LoadBalancerHandler : PathHandler
 
     protected override Item? GetItemImpl()
     {
-        var loadBalancer = _elbv2.GetLoadBalancer(ItemName);
-        if (loadBalancer != null)
+        try
         {
+            var loadBalancer = _elbv2.DescribeLoadBalancer(ItemName);
             return new LoadBalancerItem(ParentPath, loadBalancer);
         }
-        
-        return null;
+        catch (LoadBalancerNotFoundException)
+        {
+            return null;
+        }
     }
 
     protected override IEnumerable<Item> GetChildItemsImpl()
     {
-        var loadBalancer = ((LoadBalancerItem)GetItem()!).LoadBalancer;
-        var request = new DescribeListenersRequest
+        var loadBalancerItem = GetItem() as LoadBalancerItem;
+        if (loadBalancerItem == null)
         {
-            LoadBalancerArn = loadBalancer.LoadBalancerArn
-        };
-        var response = _elbv2.DescribeListenersAsync(request).GetAwaiter().GetResult();
-
-        return response.Listeners
+            return Enumerable.Empty<Item>();
+        }
+        
+        return _elbv2.DescribeListeners(loadBalancerItem.LoadBalancerArn)
             .Select(l => new ListenerItem(Path, l))
-            .OrderBy(l => l.Listener.Port);
+            .OrderBy(l => l.Port);
     }
 }

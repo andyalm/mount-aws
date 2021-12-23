@@ -33,7 +33,7 @@ public class RegionHandler : PathHandler
         yield return EC2Handler.CreateItem(Path);
         yield return ECRRootHandler.CreateItem(Path);
         yield return ECSRootHandler.CreateItem(Path);
-        yield return ELBV2Handler.CreateItem(Path);
+        yield return Elbv2RootHandler.CreateItem(Path);
         yield return S3RootHandler.CreateItem(Path);
     }
 }

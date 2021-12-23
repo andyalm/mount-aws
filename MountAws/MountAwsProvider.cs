@@ -4,8 +4,6 @@ using System.Management.Automation.Provider;
 using Amazon;
 using Amazon.EC2;
 using Amazon.ECS;
-using Amazon.ElasticLoadBalancingV2;
-using Amazon.Internal;
 using Amazon.Runtime;
 using Amazon.Runtime.CredentialManagement;
 using Autofac;
@@ -40,8 +38,6 @@ public class MountAwsProvider : MountAnythingProvider
             builder.RegisterInstance<RegionEndpoint>(RegionEndpoint.USEast1);
             builder.RegisterInstance<AWSCredentials>(new AnonymousAWSCredentials());
             builder.RegisterType<AmazonEC2Client>().As<IAmazonEC2>()
-                .UsingConstructor(typeof(AWSCredentials), typeof(RegionEndpoint));
-            builder.RegisterType<AmazonElasticLoadBalancingV2Client>().As<IAmazonElasticLoadBalancingV2>()
                 .UsingConstructor(typeof(AWSCredentials), typeof(RegionEndpoint));
             builder.RegisterType<AmazonECSClient>().As<IAmazonECS>()
                 .UsingConstructor(typeof(AWSCredentials), typeof(RegionEndpoint));
@@ -105,7 +101,7 @@ public class MountAwsProvider : MountAnythingProvider
                         });
                     });
                 });
-                region.MapLiteral<ELBV2Handler>("elbv2", elbv2 =>
+                region.MapLiteral<Elbv2RootHandler>("elbv2", elbv2 =>
                 {
                     elbv2.MapLiteral<LoadBalancersHandler>("load-balancers", loadBalancers =>
                     {

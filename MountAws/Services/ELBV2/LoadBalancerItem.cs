@@ -1,19 +1,13 @@
-using Amazon.ElasticLoadBalancingV2.Model;
-using MountAnything;
+using System.Management.Automation;
 
 namespace MountAws.Services.ELBV2;
 
-public class LoadBalancerItem : Item
+public class LoadBalancerItem : AwsItem
 {
-    public LoadBalancer LoadBalancer { get; }
+    public LoadBalancerItem(string parentPath, PSObject loadBalancer) : base(parentPath, loadBalancer) {}
 
-    public LoadBalancerItem(string parentPath, LoadBalancer loadBalancer) : base(parentPath)
-    {
-        LoadBalancer = loadBalancer;
-    }
-
-    public override string ItemName => LoadBalancer.LoadBalancerName;
-    public override object UnderlyingObject => LoadBalancer;
-    public override string ItemType => "LoadBalancer";
+    public override string ItemName => Property<string>("LoadBalancerName")!;
+    public override string ItemType => Elbv2ItemTypes.LoadBalancer;
     public override bool IsContainer => true;
+    public string LoadBalancerArn => Property<string>(nameof(LoadBalancerArn))!;
 }

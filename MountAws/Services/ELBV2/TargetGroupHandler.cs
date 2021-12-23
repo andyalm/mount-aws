@@ -1,32 +1,29 @@
-using Amazon.ElasticLoadBalancingV2;
-using Amazon.ElasticLoadBalancingV2.Model;
 using MountAnything;
+using MountAws.Api.Elbv2;
+using TargetGroupNotFoundException = MountAws.Api.Elbv2.TargetGroupNotFoundException;
 
 namespace MountAws.Services.ELBV2;
 
 public class TargetGroupHandler : PathHandler
 {
-    private readonly IAmazonElasticLoadBalancingV2 _elbv2;
+    private readonly IElbv2Api _elbv2;
 
-    public TargetGroupHandler(string path, IPathHandlerContext context, IAmazonElasticLoadBalancingV2 elbv2) : base(path, context)
+    public TargetGroupHandler(string path, IPathHandlerContext context, IElbv2Api elbv2) : base(path, context)
     {
         _elbv2 = elbv2;
     }
 
-    protected override bool ExistsImpl()
-    {
-        return GetItem() != null;
-    }
-
     protected override Item? GetItemImpl()
     {
-        var targetGroup = _elbv2.GetTargetGroup(ItemName);
-        if (targetGroup != null)
+        try
         {
+            var targetGroup = _elbv2.GetTargetGroup(ItemName);
             return new TargetGroupItem(ParentPath, targetGroup);
         }
-
-        return null;
+        catch (TargetGroupNotFoundException)
+        {
+            return null;
+        }
     }
 
     protected override IEnumerable<Item> GetChildItemsImpl()
@@ -36,11 +33,6 @@ public class TargetGroupHandler : PathHandler
         {
             return Enumerable.Empty<Item>();
         }
-        var response = _elbv2.DescribeTargetHealthAsync(new DescribeTargetHealthRequest
-        {
-            TargetGroupArn = targetGroupItem.TargetGroup.TargetGroupArn,
-        }).GetAwaiter().GetResult();
-
-        return response.TargetHealthDescriptions.Select(d => new TargetHealthItem(Path, d));
+        return _elbv2.DescribeTargetHealth(targetGroupItem.TargetGroupArn).Select(d => new TargetHealthItem(Path, d));
     }
 }

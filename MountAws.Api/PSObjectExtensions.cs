@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Management.Automation;
 
 namespace MountAws.Api;
@@ -25,6 +26,16 @@ public static class PSObjectExtensions
         if (rawValue is T typedValue)
         {
             return typedValue;
+        }
+
+        if (typeof(T) == typeof(PSObject))
+        {
+            return (T)(object)rawValue.ToPSObject();
+        }
+
+        if (typeof(IEnumerable<PSObject>).IsAssignableFrom(typeof(T)) && rawValue is IEnumerable enumerable)
+        {
+            return (T)enumerable.Cast<object>().ToPSObjects();
         }
 
         return (T)Convert.ChangeType(rawValue, typeof(T));
