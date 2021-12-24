@@ -3,7 +3,7 @@
     <View>
       <Name>ECRRepository</Name>
       <ViewSelectedBy>
-        <TypeName>MountAws.Services.ECR.RepositoryItem</TypeName>
+        <TypeName>MountAws.Services.Ecr.RepositoryItem</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>

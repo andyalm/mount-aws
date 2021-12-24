@@ -34,7 +34,7 @@
     <View>
       <Name>MountAwsAction</Name>
       <ViewSelectedBy>
-        <TypeName>MountAws.Services.ELBV2.ActionItem</TypeName>
+        <TypeName>MountAws.Services.Elbv2.ActionItem</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>
