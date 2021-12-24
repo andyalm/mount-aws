@@ -1,9 +1,7 @@
 using System.Management.Automation.Provider;
-using System.Net;
-using Amazon.S3;
-using Amazon.S3.Model;
 using MountAnything;
 using MountAnything.Content;
+using MountAws.Api.S3;
 
 namespace MountAws.Services.S3;
 
@@ -14,9 +12,9 @@ public class ObjectHandler : PathHandler, IContentReaderHandler,
 {
     private readonly ObjectPath _objectPath;
     private readonly CurrentBucket _currentBucket;
-    private readonly IAmazonS3 _s3;
+    private readonly IS3Api _s3;
     
-    public ObjectHandler(string path, IPathHandlerContext context, ObjectPath objectPath, CurrentBucket currentBucket, IAmazonS3 s3) : base(path, context)
+    public ObjectHandler(string path, IPathHandlerContext context, ObjectPath objectPath, CurrentBucket currentBucket, IS3Api s3) : base(path, context)
     {
         _objectPath = objectPath;
         _currentBucket = currentBucket;
@@ -27,15 +25,11 @@ public class ObjectHandler : PathHandler, IContentReaderHandler,
     {
         try
         {
-            var response = _s3.GetObjectAsync(new GetObjectRequest
-            {
-                BucketName = _currentBucket.Name,
-                Key = _objectPath.Value
-            }).GetAwaiter().GetResult();
+            var response = _s3.GetObject(_currentBucket.Name, _objectPath.Value);
 
             return new ObjectItem(ParentPath, response);
         }
-        catch (AmazonS3Exception ex) when(ex.StatusCode == HttpStatusCode.NotFound || ex.StatusCode == HttpStatusCode.Forbidden)
+        catch (ObjectNotFoundException)
         {
             var children = _s3.ListChildItems(_currentBucket.Name, ParentPath, $"{_objectPath.Value}/", maxResults: 1);
             if (children.Any())
@@ -64,22 +58,11 @@ public class ObjectHandler : PathHandler, IContentReaderHandler,
 
     public void NewItem(string itemTypeName, object? newItemValue)
     {
-        _s3.PutObjectAsync(new PutObjectRequest
-        {
-            BucketName = _currentBucket.Name,
-            Key = _objectPath.Value,
-            ContentBody = newItemValue?.ToString()
-        }).GetAwaiter().GetResult();
+        _s3.PutObject(_currentBucket.Name, _objectPath.Value, newItemValue?.ToString());
     }
 
     public void RemoveItem()
     {
-        _s3.DeleteObjectAsync(new DeleteObjectRequest
-        {
-            BucketName = _currentBucket.Name,
-            Key = _objectPath.Value
-        }).GetAwaiter().GetResult();
+        _s3.DeleteObject(_currentBucket.Name, _objectPath.Value);
     }
-
-    
 }

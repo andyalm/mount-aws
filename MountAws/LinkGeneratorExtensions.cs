@@ -1,16 +1,17 @@
+using System.Management.Automation;
 using MountAnything;
-using MountAws.Services.EC2;
+using MountAws.Services.Ec2;
 
 namespace MountAws;
 
 public static class LinkGeneratorExtensions
 {
-    public static EC2InstanceItem EC2Instance(this LinkGenerator linkGenerator, Amazon.EC2.Model.Instance instance)
+    public static InstanceItem EC2Instance(this LinkGenerator linkGenerator, PSObject instance)
     {
         var ec2ServicePath = linkGenerator.EC2ServicePath();
         var parentPath = ItemPath.Combine(ec2ServicePath, "instances");
 
-        return new EC2InstanceItem(parentPath, instance);
+        return new InstanceItem(parentPath, instance);
     }
 
     private static string EC2ServicePath(this LinkGenerator linkGenerator)

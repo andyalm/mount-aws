@@ -1,41 +1,38 @@
-using Amazon;
 using MountAnything;
-using MountAws.Services.EC2;
-using MountAws.Services.ECR;
-using MountAws.Services.ECS;
-using MountAws.Services.ELBV2;
+using MountAws.Api;
+using MountAws.Services.Ec2;
+using MountAws.Services.Ecr;
+using MountAws.Services.Ecs;
+using MountAws.Services.Elbv2;
 using MountAws.Services.S3;
 
 namespace MountAws;
 
 public class RegionHandler : PathHandler
 {
-    public RegionHandler(string path, IPathHandlerContext context) : base(path, context)
-    {
-    }
+    private readonly ICoreApi _api;
 
-    protected override bool ExistsImpl()
+    public RegionHandler(string path, IPathHandlerContext context, ICoreApi api) : base(path, context)
     {
-        return GetItem() != null;
+        _api = api;
     }
 
     protected override Item? GetItemImpl()
     {
-        var regionEndpoint = RegionEndpoint.GetBySystemName(ItemName);
-        if (regionEndpoint != null && (regionEndpoint.SystemName == "global" || regionEndpoint.DisplayName != "Unknown"))
+        if (_api.TryGetRegion(ItemName, out var region) && region.Property<string>("DisplayName") != "Unknown")
         {
-            return new AwsRegion(ParentPath, regionEndpoint);
+            return new RegionItem(ParentPath, region);
         }
-
+        
         return null;
     }
 
     protected override IEnumerable<Item> GetChildItemsImpl()
     {
-        yield return EC2Handler.CreateItem(Path);
-        yield return ECRRootHandler.CreateItem(Path);
+        yield return Ec2RootHandler.CreateItem(Path);
+        yield return EcrRootHandler.CreateItem(Path);
         yield return ECSRootHandler.CreateItem(Path);
-        yield return ELBV2Handler.CreateItem(Path);
+        yield return Elbv2RootHandler.CreateItem(Path);
         yield return S3RootHandler.CreateItem(Path);
     }
 }

@@ -1,26 +1,20 @@
 using System.Management.Automation;
-using Amazon.S3.Model;
 using MountAnything;
 
 namespace MountAws.Services.S3;
 
 public class BucketItem : Item
 {
-    private readonly string _bucketName;
-
-    public BucketItem(string parentPath, string bucketName) : base(parentPath)
+    public BucketItem(string parentPath, string bucketName) : base(parentPath, new PSObject(new
     {
-        _bucketName = bucketName;
-        UnderlyingObject = new
-        {
-            BucketName = _bucketName
-        };
+        BucketName = bucketName
+    }))
+    {
+        ItemName = bucketName;
     }
 
-    public override string ItemName => _bucketName;
-    public override object UnderlyingObject { get; }
-
+    public override string ItemName { get; }
     public override string TypeName => "MountAws.Services.S3.BucketItem";
-    public override string ItemType => "Bucket";
+    public override string ItemType => S3ItemTypes.Bucket;
     public override bool IsContainer => true;
 }

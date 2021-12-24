@@ -3,20 +3,20 @@ using System.Management.Automation;
 
 namespace MountAnything;
 
-public abstract class Item
+public abstract class Item<T> where T : class
 {
-    protected Item(string parentPath)
+    protected Item(string parentPath, T underlyingObject)
     {
         ParentPath = parentPath;
+        UnderlyingObject = underlyingObject;
     }
     
     public string ParentPath { get; }
 
     public string FullPath => ItemPath.Combine(ParentPath, ItemName);
     public abstract string ItemName { get; }
-    public abstract object UnderlyingObject { get; }
     public abstract string ItemType { get; }
-    
+    public T UnderlyingObject { get; }
     public abstract bool IsContainer { get; }
 
     public virtual string TypeName => UnderlyingObject.GetType().FullName!;
@@ -70,4 +70,18 @@ public abstract class Item
     }
     
     public ImmutableDictionary<string,Item> Links { get; protected init; } = ImmutableDictionary<string, Item>.Empty;
+}
+
+public abstract class Item : Item<PSObject>
+{
+    protected Item(string parentPath, PSObject underlyingObject) : base(parentPath, underlyingObject)
+    {
+    }
+
+    public override string ItemType => UnderlyingObject.TypeNames.First();
+    
+    protected T? Property<T>(string name)
+    {
+        return UnderlyingObject.Property<T>(name);
+    }
 }

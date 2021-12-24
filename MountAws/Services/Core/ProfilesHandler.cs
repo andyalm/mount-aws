@@ -1,12 +1,15 @@
-using Amazon.Runtime.CredentialManagement;
 using MountAnything;
+using MountAws.Api;
 
 namespace MountAws;
 
 public class ProfilesHandler : PathHandler
 {
-    public ProfilesHandler(string path, IPathHandlerContext context) : base(path, context)
+    private readonly ICoreApi _coreApi;
+
+    public ProfilesHandler(string path, IPathHandlerContext context, ICoreApi coreApi) : base(path, context)
     {
+        _coreApi = coreApi;
     }
 
     protected override bool ExistsImpl()
@@ -21,7 +24,6 @@ public class ProfilesHandler : PathHandler
 
     protected override IEnumerable<Item> GetChildItemsImpl()
     {
-        var c = new CredentialProfileStoreChain();
-        return c.ListProfiles().Select(p => new AwsProfile(p));
+        return _coreApi.ListProfiles().Select(p => new ProfileItem(p));
     }
 }
