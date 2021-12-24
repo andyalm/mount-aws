@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Management.Automation;
 using System.Management.Automation.Provider;
+using System.Reflection;
 using Autofac;
 using MountAnything;
 using MountAnything.Routing;
@@ -15,6 +16,8 @@ namespace MountAws;
 [CmdletProvider("MountAws", ProviderCapabilities.ExpandWildcards | ProviderCapabilities.Filter)]
 public class MountAwsProvider : MountAnythingProvider
 {
+    
+    
     protected override Collection<PSDriveInfo> InitializeDefaultDrives()
     {
         return new Collection<PSDriveInfo>
@@ -26,10 +29,20 @@ public class MountAwsProvider : MountAnythingProvider
 
     public override Router CreateRouter()
     {
+        var apiAssembly = LoadApiAssembly();
+        
         var router = Router.Create<ProfilesHandler>();
         router.RegisterServices(builder =>
         {
             builder.RegisterInstance(new CurrentRegion("us-east-1"));
+            var registrars = apiAssembly.GetTypes()
+                .Where(t => typeof(IApiServiceRegistrar).IsAssignableFrom(t) && !t.IsAbstract)
+                .Select(Activator.CreateInstance)
+                .Cast<IApiServiceRegistrar>();
+            foreach (var registrar in registrars)
+            {
+                registrar.Register(builder);
+            }
         });
         router.MapRegex<ProfileHandler>("(?<Profile>[a-z0-9-_]+)", profile =>
         {
@@ -59,5 +72,16 @@ public class MountAwsProvider : MountAnythingProvider
         });
 
         return router;
+    }
+
+    private Assembly LoadApiAssembly()
+    {
+        var modulePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
+        var apiAssemblyDir = Path.Combine(modulePath, "AwsSdk");
+        var assemblyLoadContext = new AwsApiAssemblyLoadContext(apiAssemblyDir);
+
+        // proactively load AWSSDK.SecurityToken so refreshable credentials work
+        assemblyLoadContext.LoadFromAssemblyName(new AssemblyName("AWSSDK.SecurityToken"));
+        return assemblyLoadContext.LoadFromAssemblyName(new AssemblyName("MountAws.Api.AwsSdk"));
     }
 }

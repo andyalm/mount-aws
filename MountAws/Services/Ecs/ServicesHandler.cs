@@ -32,7 +32,7 @@ public class ServicesHandler : PathHandler
     {
         var serviceArns = GetWithPaging(nextToken =>
         {
-            var response = _ecs.ListServices(_currentCluster.Name);
+            var response = _ecs.ListServices(_currentCluster.Name, nextToken);
 
             return new PaginatedResponse<string>
             {

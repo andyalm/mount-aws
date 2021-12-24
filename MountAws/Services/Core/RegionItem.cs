@@ -10,7 +10,7 @@ public class RegionItem : Item
         
     }
 
-    public override string ItemName => Property<string>("SystemEndpoint")!;
+    public override string ItemName => Property<string>("SystemName")!;
     public override string ItemType => "Region";
     public override bool IsContainer => true;
 }
