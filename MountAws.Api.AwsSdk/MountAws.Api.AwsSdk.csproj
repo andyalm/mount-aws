@@ -24,7 +24,8 @@
 
   <Target Name="CopyToMountAwsOutput" AfterTargets="Build">
     <ItemGroup>
-      <AwsSdkDependency Include="$(OutputPath)\*.*" />
+      <AwsSdkDependency Include="$(OutputPath)\AWSSDK.*" />
+      <AwsSdkDependency Include="$(OutputPath)\MountAws.Api.AwsSdk.dll" />
     </ItemGroup>
     <Copy SourceFiles="@(AwsSdkDependency)" DestinationFolder="$(MSBuildProjectDirectory)\..\MountAws\bin\$(Configuration)\$(TargetFramework)\AwsSdk\" />
   </Target>

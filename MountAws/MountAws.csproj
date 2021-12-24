@@ -32,6 +32,10 @@
   </Target>
 
   <Target Name="CopyModuleToPublishOutput" AfterTargets="Publish">
+    <ItemGroup>
+      <AwsSdkDependency Include="$(OutputPath)\AwsSdk\*.*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(AwsSdkDependency)" DestinationFolder="$(PublishDir)\AwsSdk\" />
     <Exec Command="pwsh CreateManifest.ps1 $(PublishDir)" WorkingDirectory="$(MSBuildProjectDirectory)" />
   </Target>
 
