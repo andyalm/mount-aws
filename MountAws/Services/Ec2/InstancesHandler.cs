@@ -41,5 +41,5 @@ public class InstancesHandler : PathHandler
             .Select(instance => new InstanceItem(Path, instance));
     }
 
-    public override bool CacheChildren => false;
+    protected override bool CacheChildren => false;
 }

@@ -32,7 +32,7 @@ public class InstanceHandler : PathHandler, IRemoveItemHandler
 
     public void RemoveItem()
     {
-        var item = GetItem();
+        var item = GetItem(Freshness.Fastest);
         if (item == null)
         {
             throw new InvalidOperationException($"Instance '{ItemName}' does not exist");

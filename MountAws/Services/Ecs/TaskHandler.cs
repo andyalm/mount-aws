@@ -18,8 +18,8 @@ public class TaskHandler : PathHandler, IRemoveItemHandler, IRemoveItemParameter
     protected override IItem? GetItemImpl()
     {
         var task = _ecs.DescribeTasks(_currentCluster.Name,
-            new[] { "TAGS" },
-            new[] { ItemName }).SingleOrDefault();
+            new[] { ItemName },
+            new[] { "TAGS" }).SingleOrDefault();
 
         if (task != null)
         {

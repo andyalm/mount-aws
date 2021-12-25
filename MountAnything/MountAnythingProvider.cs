@@ -64,7 +64,7 @@ public abstract class MountAnythingProvider : NavigationCmdletProvider,
         {
             WithPathHandler(path, handler =>
             {
-                var item = handler.GetItem();
+                var item = handler.GetItem(handler.GetItemDefaultFreshness);
                 if (item != null)
                 {
                     WriteItem(item);
@@ -85,7 +85,7 @@ public abstract class MountAnythingProvider : NavigationCmdletProvider,
         {
             handler.SetDynamicParameters(typeof(IGetChildItemParameters<>), DynamicParameters);
             var childItems = string.IsNullOrEmpty(Filter)
-                ? handler.GetChildItems(useCache: false)
+                ? handler.GetChildItems(handler.GetChildItemsDefaultFreshness)
                 : handler.GetChildItems(Filter);
             WriteItems(childItems);
         });
@@ -112,13 +112,13 @@ public abstract class MountAnythingProvider : NavigationCmdletProvider,
     protected override bool HasChildItems(string path)
     {
         WriteDebug($"HasChildItems({path})");
-        return WithPathHandler<bool?>(path, handler => handler.GetChildItems(useCache: true).Any()) ?? false;
+        return WithPathHandler<bool?>(path, handler => handler.GetChildItems(Freshness.Fastest).Any()) ?? false;
     }
 
     protected override bool IsItemContainer(string path)
     {
         WriteDebug($"IsItemContainer({path})");
-        return WithPathHandler(path, handler => handler.GetItem()?.IsContainer) ?? false;
+        return WithPathHandler(path, handler => handler.GetItem(Freshness.Fastest)?.IsContainer) ?? false;
     }
 
     protected override void NewItem(string path, string itemTypeName, object? newItemValue)

@@ -1,4 +1,3 @@
-using System.Management.Automation;
 using System.Text.RegularExpressions;
 
 namespace MountAnything;
@@ -33,9 +32,10 @@ public abstract class PathHandler : IPathHandler
         return ExistsImpl();
     }
 
-    public IItem? GetItem()
+    public IItem? GetItem(Freshness? freshness = null)
     {
-        if (!Context.Force && Cache.TryGetItem(Path, out var cachedItem))
+        freshness ??= Freshness.Default;
+        if (freshness.ConsiderCache(Context.Force) && Cache.TryGetItem(Path, out var cachedItem))
         {
             return cachedItem;
         }
@@ -50,16 +50,17 @@ public abstract class PathHandler : IPathHandler
         return item;
     }
 
-    public IEnumerable<IItem> GetChildItems(bool useCache = false)
+    public IEnumerable<IItem> GetChildItems(Freshness? freshness = null)
     {
-        if (useCache && CacheChildren && !Context.Force && Cache.TryGetChildItems(Path, out var cachedChildItems))
+        freshness ??= Freshness.Default;
+        if (CacheChildren && freshness.ConsiderCache(Context.Force) && Cache.TryGetChildItems(Path, out var cachedChildItems))
         {
             WriteDebug($"True Cache.TryGetChildItems({Path})");
             return cachedChildItems;
         }
         WriteDebug($"False Cache.TryGetChildItems({Path})");
 
-        var item = GetItem();
+        var item = GetItem(Freshness.Default);
         if (item != null)
         {
             var childItems = GetChildItemsImpl().ToArray();
@@ -75,16 +76,18 @@ public abstract class PathHandler : IPathHandler
         return Enumerable.Empty<IItem>();
     }
 
-    protected virtual bool ExistsImpl() => GetItem() != null;
+    protected virtual bool ExistsImpl() => GetItem(Freshness.Fastest) != null;
     protected abstract IItem? GetItemImpl();
     protected abstract IEnumerable<IItem> GetChildItemsImpl();
 
-    public virtual bool CacheChildren => true;
+    protected virtual bool CacheChildren => true;
+    public virtual Freshness GetItemDefaultFreshness => Freshness.Guaranteed;
+    public virtual Freshness GetChildItemsDefaultFreshness => Freshness.Guaranteed;
 
     public virtual IEnumerable<IItem> GetChildItems(string filter)
     {
         var pathMatcher = new Regex("^" + Regex.Escape(ItemPath.Combine(Path, filter)).Replace(@"\*", ".*") + "$", RegexOptions.IgnoreCase);
-        return GetChildItems(useCache: true)
+        return GetChildItems(Freshness.Default)
             .Where(i => pathMatcher.IsMatch(i.FullPath));
     }
 }

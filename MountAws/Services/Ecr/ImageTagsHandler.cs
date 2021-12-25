@@ -32,7 +32,7 @@ public class ImageTagsHandler : PathHandler
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         var repositoryHandler = new RepositoryHandler(ParentPath, Context, _ecr, _repositoryPath);
-        var repositoryItem = repositoryHandler.GetItem() as RepositoryItem;
+        var repositoryItem = repositoryHandler.GetItem(Freshness.Default) as RepositoryItem;
         if (repositoryItem?.ItemType != EcrItemTypes.Repository)
         {
             return Enumerable.Empty<Item>();

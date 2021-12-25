@@ -17,7 +17,7 @@ public class ImageTagHandler : PathHandler
     protected override IItem? GetItemImpl()
     {
         var parentHandler = new ImageTagsHandler(ParentPath, Context, _ecr, _repositoryPath);
-        return parentHandler.GetChildItems()
+        return parentHandler.GetChildItems(Freshness.Default)
             .FirstOrDefault(i => i.ItemName.Equals(ItemName, StringComparison.OrdinalIgnoreCase));
     }
 
