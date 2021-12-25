@@ -14,7 +14,7 @@ public class ProfileHandler : PathHandler
         _currentProfile = currentProfile;
     }
 
-    protected override Item? GetItemImpl()
+    protected override IItem? GetItemImpl()
     {
         if(_api.TryGetProfile(_currentProfile.Value, out var profile))
         {
@@ -24,7 +24,7 @@ public class ProfileHandler : PathHandler
         return null;
     }
 
-    protected override IEnumerable<Item> GetChildItemsImpl()
+    protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         return _api.ListRegions().Select(r => new RegionItem(Path, r));
     }

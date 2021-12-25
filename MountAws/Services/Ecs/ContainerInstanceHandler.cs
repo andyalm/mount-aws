@@ -21,7 +21,7 @@ public class ContainerInstanceHandler : PathHandler
         _currentCluster = currentCluster;
     }
 
-    protected override Item? GetItemImpl()
+    protected override IItem? GetItemImpl()
     {
         if (ItemName.StartsWith("i-"))
         {
@@ -69,7 +69,7 @@ public class ContainerInstanceHandler : PathHandler
         return LinkGenerator.EC2Instance(ec2Instance);
     }
 
-    protected override IEnumerable<Item> GetChildItemsImpl()
+    protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         var item = GetItem() as ContainerInstanceItem;
         if (item == null)

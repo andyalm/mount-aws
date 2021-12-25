@@ -18,7 +18,7 @@ public class LoadBalancerHandler : PathHandler
         return GetItem() != null;
     }
 
-    protected override Item? GetItemImpl()
+    protected override IItem? GetItemImpl()
     {
         try
         {
@@ -31,7 +31,7 @@ public class LoadBalancerHandler : PathHandler
         }
     }
 
-    protected override IEnumerable<Item> GetChildItemsImpl()
+    protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         var loadBalancerItem = GetItem() as LoadBalancerItem;
         if (loadBalancerItem == null)

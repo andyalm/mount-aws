@@ -13,7 +13,7 @@ public class TargetGroupHandler : PathHandler
         _elbv2 = elbv2;
     }
 
-    protected override Item? GetItemImpl()
+    protected override IItem? GetItemImpl()
     {
         try
         {
@@ -26,7 +26,7 @@ public class TargetGroupHandler : PathHandler
         }
     }
 
-    protected override IEnumerable<Item> GetChildItemsImpl()
+    protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         var targetGroupItem = GetItem() as TargetGroupItem;
         if (targetGroupItem == null)

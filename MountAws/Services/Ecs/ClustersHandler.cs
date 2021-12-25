@@ -21,12 +21,12 @@ public class ClustersHandler : PathHandler
         _ecs = ecs;
     }
 
-    protected override Item? GetItemImpl()
+    protected override IItem? GetItemImpl()
     {
         return CreateItem(ParentPath);
     }
 
-    protected override IEnumerable<Item> GetChildItemsImpl()
+    protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         var clusterArns = GetWithPaging(nextToken =>
         {

@@ -13,7 +13,7 @@ public class ListenerHandler : PathHandler
         _elbv2 = elbv2;
     }
 
-    protected override Item? GetItemImpl()
+    protected override IItem? GetItemImpl()
     {
         var loadBalancerHandler = new LoadBalancerHandler(ParentPath, Context, _elbv2);
         var loadBalancerItem = loadBalancerHandler.GetItem() as LoadBalancerItem;
@@ -32,7 +32,7 @@ public class ListenerHandler : PathHandler
         return null;
     }
 
-    protected override IEnumerable<Item> GetChildItemsImpl()
+    protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         yield return DefaultActionsHandler.CreateItem(Path);
         yield return RulesHandler.CreateItem(Path);

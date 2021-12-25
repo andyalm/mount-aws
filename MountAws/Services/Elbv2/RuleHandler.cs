@@ -12,13 +12,13 @@ public class RuleHandler : PathHandler
         _elbv2 = elbv2;
     }
 
-    protected override Item? GetItemImpl()
+    protected override IItem? GetItemImpl()
     {
         var rulesHandler = new RulesHandler(ParentPath, Context, _elbv2);
         return rulesHandler.GetChildItems().FirstOrDefault(i => i.ItemName == ItemName) as RuleItem;
     }
 
-    protected override IEnumerable<Item> GetChildItemsImpl()
+    protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         var rule = GetItem() as RuleItem;
         if (rule == null)

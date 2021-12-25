@@ -12,13 +12,13 @@ public class TargetHealthHandler : PathHandler
         _elbv2 = elbv2;
     }
 
-    protected override Item? GetItemImpl()
+    protected override IItem? GetItemImpl()
     {
         var targetGroupHandler = new TargetGroupHandler(ParentPath, Context, _elbv2);
         return targetGroupHandler.GetChildItems().SingleOrDefault(i => i.ItemName == ItemName);
     }
 
-    protected override IEnumerable<Item> GetChildItemsImpl()
+    protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         yield break;
     }

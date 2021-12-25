@@ -16,12 +16,12 @@ public class PolicyHandler : PathHandler, IContentReaderHandler
         BucketName = ItemPath.GetLeaf(ParentPath);
     }
 
-    protected override Item? GetItemImpl()
+    protected override IItem? GetItemImpl()
     {
         return new PolicyItem(ParentPath);
     }
 
-    protected override IEnumerable<Item> GetChildItemsImpl()
+    protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         yield break;
     }

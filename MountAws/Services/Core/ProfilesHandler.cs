@@ -17,12 +17,12 @@ public class ProfilesHandler : PathHandler
         return true;
     }
 
-    protected override Item? GetItemImpl()
+    protected override IItem? GetItemImpl()
     {
         return new ProfilesRoot();
     }
 
-    protected override IEnumerable<Item> GetChildItemsImpl()
+    protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         return _coreApi.ListProfiles().Select(p => new ProfileItem(p));
     }

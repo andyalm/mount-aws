@@ -19,12 +19,12 @@ public class BucketsHandler : PathHandler
         _s3 = s3;
     }
 
-    protected override Item? GetItemImpl()
+    protected override IItem? GetItemImpl()
     {
         return CreateItem(ParentPath);
     }
 
-    protected override IEnumerable<Item> GetChildItemsImpl()
+    protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         return _s3.ListBuckets()
             .Select(b => new BucketItem(Path, b));

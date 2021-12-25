@@ -4,7 +4,7 @@ public class Cache
 {
     private readonly Dictionary<string, CachedItem> _objects = new(StringComparer.OrdinalIgnoreCase);
 
-    public void SetItem(Item item)
+    public void SetItem(IItem item)
     {
         foreach (var path in item.CacheablePaths)
         {
@@ -24,7 +24,7 @@ public class Cache
         }
     }
 
-    public bool TryGetItem(string path, out Item cachedObject)
+    public bool TryGetItem(string path, out IItem cachedObject)
     {
         if (_objects.TryGetValue(path, out var cachedItem))
         {
@@ -36,7 +36,7 @@ public class Cache
         return false;
     }
 
-    public bool TryGetItem<T>(string path, out T cachedItem) where T : Item
+    public bool TryGetItem<T>(string path, out T cachedItem) where T : IItem
     {
         if (TryGetItem(path, out var untypedCachedItem) && untypedCachedItem is T cachedTypedObject)
         {
@@ -48,7 +48,7 @@ public class Cache
         return false;
     }
     
-    public void SetChildItems(Item item, IEnumerable<Item> childItems)
+    public void SetChildItems(IItem item, IEnumerable<IItem> childItems)
     {
         SetItem(item);
         foreach (var childItem in childItems)
@@ -59,7 +59,7 @@ public class Cache
         cachedItem.ChildPaths = childItems.Select(i => i.FullPath).ToList();
     }
 
-    public bool TryGetChildItems(string path, out IEnumerable<Item> childItems)
+    public bool TryGetChildItems(string path, out IEnumerable<IItem> childItems)
     {
         if (_objects.TryGetValue(path, out var cachedItem) && cachedItem.ChildPaths != null)
         {
@@ -73,13 +73,13 @@ public class Cache
     
     private class CachedItem
     {
-        public CachedItem(Item item)
+        public CachedItem(IItem item)
         {
             Item = item;
             ChildPaths = null;
         }
         
-        public Item Item { get; set; }
+        public IItem Item { get; set; }
         public List<string>? ChildPaths { get; set; }
     }
 }

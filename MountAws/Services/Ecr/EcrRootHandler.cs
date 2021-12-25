@@ -21,12 +21,12 @@ public class EcrRootHandler : PathHandler
         _ecr = ecr;
     }
 
-    protected override Item? GetItemImpl()
+    protected override IItem? GetItemImpl()
     {
         return CreateItem(ParentPath);
     }
 
-    protected override IEnumerable<Item> GetChildItemsImpl()
+    protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         return _ecr.GetChildRepositories(Path);
     }

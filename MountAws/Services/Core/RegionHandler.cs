@@ -17,7 +17,7 @@ public class RegionHandler : PathHandler
         _api = api;
     }
 
-    protected override Item? GetItemImpl()
+    protected override IItem? GetItemImpl()
     {
         if (_api.TryGetRegion(ItemName, out var region) && region.Property<string>("DisplayName") != "Unknown")
         {
@@ -27,7 +27,7 @@ public class RegionHandler : PathHandler
         return null;
     }
 
-    protected override IEnumerable<Item> GetChildItemsImpl()
+    protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         yield return Ec2RootHandler.CreateItem(Path);
         yield return EcrRootHandler.CreateItem(Path);

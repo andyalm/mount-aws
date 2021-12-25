@@ -14,7 +14,7 @@ public class TaskHandler : PathHandler
         _currentCluster = currentCluster;
     }
 
-    protected override Item? GetItemImpl()
+    protected override IItem? GetItemImpl()
     {
         var task = _ecs.DescribeTasks(_currentCluster.Name,
             new[] { "TAGS" },
@@ -28,7 +28,7 @@ public class TaskHandler : PathHandler
         return null;
     }
 
-    protected override IEnumerable<Item> GetChildItemsImpl()
+    protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         yield break;
     }

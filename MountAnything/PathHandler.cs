@@ -33,7 +33,7 @@ public abstract class PathHandler : IPathHandler
         return ExistsImpl();
     }
 
-    public Item? GetItem()
+    public IItem? GetItem()
     {
         if (!Context.Force && Cache.TryGetItem(Path, out var cachedItem))
         {
@@ -50,7 +50,7 @@ public abstract class PathHandler : IPathHandler
         return item;
     }
 
-    public IEnumerable<Item> GetChildItems(bool useCache = true)
+    public IEnumerable<IItem> GetChildItems(bool useCache = false)
     {
         if (useCache && CacheChildren && !Context.Force && Cache.TryGetChildItems(Path, out var cachedChildItems))
         {
@@ -72,16 +72,16 @@ public abstract class PathHandler : IPathHandler
             return childItems;
         }
         
-        return Enumerable.Empty<Item>();
+        return Enumerable.Empty<IItem>();
     }
 
     protected virtual bool ExistsImpl() => GetItem() != null;
-    protected abstract Item? GetItemImpl();
-    protected abstract IEnumerable<Item> GetChildItemsImpl();
+    protected abstract IItem? GetItemImpl();
+    protected abstract IEnumerable<IItem> GetChildItemsImpl();
 
-    public virtual bool CacheChildren { get; } = true;
-    
-    public virtual IEnumerable<Item> GetChildItems(string filter)
+    public virtual bool CacheChildren => true;
+
+    public virtual IEnumerable<IItem> GetChildItems(string filter)
     {
         var pathMatcher = new Regex("^" + Regex.Escape(ItemPath.Combine(Path, filter)).Replace(@"\*", ".*") + "$", RegexOptions.IgnoreCase);
         return GetChildItems(useCache: true)

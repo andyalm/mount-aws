@@ -15,7 +15,7 @@ public class ServiceHandler : PathHandler
         _currentCluster = currentCluster;
     }
 
-    protected override Item? GetItemImpl()
+    protected override IItem? GetItemImpl()
     {
         var service = _ecs.DescribeServices(_currentCluster.Name,
             new[] { ItemName },
@@ -29,7 +29,7 @@ public class ServiceHandler : PathHandler
         return null;
     }
 
-    protected override IEnumerable<Item> GetChildItemsImpl()
+    protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         var taskArns = GetWithPaging(nextToken =>
         {

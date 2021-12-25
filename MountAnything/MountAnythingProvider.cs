@@ -112,7 +112,7 @@ public abstract class MountAnythingProvider : NavigationCmdletProvider,
     protected override bool HasChildItems(string path)
     {
         WriteDebug($"HasChildItems({path})");
-        return WithPathHandler<bool?>(path, handler => handler.GetChildItems(useCache:true).Any()) ?? false;
+        return WithPathHandler<bool?>(path, handler => handler.GetChildItems(useCache: true).Any()) ?? false;
     }
 
     protected override bool IsItemContainer(string path)
@@ -151,7 +151,7 @@ public abstract class MountAnythingProvider : NavigationCmdletProvider,
         });
     }
 
-    private void WriteItems<T>(IEnumerable<T> items) where T : Item
+    private void WriteItems<T>(IEnumerable<T> items) where T : IItem
     {
         foreach (var item in items)
         {
@@ -159,7 +159,7 @@ public abstract class MountAnythingProvider : NavigationCmdletProvider,
         }
     }
     
-    private void WriteItem(Item item)
+    private void WriteItem(IItem item)
     {
         Cache.SetItem(item);
         var providerPath = ToProviderPath(item.FullPath);

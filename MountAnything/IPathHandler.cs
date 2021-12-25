@@ -4,7 +4,7 @@ public interface IPathHandler
 {
     string Path { get; }
     bool Exists();
-    Item? GetItem();
-    IEnumerable<Item> GetChildItems(bool useCache = false);
-    IEnumerable<Item> GetChildItems(string filter);
+    IItem? GetItem();
+    IEnumerable<IItem> GetChildItems(bool useCache = false);
+    IEnumerable<IItem> GetChildItems(string filter);
 }

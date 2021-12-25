@@ -24,18 +24,18 @@ public class InstancesHandler : PathHandler
         return true;
     }
 
-    protected override Item? GetItemImpl()
+    protected override IItem? GetItemImpl()
     {
         return CreateItem(ParentPath);
     }
 
-    protected override IEnumerable<Item> GetChildItemsImpl()
+    protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         return _ec2.QueryInstances()
             .Select(i => new InstanceItem(Path, i));
     }
 
-    public override IEnumerable<Item> GetChildItems(string filter)
+    public override IEnumerable<IItem> GetChildItems(string filter)
     {
         return _ec2.QueryInstances(filter)
             .Select(instance => new InstanceItem(Path, instance));

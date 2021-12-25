@@ -14,14 +14,14 @@ public class ImageTagHandler : PathHandler
         _repositoryPath = repositoryPath;
     }
 
-    protected override Item? GetItemImpl()
+    protected override IItem? GetItemImpl()
     {
         var parentHandler = new ImageTagsHandler(ParentPath, Context, _ecr, _repositoryPath);
         return parentHandler.GetChildItems()
             .FirstOrDefault(i => i.ItemName.Equals(ItemName, StringComparison.OrdinalIgnoreCase));
     }
 
-    protected override IEnumerable<Item> GetChildItemsImpl()
+    protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         yield break;
     }

@@ -21,7 +21,7 @@ public class ObjectHandler : PathHandler, IContentReaderHandler,
         _s3 = s3;
     }
 
-    protected override Item? GetItemImpl()
+    protected override IItem? GetItemImpl()
     {
         try
         {
@@ -41,7 +41,7 @@ public class ObjectHandler : PathHandler, IContentReaderHandler,
         return null;
     }
 
-    protected override IEnumerable<Item> GetChildItemsImpl()
+    protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         return _s3.ListChildItems(_currentBucket.Name, Path, $"{_objectPath.Value}/");
     }

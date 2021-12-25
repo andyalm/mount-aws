@@ -12,7 +12,7 @@ public class BucketHandler : PathHandler
         _s3 = s3;
     }
 
-    protected override Item? GetItemImpl()
+    protected override IItem? GetItemImpl()
     {
         var exists = _s3.BucketExists(ItemName);
         if (exists)
@@ -23,7 +23,7 @@ public class BucketHandler : PathHandler
         return null;
     }
 
-    protected override IEnumerable<Item> GetChildItemsImpl()
+    protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         yield return new PolicyItem(Path);
         yield return ObjectsHandler.CreateItem(Path);

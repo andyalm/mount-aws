@@ -23,12 +23,12 @@ public class ServicesHandler : PathHandler
         _currentCluster = currentCluster;
     }
 
-    protected override Item? GetItemImpl()
+    protected override IItem? GetItemImpl()
     {
         return CreateItem(ParentPath);
     }
 
-    protected override IEnumerable<Item> GetChildItemsImpl()
+    protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         var serviceArns = GetWithPaging(nextToken =>
         {

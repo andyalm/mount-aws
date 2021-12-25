@@ -21,12 +21,12 @@ public class ObjectsHandler : PathHandler
         _currentBucket = currentBucket;
     }
 
-    protected override Item? GetItemImpl()
+    protected override IItem? GetItemImpl()
     {
         return CreateItem(ParentPath);
     }
 
-    protected override IEnumerable<Item> GetChildItemsImpl()
+    protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         return _s3.ListChildItems(_currentBucket.Name, Path);
     }

@@ -12,13 +12,13 @@ public class RuleActionHandler : PathHandler
         _elbv2 = elbv2;
     }
 
-    protected override Item? GetItemImpl()
+    protected override IItem? GetItemImpl()
     {
         var ruleHandler = new RuleHandler(ParentPath, Context, _elbv2);
         return ruleHandler.GetChildItems().SingleOrDefault(r => r.ItemName == ItemName);
     }
 
-    protected override IEnumerable<Item> GetChildItemsImpl()
+    protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         if (GetItem() is ActionItem item)
         {

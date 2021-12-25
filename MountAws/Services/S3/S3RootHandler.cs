@@ -15,12 +15,12 @@ public class S3RootHandler : PathHandler
     {
     }
 
-    protected override Item? GetItemImpl()
+    protected override IItem? GetItemImpl()
     {
         return CreateItem(ParentPath);
     }
 
-    protected override IEnumerable<Item> GetChildItemsImpl()
+    protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         yield return BucketsHandler.CreateItem(Path);
     }

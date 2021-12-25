@@ -13,7 +13,7 @@ public class ClusterHandler : PathHandler
         _ecs = ecs;
     }
 
-    protected override Item? GetItemImpl()
+    protected override IItem? GetItemImpl()
     {
         try
         {
@@ -27,7 +27,7 @@ public class ClusterHandler : PathHandler
         }
     }
 
-    protected override IEnumerable<Item> GetChildItemsImpl()
+    protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         yield return ServicesHandler.CreateItem(Path);
         yield return ContainerInstancesHandler.CreateItem(Path);

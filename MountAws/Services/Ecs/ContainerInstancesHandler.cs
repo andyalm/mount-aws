@@ -27,12 +27,12 @@ public class ContainerInstancesHandler : PathHandler
         _currentCluster = currentCluster;
     }
 
-    protected override Item? GetItemImpl()
+    protected override IItem? GetItemImpl()
     {
         return CreateItem(ParentPath);
     }
 
-    protected override IEnumerable<Item> GetChildItemsImpl()
+    protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         var containerInstances = _ecs.QueryContainerInstances(_currentCluster.Name).ToArray();
 
@@ -40,7 +40,7 @@ public class ContainerInstancesHandler : PathHandler
     }
 
     private static Regex _containerInstanceIdRegex = new(@"^[a-z0-9\*]+$");
-    public override IEnumerable<Item> GetChildItems(string filter)
+    public override IEnumerable<IItem> GetChildItems(string filter)
     {
         // ECS api can't find container instance by partial id. So defer to base implementation that relies on scanning all children
         if (_containerInstanceIdRegex.IsMatch(filter))

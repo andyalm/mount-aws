@@ -24,12 +24,12 @@ public class ImageTagsHandler : PathHandler
         _repositoryPath = repositoryPath;
     }
 
-    protected override Item? GetItemImpl()
+    protected override IItem? GetItemImpl()
     {
         return CreateItem(ParentPath);
     }
 
-    protected override IEnumerable<Item> GetChildItemsImpl()
+    protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         var repositoryHandler = new RepositoryHandler(ParentPath, Context, _ecr, _repositoryPath);
         var repositoryItem = repositoryHandler.GetItem() as RepositoryItem;

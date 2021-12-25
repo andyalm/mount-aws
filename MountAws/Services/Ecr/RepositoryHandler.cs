@@ -15,7 +15,7 @@ public class RepositoryHandler : PathHandler
         _repositoryPath = repositoryPath;
     }
 
-    protected override Item? GetItemImpl()
+    protected override IItem? GetItemImpl()
     {
         PSObject? repository = null;
         try
@@ -43,7 +43,7 @@ public class RepositoryHandler : PathHandler
             .GetChildItems().SingleOrDefault(i => i.ItemName.Equals(ItemName, StringComparison.OrdinalIgnoreCase));
     }
 
-    protected override IEnumerable<Item> GetChildItemsImpl()
+    protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         var item = GetItem() as RepositoryItem;
         if (item?.ItemType == EcrItemTypes.Repository)

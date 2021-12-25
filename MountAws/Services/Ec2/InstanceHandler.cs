@@ -12,7 +12,7 @@ public class InstanceHandler : PathHandler
         _ec2 = ec2;
     }
 
-    protected override Item? GetItemImpl()
+    protected override IItem? GetItemImpl()
     {
         var request = Ec2ApiExtensions.ParseFilter(ItemName);
         var instances = _ec2.DescribeInstances(request).ToArray();
@@ -25,7 +25,7 @@ public class InstanceHandler : PathHandler
         return null;
     }
 
-    protected override IEnumerable<Item> GetChildItemsImpl()
+    protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         return Enumerable.Empty<Item>();
     }

@@ -19,12 +19,12 @@ public class RulesHandler : PathHandler
         _elbv2 = elbv2;
     }
 
-    protected override Item? GetItemImpl()
+    protected override IItem? GetItemImpl()
     {
         return CreateItem(ParentPath);
     }
 
-    protected override IEnumerable<Item> GetChildItemsImpl()
+    protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         var listenerHandler = new ListenerHandler(ParentPath, Context, _elbv2);
         var listener = listenerHandler.GetItem() as ListenerItem;

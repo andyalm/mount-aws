@@ -3,7 +3,7 @@ using System.Management.Automation;
 
 namespace MountAnything;
 
-public abstract class Item<T> where T : class
+public abstract class Item<T> : IItem where T : class
 {
     protected Item(string parentPath, T underlyingObject)
     {
@@ -39,7 +39,7 @@ public abstract class Item<T> where T : class
 
     public PSObject ToPipelineObject(Func<string,string> pathResolver)
     {
-        var psObject = new PSObject(UnderlyingObject);
+        var psObject = UnderlyingObject is PSObject underlyingObject ? underlyingObject : new PSObject(UnderlyingObject);
         psObject.TypeNames.Add(TypeName);
         var itemNameProperty = psObject.Properties["ItemName"];
         if (itemNameProperty == null)

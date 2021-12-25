@@ -12,7 +12,7 @@ public class DefaultActionHandler : PathHandler
         _elbv2 = elbv2;
     }
 
-    protected override Item? GetItemImpl()
+    protected override IItem? GetItemImpl()
     {
         var defaultActionsHandler = new DefaultActionsHandler(ParentPath, Context, _elbv2);
         return defaultActionsHandler
@@ -20,7 +20,7 @@ public class DefaultActionHandler : PathHandler
             .SingleOrDefault(i => i.ItemName.Equals(ItemName, StringComparison.OrdinalIgnoreCase));
     }
 
-    protected override IEnumerable<Item> GetChildItemsImpl()
+    protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         if (GetItem() is ActionItem item)
         {
