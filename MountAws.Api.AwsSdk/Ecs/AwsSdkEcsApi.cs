@@ -163,4 +163,14 @@ public class AwsSdkEcsApi : IEcsApi
             Include = include?.ToList()
         }).GetAwaiter().GetResult().Tasks.ToPSObjects();
     }
+
+    public void StopTask(string cluster, string taskId, string? reason = null)
+    {
+        _ecs.StopTaskAsync(new StopTaskRequest
+        {
+            Cluster = cluster,
+            Task = taskId,
+            Reason = reason
+        }).GetAwaiter().GetResult();
+    }
 }

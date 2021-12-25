@@ -140,6 +140,7 @@ public abstract class MountAnythingProvider : NavigationCmdletProvider,
     {
         WithPathHandler(path, handler =>
         {
+            handler.SetDynamicParameters(typeof(IRemoveItemParameters<>), DynamicParameters);
             if (handler is IRemoveItemHandler removeItemHandler)
             {
                 removeItemHandler.RemoveItem();
@@ -149,6 +150,19 @@ public abstract class MountAnythingProvider : NavigationCmdletProvider,
                 throw new InvalidOperationException($"MountAws does not currently support removing this item");
             }
         });
+    }
+
+    protected override object? RemoveItemDynamicParameters(string path, bool recurse)
+    {
+        try
+        {
+            return GetDynamicParameters(path, typeof(IRemoveItemParameters<>));
+        }
+        catch (Exception ex)
+        {
+            WriteDebug(ex.ToString());
+            return null;
+        }
     }
 
     private void WriteItems<T>(IEnumerable<T> items) where T : IItem

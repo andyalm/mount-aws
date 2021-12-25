@@ -1,9 +1,10 @@
+using System.Management.Automation;
 using MountAnything;
 using MountAws.Api.Ecs;
 
 namespace MountAws.Services.Ecs;
 
-public class TaskHandler : PathHandler
+public class TaskHandler : PathHandler, IRemoveItemHandler, IRemoveItemParameters<RemoveTaskParameters>
 {
     private readonly IEcsApi _ecs;
     private readonly CurrentCluster _currentCluster;
@@ -32,4 +33,17 @@ public class TaskHandler : PathHandler
     {
         yield break;
     }
+
+    public void RemoveItem()
+    {
+        _ecs.StopTask(_currentCluster.Name, ItemName, RemoveItemParameters?.Reason);
+    }
+
+    public RemoveTaskParameters? RemoveItemParameters { get; set; }
+}
+
+public class RemoveTaskParameters
+{
+    [Parameter(Mandatory = false)]
+    public string? Reason { get; set; }
 }

@@ -26,4 +26,6 @@ public interface IEcsApi
 
     IEnumerable<PSObject> DescribeTasks(string cluster, IEnumerable<string> taskIds,
         IEnumerable<string>? include = null);
+
+    void StopTask(string cluster, string taskId, string? reason);
 }

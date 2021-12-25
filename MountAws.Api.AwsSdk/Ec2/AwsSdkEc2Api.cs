@@ -26,4 +26,12 @@ public class AwsSdkEc2Api : IEc2Api
                 .ToList()
         }).GetAwaiter().GetResult().Reservations.SelectMany(r => r.Instances).ToPSObjects();
     }
+
+    public void TerminateInstance(string instanceId)
+    {
+        _ec2.TerminateInstancesAsync(new TerminateInstancesRequest
+        {
+            InstanceIds = new List<string> { instanceId }
+        }).GetAwaiter().GetResult();
+    }
 }
