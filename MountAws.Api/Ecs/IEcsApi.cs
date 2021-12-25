@@ -28,4 +28,5 @@ public interface IEcsApi
         IEnumerable<string>? include = null);
 
     void StopTask(string cluster, string taskId, string? reason);
+    void DeleteService(string cluster, string serviceName, bool force);
 }

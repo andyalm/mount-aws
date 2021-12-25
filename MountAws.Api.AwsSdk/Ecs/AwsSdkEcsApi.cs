@@ -173,4 +173,14 @@ public class AwsSdkEcsApi : IEcsApi
             Reason = reason
         }).GetAwaiter().GetResult();
     }
+
+    public void DeleteService(string cluster, string serviceName, bool force)
+    {
+        _ecs.DeleteServiceAsync(new DeleteServiceRequest
+        {
+            Cluster = cluster,
+            Service = serviceName,
+            Force = force
+        }).GetAwaiter().GetResult();
+    }
 }

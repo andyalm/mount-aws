@@ -4,7 +4,7 @@ using static MountAws.PagingHelper;
 
 namespace MountAws.Services.Ecs;
 
-public class ServiceHandler : PathHandler
+public class ServiceHandler : PathHandler, IRemoveItemHandler
 {
     private readonly IEcsApi _ecs;
     private readonly CurrentCluster _currentCluster;
@@ -51,5 +51,10 @@ public class ServiceHandler : PathHandler
                 taskArnChunk,
                 new[] { "TAGS" });
         }).Select(t => new TaskItem(Path, t));
+    }
+
+    public void RemoveItem()
+    {
+        _ecs.DeleteService(_currentCluster.Name, ItemName, Context.Force);
     }
 }

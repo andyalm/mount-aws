@@ -79,9 +79,7 @@ public class MountAwsProvider : MountAnythingProvider
         var modulePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
         var apiAssemblyDir = Path.Combine(modulePath, "AwsSdk");
         var assemblyLoadContext = new AwsApiAssemblyLoadContext(apiAssemblyDir);
-
-        // proactively load AWSSDK.SecurityToken so refreshable credentials work
-        assemblyLoadContext.LoadFromAssemblyName(new AssemblyName("AWSSDK.SecurityToken"));
+        
         return assemblyLoadContext.LoadFromAssemblyName(new AssemblyName("MountAws.Api.AwsSdk"));
     }
 }
