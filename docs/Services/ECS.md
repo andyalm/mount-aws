@@ -13,7 +13,7 @@ Remember that you can often `cd` into objects to find more related objects withi
            |-- services
                |-- my-service
                    |-- db3868af023e43b0802ec414efc5efd0 #Task ID
-   |-- task-families
+   |-- task-definitions
        |-- my-task-family
            |-- 1 #task definition revision
 ```

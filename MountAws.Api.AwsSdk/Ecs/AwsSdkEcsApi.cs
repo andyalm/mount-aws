@@ -190,7 +190,8 @@ public class AwsSdkEcsApi : IEcsApi
         var request = new ListTaskDefinitionFamiliesRequest
         {
             NextToken = nextToken,
-            FamilyPrefix = familyPrefix
+            FamilyPrefix = familyPrefix,
+            Status = TaskDefinitionFamilyStatus.ACTIVE
         };
         if (maxResults != null)
         {

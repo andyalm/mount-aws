@@ -24,6 +24,6 @@ public class ECSRootHandler : PathHandler
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         yield return ClustersHandler.CreateItem(Path);
-        yield return TaskFamiliesHandler.CreateItem(Path);
+        yield return TaskDefinitionsHandler.CreateItem(Path);
     }
 }

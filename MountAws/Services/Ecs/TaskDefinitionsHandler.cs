@@ -7,17 +7,17 @@ using static MountAws.PagingHelper;
 
 namespace MountAws.Services.Ecs;
 
-public class TaskFamiliesHandler : PathHandler
+public class TaskDefinitionsHandler : PathHandler
 {
     private readonly IEcsApi _ecs;
 
     public static IItem CreateItem(string parentPath)
     {
-        return new GenericContainerItem(parentPath, "task-families",
+        return new GenericContainerItem(parentPath, "task-definitions",
             "Navigate the task families in the current account and region");
     }
     
-    public TaskFamiliesHandler(string path, IPathHandlerContext context, IEcsApi ecs) : base(path, context)
+    public TaskDefinitionsHandler(string path, IPathHandlerContext context, IEcsApi ecs) : base(path, context)
     {
         _ecs = ecs;
     }
