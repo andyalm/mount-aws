@@ -29,4 +29,7 @@ public interface IEcsApi
 
     void StopTask(string cluster, string taskId, string? reason);
     void DeleteService(string cluster, string serviceName, bool force);
+    ListTaskFamiliesResponse ListTaskFamilies(string? nextToken, string? familyPrefix = null, int? maxResults = null);
+    ListTaskDefinitionsResponse ListTaskDefinitionsByFamily(string family, bool inActive = false, string? nextToken = null);
+    PSObject DescribeTaskDefinition(string taskDefinition);
 }

@@ -46,7 +46,7 @@ public class ServicesHandler : PathHandler
             return _ecs.DescribeServices(_currentCluster.Name,
                 serviceArnChunk,
                 new[] { "TAGS" });
-        }).Select(s => new ServiceItem(Path, s))
+        }).Select(s => new ServiceItem(Path, s, LinkGenerator))
             .OrderBy(s => s.ItemName);
     }
 }

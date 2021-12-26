@@ -13,5 +13,6 @@ public interface IItem
     string TypeName { get; }
     IEnumerable<string> CacheablePaths { get; }
     ImmutableDictionary<string, Item> Links { get; }
+    ImmutableDictionary<string, string> LinkPaths { get; }
     PSObject ToPipelineObject(Func<string,string> pathResolver);
 }

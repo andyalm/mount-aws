@@ -14,8 +14,21 @@ public static class LinkGeneratorExtensions
         return new InstanceItem(parentPath, instance);
     }
 
+    public static string TaskDefinition(this LinkGenerator linkGenerator, string taskDefinitionArn)
+    {
+        var ecsServicePath = linkGenerator.EcsServicePath();
+        var taskDefinition = taskDefinitionArn.Split("/").Last().Replace(":", "/");
+
+        return ItemPath.Combine(ecsServicePath, "task-families", taskDefinition);
+    }
+
     private static string EC2ServicePath(this LinkGenerator linkGenerator)
     {
         return linkGenerator.ConstructPath(2, "ec2");
+    }
+    
+    private static string EcsServicePath(this LinkGenerator linkGenerator)
+    {
+        return linkGenerator.ConstructPath(2, "ecs");
     }
 }

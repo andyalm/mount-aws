@@ -7,6 +7,7 @@ using ClusterNotFoundException = Amazon.ECS.Model.ClusterNotFoundException;
 using ListClustersResponse = MountAws.Api.Ecs.ListClustersResponse;
 using ListContainerInstancesResponse = MountAws.Api.Ecs.ListContainerInstancesResponse;
 using ListServicesResponse = MountAws.Api.Ecs.ListServicesResponse;
+using ListTaskDefinitionsResponse = MountAws.Api.Ecs.ListTaskDefinitionsResponse;
 using ListTasksResponse = MountAws.Api.Ecs.ListTasksResponse;
 
 namespace MountAws.Api.AwsSdk.Ecs;
@@ -182,5 +183,51 @@ public class AwsSdkEcsApi : IEcsApi
             Service = serviceName,
             Force = force
         }).GetAwaiter().GetResult();
+    }
+
+    public ListTaskFamiliesResponse ListTaskFamilies(string? nextToken, string? familyPrefix, int? maxResults = null)
+    {
+        var request = new ListTaskDefinitionFamiliesRequest
+        {
+            NextToken = nextToken,
+            FamilyPrefix = familyPrefix
+        };
+        if (maxResults != null)
+        {
+            request.MaxResults = maxResults.Value;
+        }
+        var response = _ecs.ListTaskDefinitionFamiliesAsync(request).GetAwaiter().GetResult();
+
+        return new ListTaskFamiliesResponse(response.Families.ToArray(), response.NextToken);
+    }
+
+    public ListTaskDefinitionsResponse ListTaskDefinitionsByFamily(string family, bool isActive = true, string? nextToken = null)
+    {
+        var response = _ecs.ListTaskDefinitionsAsync(new ListTaskDefinitionsRequest
+        {
+            FamilyPrefix = family,
+            Sort = SortOrder.ASC,
+            Status = isActive ? TaskDefinitionStatus.ACTIVE : TaskDefinitionStatus.INACTIVE,
+            NextToken = nextToken
+        }).GetAwaiter().GetResult();
+
+        return new ListTaskDefinitionsResponse(response.TaskDefinitionArns.ToArray(), response.NextToken);
+    }
+
+    public PSObject DescribeTaskDefinition(string taskDefinition)
+    {
+        var response = _ecs.DescribeTaskDefinitionAsync(new DescribeTaskDefinitionRequest
+        {
+            TaskDefinition = taskDefinition,
+            Include = new List<string> { "TAGS" }
+        }).GetAwaiter().GetResult();
+
+        var taskDef = response.TaskDefinition.ToPSObject();
+        if (response.Tags != null)
+        {
+            taskDef.Properties.Add(new PSNoteProperty("Tags", response.Tags));
+        }
+
+        return taskDef;
     }
 }

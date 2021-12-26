@@ -91,6 +91,6 @@ public class ContainerInstanceHandler : PathHandler
         return taskArns.Chunk(100).SelectMany(taskArnChunk =>
         {
             return _ecs.DescribeTasks(_currentCluster.Name, taskArnChunk.ToList(), new[] { "TAGS" });
-        }).Select(t => new TaskItem(Path, t));
+        }).Select(t => new TaskItem(Path, t, LinkGenerator));
     }
 }

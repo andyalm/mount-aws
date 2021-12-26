@@ -63,6 +63,11 @@ public abstract class Item<T> : IItem where T : class
         {
             linkObject.Properties.Add(new PSNoteProperty(link.Key, pathResolver(link.Value.FullPath)));
         }
+
+        foreach (var linkPath in LinkPaths)
+        {
+            linkObject.Properties.Add(new PSNoteProperty(linkPath.Key, pathResolver(linkPath.Value)));
+        }
         psObject.Properties.Add(new PSNoteProperty(nameof(Links), linkObject));
         CustomizePSObject(psObject);
 
@@ -70,6 +75,7 @@ public abstract class Item<T> : IItem where T : class
     }
     
     public ImmutableDictionary<string,Item> Links { get; protected init; } = ImmutableDictionary<string, Item>.Empty;
+    public ImmutableDictionary<string,string> LinkPaths { get; protected init; } = ImmutableDictionary<string, string>.Empty;
 }
 
 public abstract class Item : Item<PSObject>

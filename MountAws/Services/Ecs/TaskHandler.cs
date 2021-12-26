@@ -23,7 +23,7 @@ public class TaskHandler : PathHandler, IRemoveItemHandler, IRemoveItemParameter
 
         if (task != null)
         {
-            return new TaskItem(ParentPath, task);
+            return new TaskItem(ParentPath, task, LinkGenerator);
         }
 
         return null;

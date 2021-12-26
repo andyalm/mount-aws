@@ -23,7 +23,7 @@ public class ServiceHandler : PathHandler, IRemoveItemHandler
         
         if (service != null)
         {
-            return new ServiceItem(ParentPath, service);
+            return new ServiceItem(ParentPath, service, LinkGenerator);
         }
 
         return null;
@@ -50,7 +50,7 @@ public class ServiceHandler : PathHandler, IRemoveItemHandler
             return _ecs.DescribeTasks(_currentCluster.Name,
                 taskArnChunk,
                 new[] { "TAGS" });
-        }).Select(t => new TaskItem(Path, t));
+        }).Select(t => new TaskItem(Path, t, LinkGenerator));
     }
 
     public void RemoveItem()

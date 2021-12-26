@@ -129,5 +129,52 @@
         </TableRowEntries>
       </TableControl>
     </View>
+    <View>
+      <Name>ECSTaskFamily</Name>
+      <ViewSelectedBy>
+        <TypeName>MountAws.Services.Ecs.TaskFamilyItem</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>Name</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <View>
+      <Name>ECSTaskDefinition</Name>
+      <ViewSelectedBy>
+        <TypeName>MountAws.Services.Ecs.TaskDefinitionItem</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+          </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>Revision</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Family</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
   </ViewDefinitions>
 </Configuration>

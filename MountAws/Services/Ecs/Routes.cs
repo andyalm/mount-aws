@@ -33,6 +33,13 @@ public static class Routes
                     });
                 });
             });
+            ecs.MapLiteral<TaskFamiliesHandler>("task-families", taskFamilies =>
+            {
+                taskFamilies.Map<TaskFamilyHandler>(taskFamily =>
+                {
+                    taskFamily.Map<TaskDefinitionHandler>();
+                });
+            });
         });
     }
 }
