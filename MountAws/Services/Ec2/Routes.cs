@@ -16,6 +16,10 @@ public static class Routes
             {
                 securityGroups.Map<SecurityGroupHandler>();
             });
+            ec2.MapLiteral<VpcsHandler>("vpcs", vpcs =>
+            {
+                vpcs.Map<VpcHandler>();
+            });
         });
     }
 }

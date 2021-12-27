@@ -69,6 +69,12 @@ public abstract class MountAnythingProvider : NavigationCmdletProvider,
                 {
                     WriteItem(item);
                 }
+                else
+                {
+                    WriteError(new ErrorRecord(new ApplicationException(
+                        $"Cannot find item with path '{path}' because it does not exist"),
+                        "404", ErrorCategory.ObjectNotFound, null));
+                }
             });
         }
         catch (Exception ex)

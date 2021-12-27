@@ -29,5 +29,6 @@ public class Ec2RootHandler : PathHandler
     {
         yield return InstancesHandler.CreateItem(Path);
         yield return SecurityGroupsHandler.CreateItem(Path);
+        yield return VpcsHandler.CreateItem(Path);
     }
 }

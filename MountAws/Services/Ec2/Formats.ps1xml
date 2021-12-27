@@ -72,5 +72,31 @@
         </TableRowEntries>
       </TableControl>
     </View>
+    <View>
+      <Name>VpcItem</Name>
+      <ViewSelectedBy>
+        <TypeName>MountAws.Services.Ec2.VpcItem</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+          </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>VpcId</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>CidrBlock</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
   </ViewDefinitions>
 </Configuration>

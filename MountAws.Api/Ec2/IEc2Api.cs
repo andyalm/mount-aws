@@ -7,4 +7,6 @@ public interface IEc2Api
     (IEnumerable<PSObject> Instances, string NextToken) DescribeInstances(DescribeInstancesRequest request);
     void TerminateInstance(string instanceId);
     (IEnumerable<PSObject> SecurityGroups, string NextToken) DescribeSecurityGroups(DescribeSecurityGroupsRequest request);
+    IEnumerable<PSObject> DescribeVpcs();
+    PSObject DescribeVpc(string vpcId);
 }

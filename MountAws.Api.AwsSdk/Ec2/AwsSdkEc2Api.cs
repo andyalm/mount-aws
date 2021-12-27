@@ -1,4 +1,5 @@
 using System.Management.Automation;
+using System.Net;
 using Amazon.EC2;
 using Amazon.EC2.Model;
 using MountAnything;
@@ -45,6 +46,25 @@ public class AwsSdkEc2Api : IEc2Api
         {
             InstanceIds = new List<string> { instanceId }
         }).GetAwaiter().GetResult();
+    }
+
+    public IEnumerable<PSObject> DescribeVpcs()
+    {
+        return _ec2.DescribeVpcsAsync(new DescribeVpcsRequest())
+            .GetAwaiter().GetResult().Vpcs.ToPSObjects();
+    }
+
+    public PSObject DescribeVpc(string vpcId)
+    {
+        try
+        {
+            return _ec2.DescribeVpcsAsync(new DescribeVpcsRequest { VpcIds = new List<string> { vpcId } })
+                .GetAwaiter().GetResult().Vpcs.Single().ToPSObject();
+        }
+        catch (AmazonEC2Exception ex) when (ex.StatusCode is HttpStatusCode.NotFound or HttpStatusCode.BadRequest)
+        {
+            throw new VpcNotFoundException(vpcId);
+        }
     }
 
     public (IEnumerable<PSObject> SecurityGroups, string NextToken) DescribeSecurityGroups(DescribeSecurityGroupsRequest request)
