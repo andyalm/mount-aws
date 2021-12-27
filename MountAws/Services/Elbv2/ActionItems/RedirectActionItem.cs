@@ -13,7 +13,6 @@ public class RedirectActionItem : ActionItem
     }
 
     public string RedirectLocation { get; }
-    public override string ItemName => Property<string>("Type")!;
     public override string ItemType => Elbv2ItemTypes.RedirectAction;
     public override bool IsContainer => false;
     public override string Description => $"Redirects to {RedirectLocation}";

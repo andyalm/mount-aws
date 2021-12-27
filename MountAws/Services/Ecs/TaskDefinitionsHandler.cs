@@ -57,4 +57,7 @@ public class TaskDefinitionsHandler : PathHandler
             };
         }).Select(t => new TaskFamilyItem(Path, t));
     }
+
+    // there could be too many of them to make it worth caching
+    protected override bool CacheChildren => false;
 }

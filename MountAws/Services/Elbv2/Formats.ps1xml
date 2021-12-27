@@ -1,9 +1,37 @@
 <Configuration>
   <ViewDefinitions>
     <View>
+      <Name>LoadBalancer</Name>
+      <ViewSelectedBy>
+        <TypeName>MountAws.Services.Elbv2.LoadBalancerItem</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+            <Label>Name</Label>
+          </TableColumnHeader>
+          <TableColumnHeader>
+            <Label>Security Groups</Label>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>LoadBalancerName</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>SecurityGroupNames</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <View>
       <Name>ELBV2Listener</Name>
       <ViewSelectedBy>
-        <TypeName>Amazon.ElasticLoadBalancingV2.Model.Listener</TypeName>
+        <TypeName>MountAws.Services.Elbv2.ListenerItem</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>
@@ -60,7 +88,7 @@
     <View>
       <Name>Rule</Name>
       <ViewSelectedBy>
-        <TypeName>Amazon.ElasticLoadBalancingV2.Model.Rule</TypeName>
+        <TypeName>MountAws.Services.Elbv2.RuleItem</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>
@@ -91,7 +119,7 @@
     <View>
       <Name>TargetGroup</Name>
       <ViewSelectedBy>
-        <TypeName>Amazon.ElasticLoadBalancingV2.Model.TargetGroup</TypeName>
+        <TypeName>MountAws.Services.Elbv2.TargetGroupItem</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>
@@ -125,9 +153,9 @@
       </TableControl>
     </View>
     <View>
-      <Name>TargetHealthDescription</Name>
+      <Name>TargetHealthItem</Name>
       <ViewSelectedBy>
-        <TypeName>Amazon.ElasticLoadBalancingV2.Model.TargetHealthDescription</TypeName>
+        <TypeName>MountAws.Services.Elbv2.TargetHealthItem</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>

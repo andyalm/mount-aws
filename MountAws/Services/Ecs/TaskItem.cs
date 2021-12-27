@@ -4,7 +4,7 @@ using MountAnything;
 
 namespace MountAws.Services.Ecs;
 
-public class TaskItem : Item
+public class TaskItem : AwsItem
 {
 
     public TaskItem(string parentPath, PSObject task, LinkGenerator linkGenerator) : base(parentPath, task)

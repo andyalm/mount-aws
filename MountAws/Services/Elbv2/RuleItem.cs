@@ -4,7 +4,7 @@ using MountAws.Api;
 
 namespace MountAws.Services.Elbv2;
 
-public class RuleItem : Item
+public class RuleItem : AwsItem
 {
     public IEnumerable<PSObject> Actions { get; }
     public IEnumerable<PSObject> Conditions { get; }

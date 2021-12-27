@@ -1,16 +1,12 @@
 <Configuration>
   <ViewDefinitions>
     <View>
-      <Name>ECRRepository</Name>
+      <Name>Profile</Name>
       <ViewSelectedBy>
-        <TypeName>MountAws.Services.Ecr.RepositoryItem</TypeName>
+        <TypeName>MountAws.Services.Core.ProfileItem</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>
-          <TableColumnHeader>
-          </TableColumnHeader>
-          <TableColumnHeader>
-          </TableColumnHeader>
           <TableColumnHeader>
           </TableColumnHeader>
         </TableHeaders>
@@ -19,12 +15,6 @@
             <TableColumnItems>
               <TableColumnItem>
                 <PropertyName>Name</PropertyName>
-              </TableColumnItem>
-              <TableColumnItem>
-                <PropertyName>ItemType</PropertyName>
-              </TableColumnItem>
-              <TableColumnItem>
-                <PropertyName>RepositoryUri</PropertyName>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>
@@ -32,9 +22,35 @@
       </TableControl>
     </View>
     <View>
-      <Name>ECRImageTag</Name>
+      <Name>RegionEndpoint</Name>
       <ViewSelectedBy>
-        <TypeName>MountAws.Services.Ecr.ImageTagItem</TypeName>
+        <TypeName>MountAws.Services.Core.RegionItem</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+          </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>SystemName</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>DisplayName</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <View>
+      <Name>ContainerItem</Name>
+      <ViewSelectedBy>
+        <TypeName>MountAws.Services.Core.GenericContainerItem</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>
@@ -50,7 +66,7 @@
                 <PropertyName>Name</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>RepositoryUri</PropertyName>
+                <PropertyName>Description</PropertyName>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>

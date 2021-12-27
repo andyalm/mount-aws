@@ -1,10 +1,8 @@
-using System.Collections.Immutable;
 using System.Management.Automation;
-using MountAnything;
 
 namespace MountAws.Services.Ecs;
 
-public class TaskDefinitionItem : Item
+public class TaskDefinitionItem : AwsItem
 {
     public TaskDefinitionItem(string parentPath, PSObject taskDefinition) : base(parentPath, taskDefinition)
     {
@@ -25,7 +23,6 @@ public class TaskDefinitionItem : Item
     public string Family { get; }
     public override string ItemName { get; }
     public override bool IsContainer => false;
-    public override string TypeName => GetType().FullName!;
     public override void CustomizePSObject(PSObject psObject)
     {
         base.CustomizePSObject(psObject);

@@ -4,11 +4,11 @@ using MountAws.Api;
 
 namespace MountAws.Services.Ecr;
 
-public class ImageTagItem : Item
+public class ImageTagItem : AwsItem
 {
     private readonly PSObject _repository;
 
-    public ImageTagItem(string parentPath, PSObject repository, PSObject imageIdentifier) : base(parentPath, imageIdentifier)
+    public ImageTagItem(string parentPath, PSObject imageIdentifier, PSObject repository) : base(parentPath, imageIdentifier)
     {
         _repository = repository;
     }

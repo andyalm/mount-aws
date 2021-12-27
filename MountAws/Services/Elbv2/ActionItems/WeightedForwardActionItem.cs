@@ -16,9 +16,7 @@ public class WeightedForwardActionItem : ActionItem
             .Select(t => $"{t.Property<string>("Weight")}:${Elbv2ApiExtensions.TargetGroupName(t.Property<string>("TargetGroupArn")!)}")
             .ToArray();
     }
-
-    public override string ItemName => "forward";
-    public override string ItemType => "ForwardAction";
+    public override string ItemType => Elbv2ItemTypes.ForwardAction;
     public override bool IsContainer => true;
 
     public override string Description => $"Forward with weights {string.Join(",", WeightDescriptions)}";

@@ -1,9 +1,10 @@
 using System.Management.Automation;
 using MountAnything;
+using MountAws.Services.Core;
 
 namespace MountAws;
 
-public class RegionItem : Item
+public class RegionItem : AwsItem
 {
     public RegionItem(string parentPath, PSObject regionEndpoint) :  base(parentPath, regionEndpoint)
     {
@@ -11,6 +12,6 @@ public class RegionItem : Item
     }
 
     public override string ItemName => Property<string>("SystemName")!;
-    public override string ItemType => "Region";
+    public override string ItemType => CoreItemTypes.Region;
     public override bool IsContainer => true;
 }

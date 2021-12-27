@@ -14,8 +14,6 @@ public class ForwardActionItem : ActionItem
             : action.Property<string>("TargetGroupArn")!;
         TargetGroupName = Elbv2ApiExtensions.TargetGroupName(TargetGroupArn);
     }
-
-    public override string ItemName => "forward";
     public override string ItemType => Elbv2ItemTypes.ForwardAction;
     public override bool IsContainer => true;
 

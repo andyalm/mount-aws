@@ -3,7 +3,7 @@ using MountAnything;
 
 namespace MountAws.Services.Ecs;
 
-public class TaskFamilyItem : Item
+public class TaskFamilyItem : AwsItem
 {
     public TaskFamilyItem(string parentPath, string family) : base(parentPath, new PSObject())
     {
@@ -12,5 +12,4 @@ public class TaskFamilyItem : Item
 
     public override string ItemName { get; }
     public override bool IsContainer => true;
-    public override string TypeName => GetType().FullName!;
 }

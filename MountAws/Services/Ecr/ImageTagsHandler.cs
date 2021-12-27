@@ -47,6 +47,6 @@ public class ImageTagsHandler : PathHandler
                 PageOfResults = response.ImageIds,
                 NextToken = response.NextToken
             };
-        }).Select(i => new ImageTagItem(Path, repositoryItem.UnderlyingObject, i));
+        }).Select(i => new ImageTagItem(Path, i, repositoryItem.UnderlyingObject));
     }
 }

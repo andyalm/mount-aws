@@ -4,35 +4,41 @@ using MountAws.Api.Elbv2;
 
 namespace MountAws.Services.Elbv2;
 
-public abstract class ActionItem : Item
+public abstract class ActionItem : AwsItem
 {
     public static ActionItem Create(string parentPath, PSObject action)
     {
-        var actionType = action.Property<string>("Type");
-        if (actionType == "Forward" && 
-            action.Property<PSObject>("ForwardConfig")?.Property<PSObject>("TargetGroups")?.Property<int>("Count") > 1)
+        var actionType = action.Property<PSObject>("Type")!.Property<string>("Value")!;
+        return actionType switch
+        {
+            "forward" => CreateForwardAction(parentPath, action),
+            "redirect" => new RedirectActionItem(parentPath, action),
+            "fixed-response" => new FixedActionItem(parentPath, action),
+            _ => new DefaultActionItem(parentPath, action)
+        };
+    }
+
+    private static ActionItem CreateForwardAction(string parentPath, PSObject action)
+    {
+        if (action.Property<PSObject>("ForwardConfig")?.Property<PSObject>("TargetGroups")?.Property<int>("Count") > 1)
         {
             return new WeightedForwardActionItem(parentPath, action);
         }
-        if (actionType == "Forward")
+        else
         {
             return new ForwardActionItem(parentPath, action);
         }
-        if (actionType == "Redirect")
-        {
-            return new RedirectActionItem(parentPath, action);
-        }
-        if (actionType == "FixedResponse")
-        {
-            return new FixedActionItem(parentPath, action);
-        }
-
-        return new DefaultActionItem(parentPath, action);
     }
     
-    public override string TypeName => "MountAws.Services.ELBV2.ActionItem";
+    public override string TypeName => typeof(ActionItem).FullName!;
 
-    protected ActionItem(string parentPath, PSObject action) : base(parentPath, action) {}
+    protected ActionItem(string parentPath, PSObject action) : base(parentPath, action)
+    {
+        ItemName = action.Property<PSObject>("Type")!.Property<string>("Value")!;
+    }
+    
+    public override string ItemName { get; }
+    
     public abstract string Description { get; }
     public override void CustomizePSObject(PSObject psObject)
     {

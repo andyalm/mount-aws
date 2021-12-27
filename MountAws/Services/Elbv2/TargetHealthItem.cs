@@ -4,7 +4,7 @@ using MountAws.Api;
 
 namespace MountAws.Services.Elbv2;
 
-public class TargetHealthItem : Item
+public class TargetHealthItem : AwsItem
 {
     private PSObject Target { get; }
     private PSObject? TargetHealth { get; }

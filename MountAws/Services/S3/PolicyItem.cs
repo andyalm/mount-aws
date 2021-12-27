@@ -4,7 +4,7 @@ using MountAws.Services.Core;
 
 namespace MountAws.Services.S3;
 
-public class PolicyItem : Item
+public class PolicyItem : AwsItem
 {
     public PolicyItem(string parentPath) : base(parentPath, new PSObject()) {}
 

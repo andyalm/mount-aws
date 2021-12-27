@@ -3,7 +3,7 @@ using MountAnything;
 
 namespace MountAws.Services.Ecs;
 
-public class ClusterItem : Item
+public class ClusterItem : AwsItem
 {
     public ClusterItem(string parentPath, PSObject cluster) : base(parentPath, cluster) {}
 

@@ -3,7 +3,7 @@ using MountAnything;
 
 namespace MountAws.Services.Elbv2;
 
-public class ListenerItem : Item
+public class ListenerItem : AwsItem
 {
     public ListenerItem(string parentPath, PSObject listener) : base(parentPath, listener) {}
 

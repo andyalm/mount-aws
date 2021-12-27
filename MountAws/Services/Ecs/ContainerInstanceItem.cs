@@ -5,7 +5,7 @@ using MountAws.Services.Ec2;
 
 namespace MountAws.Services.Ecs;
 
-public class ContainerInstanceItem : Item
+public class ContainerInstanceItem : AwsItem
 {
     public ContainerInstanceItem(string parentPath, PSObject containerInstance, InstanceItem? ec2Instance) : base(parentPath, containerInstance)
     {

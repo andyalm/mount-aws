@@ -3,7 +3,7 @@ using MountAnything;
 
 namespace MountAws.Services.Elbv2;
 
-public class LoadBalancerItem : Item
+public class LoadBalancerItem : AwsItem
 {
     public LoadBalancerItem(string parentPath, PSObject loadBalancer) : base(parentPath, loadBalancer) {}
 

@@ -3,7 +3,7 @@
     <View>
       <Name>ECSCluster</Name>
       <ViewSelectedBy>
-        <TypeName>Amazon.ECS.Model.Cluster</TypeName>
+        <TypeName>MountAws.Services.Ecs.ClusterItem</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>
@@ -34,7 +34,7 @@
     <View>
       <Name>ECSService</Name>
       <ViewSelectedBy>
-        <TypeName>Amazon.ECS.Model.Service</TypeName>
+        <TypeName>MountAws.Services.Ecs.ServiceItem</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>
@@ -65,7 +65,7 @@
     <View>
       <Name>ECSTask</Name>
       <ViewSelectedBy>
-        <TypeName>Amazon.ECS.Model.Task</TypeName>
+        <TypeName>MountAws.Services.Ecs.TaskItem</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>
@@ -101,7 +101,7 @@
     <View>
       <Name>ECSContainerInstance</Name>
       <ViewSelectedBy>
-        <TypeName>Amazon.ECS.Model.ContainerInstance</TypeName>
+        <TypeName>MountAws.Services.Ecs.ContainerInstanceItem</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>

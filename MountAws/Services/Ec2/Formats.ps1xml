@@ -1,12 +1,16 @@
 <Configuration>
   <ViewDefinitions>
     <View>
-      <Name>ECRRepository</Name>
+      <Name>InstanceItem</Name>
       <ViewSelectedBy>
-        <TypeName>MountAws.Services.Ecr.RepositoryItem</TypeName>
+        <TypeName>MountAws.Services.Ec2.InstanceItem</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>
+          <TableColumnHeader>
+          </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
           <TableColumnHeader>
           </TableColumnHeader>
           <TableColumnHeader>
@@ -21,36 +25,16 @@
                 <PropertyName>Name</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>ItemType</PropertyName>
+                <PropertyName>InstanceId</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>RepositoryUri</PropertyName>
-              </TableColumnItem>
-            </TableColumnItems>
-          </TableRowEntry>
-        </TableRowEntries>
-      </TableControl>
-    </View>
-    <View>
-      <Name>ECRImageTag</Name>
-      <ViewSelectedBy>
-        <TypeName>MountAws.Services.Ecr.ImageTagItem</TypeName>
-      </ViewSelectedBy>
-      <TableControl>
-        <TableHeaders>
-          <TableColumnHeader>
-          </TableColumnHeader>
-          <TableColumnHeader>
-          </TableColumnHeader>
-        </TableHeaders>
-        <TableRowEntries>
-          <TableRowEntry>
-            <TableColumnItems>
-              <TableColumnItem>
-                <PropertyName>Name</PropertyName>
+                <PropertyName>InstanceType</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>RepositoryUri</PropertyName>
+                <PropertyName>PrivateIpAddress</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>LaunchTime</PropertyName>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>

@@ -3,7 +3,7 @@ using MountAnything;
 
 namespace MountAws.Services.Elbv2;
 
-public class TargetGroupItem : Item
+public class TargetGroupItem : AwsItem
 {
 
     public TargetGroupItem(string parentPath, PSObject targetGroup) : base(parentPath, targetGroup) {}

@@ -3,7 +3,7 @@ using MountAnything;
 
 namespace MountAws.Services.Ec2;
 
-public class InstanceItem : Item
+public class InstanceItem : AwsItem
 {
     public InstanceItem(string parentPath, PSObject instance) : base(parentPath, instance)
     {
