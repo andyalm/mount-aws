@@ -14,12 +14,6 @@ public class SecurityGroupHandler : PathHandler
 
     protected override IItem? GetItemImpl()
     {
-        // don't allow an arbitrary filter value. Only names or id's
-        if (ItemName.Contains("="))
-        {
-            return null;
-        }
-        
         var request = Ec2ApiExtensions.ParseSecurityGroupFilter(ItemName);
         var securityGroups = _ec2.DescribeSecurityGroups(request).SecurityGroups.ToArray();
         WriteDebug($"Found {securityGroups.Length} security groups");

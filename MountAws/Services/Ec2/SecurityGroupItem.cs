@@ -19,4 +19,12 @@ public class SecurityGroupItem : AwsItem
         psObject.Properties.Add(new PSAliasProperty("Name", nameof(GroupName)));
         base.CustomizePSObject(psObject);
     }
+
+    public override IEnumerable<string> Aliases
+    {
+        get
+        {
+            yield return GroupName;
+        }
+    }
 }

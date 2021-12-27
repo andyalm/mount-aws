@@ -20,15 +20,20 @@ public class AwsSdkEc2Api : IEc2Api
 
     public (IEnumerable<PSObject> Instances, string NextToken) DescribeInstances(DescribeInstancesRequest request)
     {
-        var response = _ec2.DescribeInstancesAsync(new Amazon.EC2.Model.DescribeInstancesRequest
+        var awsRequest = new Amazon.EC2.Model.DescribeInstancesRequest
         {
             InstanceIds = request.InstanceIds,
             Filters = request.Filters
                 .Select(p => new Filter(p.Name, p.Values))
                 .ToList(),
             NextToken = request.NextToken,
-            MaxResults = 100
-        }).GetAwaiter().GetResult();
+        };
+        // only set max results if no filters applied (it sometimes doesn't return results)
+        if(!awsRequest.Filters.Any() && !awsRequest.InstanceIds.Any())
+        {
+            awsRequest.MaxResults = 100;
+        }
+        var response = _ec2.DescribeInstancesAsync(awsRequest).GetAwaiter().GetResult();
         
         return (response.Reservations.SelectMany(r => r.Instances).ToPSObjects(),
                 response.NextToken);
@@ -44,10 +49,7 @@ public class AwsSdkEc2Api : IEc2Api
 
     public (IEnumerable<PSObject> SecurityGroups, string NextToken) DescribeSecurityGroups(DescribeSecurityGroupsRequest request)
     {
-        var awsRequest = new Amazon.EC2.Model.DescribeSecurityGroupsRequest
-        {
-            NextToken = request.NextToken,
-        };
+        var awsRequest = new Amazon.EC2.Model.DescribeSecurityGroupsRequest();
         if (request.Filters.Any())
         {
             awsRequest.Filters = request.Filters.Select(f => new Filter(f.Name, f.Values)).ToList();
@@ -56,12 +58,18 @@ public class AwsSdkEc2Api : IEc2Api
         {
             awsRequest.GroupIds.AddRange(request.Ids);
         }
-        else
+        
+        // only set max results if no filters applied (it sometimes doesn't return results)
+        if(!awsRequest.Filters.Any() && !awsRequest.GroupIds.Any())
         {
             awsRequest.MaxResults = 100;
         }
-        var response = _ec2.DescribeSecurityGroupsAsync(awsRequest).GetAwaiter().GetResult();
 
+        if (!string.IsNullOrEmpty(request.NextToken))
+        {
+            awsRequest.NextToken = request.NextToken;
+        }
+        var response = _ec2.DescribeSecurityGroupsAsync(awsRequest).GetAwaiter().GetResult();
         return (response.SecurityGroups.ToPSObjects(),
             response.NextToken);
     }

@@ -14,13 +14,13 @@ public class InstanceHandler : PathHandler, IRemoveItemHandler
 
     protected override IItem? GetItemImpl()
     {
-        // don't allow an arbitrary filter value. Only names or ip's
-        if (ItemName.Contains("="))
+        var request = Ec2ApiExtensions.ParseInstanceFilter(ItemName);
+        if (request.Filters.Any(f => f.Name == "tag:Name"))
         {
+            Context.WriteWarning("If you want to get an item by name, use a wildcard");
             return null;
         }
         
-        var request = Ec2ApiExtensions.ParseInstanceFilter(ItemName);
         var instances = _ec2.DescribeInstances(request).Instances.ToArray();
         WriteDebug($"Found {instances.Length} instances");
         if (instances.Length == 1)

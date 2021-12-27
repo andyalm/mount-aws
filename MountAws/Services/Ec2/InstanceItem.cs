@@ -7,9 +7,12 @@ public class InstanceItem : AwsItem
 {
     public InstanceItem(string parentPath, PSObject instance) : base(parentPath, instance)
     {
-        
+        Name = Property<IEnumerable<PSObject>>("Tags")!
+            .SingleOrDefault(t =>
+                t.Property<string>("Key")?.Equals("Name") == true)?.Property<string>("Value");
     }
 
+    public string? Name { get; }
     public override string ItemName => Property<string>("InstanceId")!;
     public override string ItemType => Ec2ItemTypes.Instance;
     public override bool IsContainer => false;
@@ -22,14 +25,12 @@ public class InstanceItem : AwsItem
             {
                 yield return privateIpAddress;
             }
-
-            var nameTag = Property<IEnumerable<PSObject>>("Tags")!
-                .SingleOrDefault(t =>
-                    t.Property<string>("Key")?.Equals("Name", StringComparison.OrdinalIgnoreCase) == true);
-            if (nameTag != null)
-            {
-                yield return nameTag.Property<string>("Value")!;
-            }
         }
+    }
+
+    public override void CustomizePSObject(PSObject psObject)
+    {
+        psObject.Properties.Add(new PSNoteProperty(nameof(Name), Name));
+        base.CustomizePSObject(psObject);
     }
 }

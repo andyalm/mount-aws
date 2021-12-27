@@ -18,6 +18,7 @@ public abstract class PathHandler : IPathHandler
 
     protected Cache Cache => Context.Cache;
     protected void WriteDebug(string message) => Context.WriteDebug(message);
+    protected void WriteWarning(string message) => Context.WriteWarning(message);
 
     protected string ParentPath => System.IO.Path.GetDirectoryName(Path)!.Replace(@"\", "/");
     protected string ItemName => System.IO.Path.GetFileName(Path);
