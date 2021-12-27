@@ -1,4 +1,5 @@
 using MountAnything;
+using MountAws.Api.Ec2;
 using MountAws.Api.Elbv2;
 using LoadBalancerNotFoundException = MountAws.Api.Elbv2.LoadBalancerNotFoundException;
 
@@ -7,10 +8,12 @@ namespace MountAws.Services.Elbv2;
 public class LoadBalancerHandler : PathHandler
 {
     private readonly IElbv2Api _elbv2;
+    private readonly IEc2Api _ec2;
 
-    public LoadBalancerHandler(string path, IPathHandlerContext context, IElbv2Api elbv2) : base(path, context)
+    public LoadBalancerHandler(string path, IPathHandlerContext context, IElbv2Api elbv2, IEc2Api ec2) : base(path, context)
     {
         _elbv2 = elbv2;
+        _ec2 = ec2;
     }
 
     protected override bool ExistsImpl()
@@ -23,7 +26,11 @@ public class LoadBalancerHandler : PathHandler
         try
         {
             var loadBalancer = _elbv2.DescribeLoadBalancer(ItemName);
-            return new LoadBalancerItem(ParentPath, loadBalancer);
+            var securityGroups = _ec2.DescribeSecurityGroups(new DescribeSecurityGroupsRequest
+            {
+                Ids = new List<string>(loadBalancer.Property<IEnumerable<string>>("SecurityGroups")!)
+            }).SecurityGroups;
+            return new LoadBalancerItem(ParentPath, loadBalancer, securityGroups);
         }
         catch (LoadBalancerNotFoundException)
         {

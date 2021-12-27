@@ -6,11 +6,13 @@ namespace MountAws.Services.Elbv2;
 
 public class RuleItem : AwsItem
 {
+    public string RuleArn { get; }
     public IEnumerable<PSObject> Actions { get; }
     public IEnumerable<PSObject> Conditions { get; }
     public string ConditionDescription { get; }
     public RuleItem(string parentPath, PSObject rule) : base(parentPath, rule)
     {
+        RuleArn = Property<string>("RuleArn")!;
         Actions = Property<IEnumerable<PSObject>>("Actions")!;
         Conditions = Property<IEnumerable<PSObject>>("Conditions")!;
         ConditionDescription = string.Join("|", Conditions.Select(ToConditionDescription));

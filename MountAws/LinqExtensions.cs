@@ -1,3 +1,4 @@
+using System.Management.Automation;
 using MountAnything;
 
 namespace MountAws;
@@ -10,6 +11,18 @@ internal static class LinqExtensions
         {
             action(item);
             yield return item;
+        }
+    }
+
+    public static IEnumerable<PSObject> MultiGet<TKey>(this IDictionary<TKey, PSObject> dictionary,
+        IEnumerable<TKey> keys)
+    {
+        foreach (var key in keys)
+        {
+            if (dictionary.TryGetValue(key, out var value))
+            {
+                yield return value;
+            }
         }
     }
 

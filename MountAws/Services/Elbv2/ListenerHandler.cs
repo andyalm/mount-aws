@@ -1,5 +1,6 @@
 using MountAnything;
 using MountAws.Api;
+using MountAws.Api.Ec2;
 using MountAws.Api.Elbv2;
 
 namespace MountAws.Services.Elbv2;
@@ -7,15 +8,17 @@ namespace MountAws.Services.Elbv2;
 public class ListenerHandler : PathHandler
 {
     private readonly IElbv2Api _elbv2;
+    private readonly IEc2Api _ec2;
 
-    public ListenerHandler(string path, IPathHandlerContext context, IElbv2Api elbv2) : base(path, context)
+    public ListenerHandler(string path, IPathHandlerContext context, IElbv2Api elbv2, IEc2Api ec2) : base(path, context)
     {
         _elbv2 = elbv2;
+        _ec2 = ec2;
     }
 
     protected override IItem? GetItemImpl()
     {
-        var loadBalancerHandler = new LoadBalancerHandler(ParentPath, Context, _elbv2);
+        var loadBalancerHandler = new LoadBalancerHandler(ParentPath, Context, _elbv2, _ec2);
         var loadBalancerItem = loadBalancerHandler.GetItem() as LoadBalancerItem;
         if (loadBalancerItem == null)
         {

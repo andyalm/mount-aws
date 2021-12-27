@@ -91,12 +91,28 @@ public class AwsSdkElbv2Api : IElbv2Api
         }
     }
 
+    public void DeleteTargetGroup(string targetGroupArn)
+    {
+        _elbv2.DeleteTargetGroupAsync(new DeleteTargetGroupRequest
+        {
+            TargetGroupArn = targetGroupArn
+        }).GetAwaiter().GetResult();
+    }
+
     public IEnumerable<PSObject> DescribeRules(string listenerArn)
     {
         return _elbv2.DescribeRulesAsync(new DescribeRulesRequest
         {
             ListenerArn = listenerArn
         }).GetAwaiter().GetResult().Rules.ToPSObjects();
+    }
+
+    public void DeleteRule(string ruleArn)
+    {
+        _elbv2.DeleteRuleAsync(new DeleteRuleRequest
+        {
+            RuleArn = ruleArn
+        }).GetAwaiter().GetResult();
     }
 
     public IEnumerable<PSObject> DescribeTargetHealth(string targetGroupArn)

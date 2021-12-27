@@ -4,7 +4,7 @@ using TargetGroupNotFoundException = MountAws.Api.Elbv2.TargetGroupNotFoundExcep
 
 namespace MountAws.Services.Elbv2;
 
-public class TargetGroupHandler : PathHandler
+public class TargetGroupHandler : PathHandler, IRemoveItemHandler
 {
     private readonly IElbv2Api _elbv2;
 
@@ -34,5 +34,16 @@ public class TargetGroupHandler : PathHandler
             return Enumerable.Empty<Item>();
         }
         return _elbv2.DescribeTargetHealth(targetGroupItem.TargetGroupArn).Select(d => new TargetHealthItem(Path, d));
+    }
+
+    public void RemoveItem()
+    {
+        var item = GetItem(Freshness.Default) as TargetGroupItem;
+        if (item == null)
+        {
+            throw new InvalidOperationException($"The target group '{ItemName}' could not be found");
+        }
+        
+        _elbv2.DeleteTargetGroup(item.TargetGroupArn);
     }
 }

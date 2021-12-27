@@ -1,20 +1,23 @@
 using MountAnything;
+using MountAws.Api.Ec2;
 using MountAws.Api.Elbv2;
 
 namespace MountAws.Services.Elbv2;
 
-public class RuleHandler : PathHandler
+public class RuleHandler : PathHandler, IRemoveItemHandler
 {
     private readonly IElbv2Api _elbv2;
+    private readonly IEc2Api _ec2;
 
-    public RuleHandler(string path, IPathHandlerContext context, IElbv2Api elbv2) : base(path, context)
+    public RuleHandler(string path, IPathHandlerContext context, IElbv2Api elbv2, IEc2Api ec2) : base(path, context)
     {
         _elbv2 = elbv2;
+        _ec2 = ec2;
     }
 
     protected override IItem? GetItemImpl()
     {
-        var rulesHandler = new RulesHandler(ParentPath, Context, _elbv2);
+        var rulesHandler = new RulesHandler(ParentPath, Context, _elbv2, _ec2);
         return rulesHandler.GetChildItems().FirstOrDefault(i => i.ItemName == ItemName) as RuleItem;
     }
 
@@ -27,5 +30,16 @@ public class RuleHandler : PathHandler
         }
 
         return rule.Actions.Select(a => ActionItem.Create(Path, a));
+    }
+
+    public void RemoveItem()
+    {
+        var rule = GetItem() as RuleItem;
+        if (rule == null)
+        {
+            throw new InvalidOperationException($"The rule '{ItemName}' does not exist");
+        }
+        
+        _elbv2.DeleteRule(rule.RuleArn);
     }
 }
