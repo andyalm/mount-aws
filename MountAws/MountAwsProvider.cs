@@ -57,13 +57,7 @@ public class MountAwsProvider : MountAnythingProvider
                     var regionName = match.Values["Region"];
                     builder.RegisterInstance(new CurrentRegion(regionName));
                 });
-                region.MapLiteral<Ec2RootHandler>("ec2", ec2 =>
-                {
-                    ec2.MapLiteral<InstancesHandler>("instances", instances =>
-                    {
-                        instances.Map<InstanceHandler>();
-                    });
-                });
+                region.MapEc2();
                 region.MapEcr();
                 region.MapEcs();
                 region.MapElbv2();

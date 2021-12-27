@@ -3,15 +3,28 @@ using System.Text.RegularExpressions;
 using MountAws.Api.Ec2;
 using DescribeInstancesRequest = MountAws.Api.Ec2.DescribeInstancesRequest;
 
+using static MountAws.PagingHelper;
+
 namespace MountAws.Services.Ec2;
 
 public static class Ec2ApiExtensions
 {
     public static IEnumerable<PSObject> QueryInstances(this IEc2Api client, string? filter = null)
     {
-        var request = !string.IsNullOrEmpty(filter) ? ParseFilter(filter) : new DescribeInstancesRequest();
+        var request = !string.IsNullOrEmpty(filter) ? ParseInstanceFilter(filter) : new DescribeInstancesRequest();
         
-        return client.DescribeInstances(request);
+        return GetWithPaging(nextToken =>
+        {
+            request.NextToken = nextToken;
+            
+            var response = client.DescribeInstances(request);
+
+            return new PaginatedResponse<PSObject>
+            {
+                PageOfResults = response.Instances.ToArray(),
+                NextToken = response.NextToken
+            };
+        });
     }
 
     public static IEnumerable<PSObject> GetInstancesByIds(this IEc2Api ec2, IEnumerable<string> instanceIds)
@@ -25,10 +38,10 @@ public static class Ec2ApiExtensions
         return ec2.DescribeInstances(new DescribeInstancesRequest
             {
                 InstanceIds = instanceIdList
-            });
+            }).Instances;
     }
 
-    public static DescribeInstancesRequest ParseFilter(string filterString)
+    public static DescribeInstancesRequest ParseInstanceFilter(string filterString)
     {
         var request = new DescribeInstancesRequest();
         foreach (var filter in filterString.Split(","))
@@ -44,11 +57,38 @@ public static class Ec2ApiExtensions
             else if (filter.Contains('='))
             {
                 var parts = filter.Split("=");
-                request.Filters.Add(new KeyValuePair<string, string>(parts[0], parts[1]));
+                request.Filters.Add(new Filter(parts[0], parts[1]));
             }
             else
             {
-                request.Filters.Add(new KeyValuePair<string, string>("tag:Name", filter));
+                request.Filters.Add(new Filter("tag:Name", filter));
+            }
+        }
+
+        return request;
+    }
+    
+    public static DescribeSecurityGroupsRequest ParseSecurityGroupFilter(string filterString)
+    {
+        var request = new DescribeSecurityGroupsRequest();
+        foreach (var filter in filterString.Split(","))
+        {
+            if (filter.StartsWith("sg-") && filter.Contains("*"))
+            {
+                request.Filters.Add(new Filter("group-id", filter));
+            }
+            else if (filter.StartsWith("sg-"))
+            {
+                request.Ids.Add(filter);
+            }
+            else if (filter.Contains('='))
+            {
+                var parts = filter.Split("=");
+                request.Filters.Add(new Filter(parts[0], parts[1]));
+            }
+            else
+            {
+                request.Filters.Add(new Filter("group-name", filter));
             }
         }
 
@@ -59,7 +99,7 @@ public static class Ec2ApiExtensions
     {
         if (filter.Contains("*"))
         {
-            request.Filters.Add(new KeyValuePair<string, string>("instance-id", filter));
+            request.Filters.Add(new Filter("instance-id", filter));
         }
         else
         {
@@ -83,9 +123,9 @@ public static class Ec2ApiExtensions
         return ip;
     }
     
-    private static KeyValuePair<string,string> IPAddressFilter(string ipAddress)
+    private static Filter IPAddressFilter(string ipAddress)
     {
-        return new KeyValuePair<string, string>("network-interface.addresses.private-ip-address",
+        return new Filter("network-interface.addresses.private-ip-address",
             ResolveEc2IPAddress(ipAddress));
     }
 }

@@ -14,12 +14,18 @@ public class InstanceHandler : PathHandler, IRemoveItemHandler
 
     protected override IItem? GetItemImpl()
     {
-        var request = Ec2ApiExtensions.ParseFilter(ItemName);
-        var instances = _ec2.DescribeInstances(request).ToArray();
+        var request = Ec2ApiExtensions.ParseInstanceFilter(ItemName);
+        if (request.Filters.Any(f => f.Name == "tag:Name"))
+        {
+            Context.WriteWarning("If you want to get an item by name, use a wildcard");
+            return null;
+        }
+        
+        var instances = _ec2.DescribeInstances(request).Instances.ToArray();
         WriteDebug($"Found {instances.Length} instances");
         if (instances.Length == 1)
         {
-            return new InstanceItem(ParentPath, instances.First());
+            return new InstanceItem(ParentPath, instances.Single());
         }
 
         return null;

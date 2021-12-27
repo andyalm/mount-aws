@@ -4,6 +4,8 @@ using Amazon.EC2.Model;
 using MountAnything;
 using MountAws.Api.Ec2;
 using DescribeInstancesRequest = MountAws.Api.Ec2.DescribeInstancesRequest;
+using DescribeSecurityGroupsRequest = MountAws.Api.Ec2.DescribeSecurityGroupsRequest;
+using Filter = Amazon.EC2.Model.Filter;
 
 namespace MountAws.Api.AwsSdk.Ec2;
 
@@ -16,15 +18,25 @@ public class AwsSdkEc2Api : IEc2Api
         _ec2 = ec2;
     }
 
-    public IEnumerable<PSObject> DescribeInstances(DescribeInstancesRequest request)
+    public (IEnumerable<PSObject> Instances, string NextToken) DescribeInstances(DescribeInstancesRequest request)
     {
-        return _ec2.DescribeInstancesAsync(new Amazon.EC2.Model.DescribeInstancesRequest
+        var awsRequest = new Amazon.EC2.Model.DescribeInstancesRequest
         {
             InstanceIds = request.InstanceIds,
             Filters = request.Filters
-                .Select(p => new Filter(p.Key, new List<string> { p.Value }))
-                .ToList()
-        }).GetAwaiter().GetResult().Reservations.SelectMany(r => r.Instances).ToPSObjects();
+                .Select(p => new Filter(p.Name, p.Values))
+                .ToList(),
+            NextToken = request.NextToken,
+        };
+        // only set max results if no filters applied (it sometimes doesn't return results)
+        if(!awsRequest.Filters.Any() && !awsRequest.InstanceIds.Any())
+        {
+            awsRequest.MaxResults = 100;
+        }
+        var response = _ec2.DescribeInstancesAsync(awsRequest).GetAwaiter().GetResult();
+        
+        return (response.Reservations.SelectMany(r => r.Instances).ToPSObjects(),
+                response.NextToken);
     }
 
     public void TerminateInstance(string instanceId)
@@ -33,5 +45,32 @@ public class AwsSdkEc2Api : IEc2Api
         {
             InstanceIds = new List<string> { instanceId }
         }).GetAwaiter().GetResult();
+    }
+
+    public (IEnumerable<PSObject> SecurityGroups, string NextToken) DescribeSecurityGroups(DescribeSecurityGroupsRequest request)
+    {
+        var awsRequest = new Amazon.EC2.Model.DescribeSecurityGroupsRequest();
+        if (request.Filters.Any())
+        {
+            awsRequest.Filters = request.Filters.Select(f => new Filter(f.Name, f.Values)).ToList();
+        }
+        if (request.Ids.Any())
+        {
+            awsRequest.GroupIds.AddRange(request.Ids);
+        }
+        
+        // only set max results if no filters applied (it sometimes doesn't return results)
+        if(!awsRequest.Filters.Any() && !awsRequest.GroupIds.Any())
+        {
+            awsRequest.MaxResults = 100;
+        }
+
+        if (!string.IsNullOrEmpty(request.NextToken))
+        {
+            awsRequest.NextToken = request.NextToken;
+        }
+        var response = _ec2.DescribeSecurityGroupsAsync(awsRequest).GetAwaiter().GetResult();
+        return (response.SecurityGroups.ToPSObjects(),
+            response.NextToken);
     }
 }
