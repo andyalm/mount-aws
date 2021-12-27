@@ -14,6 +14,7 @@ public interface IElbv2Api
     IEnumerable<PSObject> DescribeRules(string listenerArn);
 
     IEnumerable<PSObject> DescribeTargetHealth(string targetGroupArn);
+    (IEnumerable<PSObject> TargetGroups, string NextToken) DescribeTargetGroups(string? nextToken);
 }
 
 public class DescribeLoadBalancersResponse

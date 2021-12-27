@@ -28,5 +28,6 @@ public class Elbv2RootHandler : PathHandler
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         yield return LoadBalancersHandler.CreateItem(Path);
+        yield return TargetGroupsHandler.CreateItem(Path);
     }
 }

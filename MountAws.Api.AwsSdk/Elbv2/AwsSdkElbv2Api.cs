@@ -1,4 +1,5 @@
 using System.Management.Automation;
+using System.Security.AccessControl;
 using Amazon.ElasticLoadBalancingV2;
 using Amazon.ElasticLoadBalancingV2.Model;
 using MountAnything;
@@ -53,6 +54,19 @@ public class AwsSdkElbv2Api : IElbv2Api
         {
             LoadBalancerArn = loadBalancerArn
         }).GetAwaiter().GetResult().Listeners.ToPSObjects();
+    }
+
+    public (IEnumerable<PSObject> TargetGroups, string NextToken) DescribeTargetGroups(string? nextToken)
+    {
+        var response = _elbv2
+            .DescribeTargetGroupsAsync(new Amazon.ElasticLoadBalancingV2.Model.DescribeTargetGroupsRequest
+            {
+                Marker = nextToken,
+                PageSize = 100
+            })
+            .GetAwaiter().GetResult();
+
+        return (response.TargetGroups.ToPSObjects(), response.NextMarker);
     }
 
     public IEnumerable<PSObject> DescribeTargetGroups(DescribeTargetGroupsRequest request)

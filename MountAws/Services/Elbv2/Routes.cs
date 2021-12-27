@@ -18,7 +18,7 @@ public static class Routes
                         {
                             defaultActions.Map<DefaultActionHandler>(defaultAction =>
                             {
-                                defaultAction.Map<TargetGroupHandler>();
+                                defaultAction.MapTargetGroup();
                             });
                         });
                         listener.MapLiteral<RulesHandler>("rules", rules =>
@@ -27,16 +27,25 @@ public static class Routes
                             {
                                 rule.Map<RuleActionHandler>(ruleAction =>
                                 {
-                                    ruleAction.Map<TargetGroupHandler>(targetGroup =>
-                                    {
-                                        targetGroup.Map<TargetHealthHandler>();
-                                    });
+                                    ruleAction.MapTargetGroup();
                                 });
                             });
                         });
                     });
                 });
             });
+            elbv2.MapLiteral<TargetGroupsHandler>("target-groups", targetGroups =>
+            {
+                targetGroups.MapTargetGroup();
+            });
+        });
+    }
+
+    private static void MapTargetGroup(this Route targetGroupRoute)
+    {
+        targetGroupRoute.Map<TargetGroupHandler>(targetGroup =>
+        {
+            targetGroup.Map<TargetHealthHandler>();
         });
     }
 }
