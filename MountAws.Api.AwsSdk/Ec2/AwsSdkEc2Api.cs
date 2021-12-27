@@ -93,4 +93,27 @@ public class AwsSdkEc2Api : IEc2Api
         return (response.SecurityGroups.ToPSObjects(),
             response.NextToken);
     }
+
+    public IEnumerable<PSObject> DescribeSubnetsByVpc(string vpcId)
+    {
+        return _ec2.DescribeSubnetsAsync(new DescribeSubnetsRequest
+        {
+            Filters = new List<Filter> { new Filter("vpc-id", new List<string> { vpcId }) }
+        }).GetAwaiter().GetResult().Subnets.ToPSObjects();
+    }
+    
+    public PSObject DescribeSubnet(string subnetId)
+    {
+        try
+        {
+            return _ec2.DescribeSubnetsAsync(new DescribeSubnetsRequest
+            {
+                SubnetIds = new List<string>{subnetId}
+            }).GetAwaiter().GetResult().Subnets.Single().ToPSObject();
+        }
+        catch (AmazonEC2Exception ex) when(ex.StatusCode is HttpStatusCode.NotFound or HttpStatusCode.BadRequest)
+        {
+            throw new SubnetNotFoundException(subnetId);
+        }
+    }
 }

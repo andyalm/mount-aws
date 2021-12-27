@@ -98,5 +98,41 @@
         </TableRowEntries>
       </TableControl>
     </View>
+    <View>
+      <Name>SubnetItem</Name>
+      <ViewSelectedBy>
+        <TypeName>MountAws.Services.Ec2.SubnetItem</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+          </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>SubnetId</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>CidrBlock</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>AvailabilityZone</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>AvailableIpAddressCount</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
   </ViewDefinitions>
 </Configuration>

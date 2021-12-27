@@ -9,4 +9,6 @@ public interface IEc2Api
     (IEnumerable<PSObject> SecurityGroups, string NextToken) DescribeSecurityGroups(DescribeSecurityGroupsRequest request);
     IEnumerable<PSObject> DescribeVpcs();
     PSObject DescribeVpc(string vpcId);
+    IEnumerable<PSObject> DescribeSubnetsByVpc(string vpcId);
+    PSObject DescribeSubnet(string subnetId);
 }

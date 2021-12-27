@@ -18,7 +18,10 @@ public static class Routes
             });
             ec2.MapLiteral<VpcsHandler>("vpcs", vpcs =>
             {
-                vpcs.Map<VpcHandler>();
+                vpcs.Map<VpcHandler>(vpc =>
+                {
+                    vpc.Map<SubnetHandler>();
+                });
             });
         });
     }

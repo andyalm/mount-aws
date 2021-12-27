@@ -27,6 +27,13 @@ public class VpcHandler : PathHandler
 
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
-        yield break;
+        var vpc = GetItem(Freshness.Fastest);
+        if (vpc != null)
+        {
+            return _ec2.DescribeSubnetsByVpc(vpc.ItemName)
+                .Select(s => new SubnetItem(Path, s));
+        }
+
+        return Enumerable.Empty<IItem>();
     }
 }
