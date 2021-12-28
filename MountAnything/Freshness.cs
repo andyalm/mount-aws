@@ -19,20 +19,23 @@ public abstract class Freshness
     /// </summary>
     public static Freshness Fastest { get; } = new FastestFreshness();
 
-    public abstract bool ConsiderCache(bool force);
+    public abstract bool IsFresh(DateTimeOffset cachedTimestamp, bool force);
     
     private class DefaultFreshness : Freshness
     {
-        public override bool ConsiderCache(bool force) => !force;
+        public override bool IsFresh(DateTimeOffset cachedTimestamp, bool force) =>
+            !force;
     }
     
     private class GuaranteedFreshness : Freshness
     {
-        public override bool ConsiderCache(bool force) => false;
+        public override bool IsFresh(DateTimeOffset cachedTimestamp, bool force) =>
+            !force && cachedTimestamp.AddSeconds(15) > DateTimeOffset.UtcNow;
     }
     
     private class FastestFreshness : Freshness
     {
-        public override bool ConsiderCache(bool force) => true;
+        public override bool IsFresh(DateTimeOffset cachedTimestamp, bool force) => 
+            cachedTimestamp.AddHours(4) > DateTimeOffset.UtcNow;
     }
 }

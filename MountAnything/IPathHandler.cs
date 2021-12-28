@@ -5,8 +5,8 @@ public interface IPathHandler
     string Path { get; }
     bool Exists();
     IItem? GetItem(Freshness? freshness = null);
-    Freshness GetItemDefaultFreshness { get; }
+    Freshness GetItemCommandDefaultFreshness { get; }
     IEnumerable<IItem> GetChildItems(Freshness? freshness = null);
-    Freshness GetChildItemsDefaultFreshness { get; }
+    Freshness GetChildItemsCommandDefaultFreshness { get; }
     IEnumerable<IItem> GetChildItems(string filter);
 }

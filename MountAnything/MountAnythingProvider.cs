@@ -64,7 +64,7 @@ public abstract class MountAnythingProvider : NavigationCmdletProvider,
         {
             WithPathHandler(path, handler =>
             {
-                var item = handler.GetItem(handler.GetItemDefaultFreshness);
+                var item = handler.GetItem(handler.GetItemCommandDefaultFreshness);
                 if (item != null)
                 {
                     WriteItem(item);
@@ -91,7 +91,7 @@ public abstract class MountAnythingProvider : NavigationCmdletProvider,
         {
             handler.SetDynamicParameters(typeof(IGetChildItemParameters<>), DynamicParameters);
             var childItems = string.IsNullOrEmpty(Filter)
-                ? handler.GetChildItems(handler.GetChildItemsDefaultFreshness)
+                ? handler.GetChildItems(handler.GetChildItemsCommandDefaultFreshness)
                 : handler.GetChildItems(Filter);
             WriteItems(childItems);
         });

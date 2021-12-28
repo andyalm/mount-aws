@@ -24,27 +24,15 @@ public class Cache
         }
     }
 
-    public bool TryGetItem(string path, out IItem cachedObject)
+    public bool TryGetItem(string path, out (IItem Item, DateTimeOffset FreshnessTimestamp) cachedObject)
     {
         if (_objects.TryGetValue(path, out var cachedItem))
         {
-            cachedObject = cachedItem.Item;
+            cachedObject = (cachedItem.Item, cachedItem.FreshnessTimestamp);
             return true;
         }
 
         cachedObject = default!;
-        return false;
-    }
-
-    public bool TryGetItem<T>(string path, out T cachedItem) where T : IItem
-    {
-        if (TryGetItem(path, out var untypedCachedItem) && untypedCachedItem is T cachedTypedObject)
-        {
-            cachedItem = cachedTypedObject;
-            return true;
-        }
-
-        cachedItem = default!;
         return false;
     }
     
@@ -59,27 +47,40 @@ public class Cache
         cachedItem.ChildPaths = childItems.Select(i => i.FullPath).ToList();
     }
 
-    public bool TryGetChildItems(string path, out IEnumerable<IItem> childItems)
+    public bool TryGetChildItems(string path, out (IEnumerable<IItem> ChildItems, DateTimeOffset FreshnessTimestamp) cachedObject)
     {
         if (_objects.TryGetValue(path, out var cachedItem) && cachedItem.ChildPaths != null)
         {
-            childItems = cachedItem.ChildPaths.Select(childPath => _objects[childPath].Item).ToArray();
+            var childItems = cachedItem.ChildPaths.Select(childPath => _objects[childPath].Item).ToArray();
+            cachedObject = (childItems, cachedItem.FreshnessTimestamp);
             return true;
         }
 
-        childItems = default!;
+        cachedObject = default!;
         return false;
     }
     
     private class CachedItem
     {
+        private IItem _item;
+
         public CachedItem(IItem item)
         {
-            Item = item;
+            _item = item;
+            FreshnessTimestamp = DateTimeOffset.UtcNow;
             ChildPaths = null;
         }
-        
-        public IItem Item { get; set; }
+
+        public IItem Item
+        {
+            get => _item;
+            set
+            {
+                _item = value;
+                FreshnessTimestamp = DateTimeOffset.UtcNow;
+            }
+        }
         public List<string>? ChildPaths { get; set; }
+        public DateTimeOffset FreshnessTimestamp { get; private set; }
     }
 }

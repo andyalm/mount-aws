@@ -36,9 +36,9 @@ public abstract class PathHandler : IPathHandler
     public IItem? GetItem(Freshness? freshness = null)
     {
         freshness ??= Freshness.Default;
-        if (freshness.ConsiderCache(Context.Force) && Cache.TryGetItem(Path, out var cachedItem))
+        if (Cache.TryGetItem(Path, out var cachedItem) && freshness.IsFresh(cachedItem.FreshnessTimestamp, Context.Force))
         {
-            return cachedItem;
+            return cachedItem.Item;
         }
 
         var item = GetItemImpl();
@@ -54,10 +54,11 @@ public abstract class PathHandler : IPathHandler
     public IEnumerable<IItem> GetChildItems(Freshness? freshness = null)
     {
         freshness ??= Freshness.Default;
-        if (CacheChildren && freshness.ConsiderCache(Context.Force) && Cache.TryGetChildItems(Path, out var cachedChildItems))
+        if (CacheChildren && Cache.TryGetChildItems(Path, out var cachedObject)
+                          && freshness.IsFresh(cachedObject.FreshnessTimestamp, Context.Force))
         {
             WriteDebug($"True Cache.TryGetChildItems({Path})");
-            return cachedChildItems;
+            return cachedObject.ChildItems;
         }
         WriteDebug($"False Cache.TryGetChildItems({Path})");
 
@@ -82,8 +83,8 @@ public abstract class PathHandler : IPathHandler
     protected abstract IEnumerable<IItem> GetChildItemsImpl();
 
     protected virtual bool CacheChildren => true;
-    public virtual Freshness GetItemDefaultFreshness => Freshness.Guaranteed;
-    public virtual Freshness GetChildItemsDefaultFreshness => Freshness.Guaranteed;
+    public virtual Freshness GetItemCommandDefaultFreshness => Freshness.Guaranteed;
+    public virtual Freshness GetChildItemsCommandDefaultFreshness => Freshness.Guaranteed;
 
     public virtual IEnumerable<IItem> GetChildItems(string filter)
     {
