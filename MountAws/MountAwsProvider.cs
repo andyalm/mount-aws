@@ -10,6 +10,7 @@ using MountAws.Services.Ec2;
 using MountAws.Services.Ecr;
 using MountAws.Services.Ecs;
 using MountAws.Services.Elbv2;
+using MountAws.Services.Route53;
 using MountAws.Services.S3;
 
 namespace MountAws;
@@ -61,6 +62,7 @@ public class MountAwsProvider : MountAnythingProvider
                 region.MapEcr();
                 region.MapEcs();
                 region.MapElbv2();
+                region.MapRoute53();
                 region.MapS3();
             });
         });

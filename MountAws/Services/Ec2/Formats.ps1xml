@@ -22,10 +22,10 @@
           <TableRowEntry>
             <TableColumnItems>
               <TableColumnItem>
-                <PropertyName>Name</PropertyName>
+                <PropertyName>InstanceId</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>InstanceId</PropertyName>
+                <PropertyName>Name</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>InstanceType</PropertyName>

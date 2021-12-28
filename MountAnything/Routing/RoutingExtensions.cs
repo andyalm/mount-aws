@@ -4,7 +4,7 @@ namespace MountAnything.Routing;
 
 public static class RoutingExtensions
 {
-    private const string ItemRegex = "[a-z0-9-_]+";
+    private const string ItemRegex = @"[a-z0-9-_\.]+";
     
     public static void Map<T>(this IRouter router, Action<Route>? createChildRoutes = null) where T : IPathHandler
     {

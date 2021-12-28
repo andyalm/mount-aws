@@ -17,7 +17,7 @@ public static class PSObjectExtensions
 
     public static T? Property<T>(this PSObject psObject, string propertyName)
     {
-        var rawValue = psObject.Properties[propertyName].Value;
+        var rawValue = psObject.Properties[propertyName]?.Value;
         if (rawValue == default)
         {
             return default;

@@ -4,6 +4,7 @@ using MountAws.Services.Ec2;
 using MountAws.Services.Ecr;
 using MountAws.Services.Ecs;
 using MountAws.Services.Elbv2;
+using MountAws.Services.Route53;
 using MountAws.Services.S3;
 
 namespace MountAws;
@@ -33,6 +34,7 @@ public class RegionHandler : PathHandler
         yield return EcrRootHandler.CreateItem(Path);
         yield return ECSRootHandler.CreateItem(Path);
         yield return Elbv2RootHandler.CreateItem(Path);
+        yield return Route53RootHandler.CreateItem(Path);
         yield return S3RootHandler.CreateItem(Path);
     }
 }

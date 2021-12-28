@@ -2,7 +2,16 @@
 
 The EC2 virtual filesystem is stuctured the following way:
 
-`instances/<instance-id>`
+```
+-- ec2
+   |-- instances
+       |-- i-09c32901ccd40a3a2
+   |-- security-groups
+       |-- sg-09934305f933f081b
+   |-- vpcs
+       |-- vpc-14539631
+           |-- subnet-334ecbf2
+```
 
 ## Filtering
 

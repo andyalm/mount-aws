@@ -88,6 +88,6 @@ public abstract class Item : Item<PSObject>
     
     protected T? Property<T>(string name)
     {
-        return UnderlyingObject.Property<T>(name);
+        return UnderlyingObject.Property<T?>(name);
     }
 }
