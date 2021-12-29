@@ -1,4 +1,3 @@
-using System.Management.Automation;
 using Amazon.EC2.Model;
 using MountAnything;
 using MountAws.Services.Ec2;

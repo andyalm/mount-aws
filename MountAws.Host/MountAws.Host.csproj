@@ -17,6 +17,13 @@
     <Exec Command="pwsh CreateManifest.ps1 $(OutputPath)" WorkingDirectory="$(MSBuildProjectDirectory)" />
   </Target>
 
+  <Target Name="PublishImpl" BeforeTargets="Publish">
+    <ItemGroup>
+      <PublishDependency Include="..\MountAws.Impl\MountAws.Impl.csproj" />
+    </ItemGroup>
+    <MSBuild Projects="@(PublishDependency)" Targets="Restore;Build;Publish" />
+  </Target>
+
   <Target Name="CopyModuleToPublishOutput" AfterTargets="Publish">
     <ItemGroup>
       <ImplAssembly Include="$(OutputPath)\Impl\*.*" />
