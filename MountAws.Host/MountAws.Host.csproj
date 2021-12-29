@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PublishDir>$(MSBuildProjectDirectory)\..\bin\MountAws\</PublishDir>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\MountAnything\MountAnything.csproj" />
+    <ProjectReference Include="..\MountAws.Host.Abstractions\MountAws.Host.Abstractions.csproj" />
+  </ItemGroup>
+
+  <Target Name="CopyModuleToOutput" AfterTargets="Build">
+    <Exec Command="pwsh CreateManifest.ps1 $(OutputPath)" WorkingDirectory="$(MSBuildProjectDirectory)" />
+  </Target>
+
+  <Target Name="CopyModuleToPublishOutput" AfterTargets="Publish">
+    <ItemGroup>
+      <ImplAssembly Include="$(OutputPath)\Impl\*.*" />
+    </ItemGroup>
+    <ItemGroup>
+      <PSXmlFile Include="$(OutputPath)\**\*.ps1xml" />
+    </ItemGroup>
+    <Copy SourceFiles="@(ImplAssembly)" DestinationFolder="$(PublishDir)\Impl\" />
+    <Copy SourceFiles="@(PSXmlFile)"
+          DestinationFiles="$(PublishDir)\%(RecursiveDir)\%(Filename)%(Extension)" />
+    <Exec Command="pwsh CreateManifest.ps1 $(PublishDir)" WorkingDirectory="$(MSBuildProjectDirectory)" />
+  </Target>
+
+</Project>

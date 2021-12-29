@@ -3,7 +3,7 @@ using Autofac.Features.ResolveAnything;
 
 namespace MountAnything.Routing;
 
-public class Router : IRouter
+public class Router : IRoutable
 {
     private readonly List<Route> _routes = new();
     private readonly Type? _rootHandlerType;
