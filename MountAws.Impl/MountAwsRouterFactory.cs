@@ -2,7 +2,9 @@ using Autofac;
 using MountAnything.Routing;
 using MountAws.Api;
 using MountAws.Api.AwsSdk;
+using MountAws.Api.AwsSdk.Ec2;
 using MountAws.Host.Abstractions;
+using MountAws.Services.Core;
 using MountAws.Services.Ec2;
 using MountAws.Services.Ecr;
 using MountAws.Services.Ecs;
@@ -19,12 +21,11 @@ public class MountAwsRouterFactory : IRouterFactory
         var router = Router.Create<ProfilesHandler>();
         router.RegisterServices(builder =>
         {
-            builder.RegisterInstance(new CurrentRegion("us-east-1"));
-            var registrars = typeof(CoreRegistrar).Assembly
+            var registrars = typeof(CoreServiceRegistrar).Assembly
                 .GetTypes()
-                .Where(t => typeof(IApiServiceRegistrar).IsAssignableFrom(t) && !t.IsAbstract)
+                .Where(t => typeof(IServiceRegistrar).IsAssignableFrom(t) && !t.IsAbstract)
                 .Select(Activator.CreateInstance)
-                .Cast<IApiServiceRegistrar>();
+                .Cast<IServiceRegistrar>();
             foreach (var registrar in registrars)
             {
                 registrar.Register(builder);

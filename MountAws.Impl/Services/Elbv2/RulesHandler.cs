@@ -1,3 +1,4 @@
+using Amazon.EC2;
 using MountAnything;
 using MountAws.Api.Ec2;
 using MountAws.Api.Elbv2;
@@ -8,7 +9,7 @@ namespace MountAws.Services.Elbv2;
 public class RulesHandler : PathHandler
 {
     private readonly IElbv2Api _elbv2;
-    private readonly IEc2Api _ec2;
+    private readonly IAmazonEC2 _ec2;
 
     public static Item CreateItem(string parentPath)
     {
@@ -16,7 +17,7 @@ public class RulesHandler : PathHandler
             "List the rules attached to the load balancer listener");
     }
     
-    public RulesHandler(string path, IPathHandlerContext context, IElbv2Api elbv2, IEc2Api ec2) : base(path, context)
+    public RulesHandler(string path, IPathHandlerContext context, IElbv2Api elbv2, IAmazonEC2 ec2) : base(path, context)
     {
         _elbv2 = elbv2;
         _ec2 = ec2;

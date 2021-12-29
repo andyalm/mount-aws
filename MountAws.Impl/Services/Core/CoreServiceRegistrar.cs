@@ -2,13 +2,15 @@ using Amazon;
 using Amazon.Runtime;
 using Amazon.Runtime.CredentialManagement;
 using Autofac;
+using MountAws.Api;
 
-namespace MountAws.Api.AwsSdk;
+namespace MountAws.Services.Core;
 
-public class CoreRegistrar : IApiServiceRegistrar
+public class CoreServiceRegistrar : IServiceRegistrar
 {
     public void Register(ContainerBuilder builder)
     {
+        builder.RegisterInstance(new CurrentRegion("us-east-1"));
         builder.Register(c =>
         {
             if (c.TryResolve<CurrentProfile>(out var currentProfile) &&
@@ -20,10 +22,9 @@ public class CoreRegistrar : IApiServiceRegistrar
             return new AnonymousAWSCredentials();
         }).As<AWSCredentials>();
         builder.Register<RegionEndpoint>(c => RegionEndpoint.GetBySystemName(c.Resolve<CurrentRegion>()));
-        builder.RegisterType<AwsSdkCoreApi>().As<ICoreApi>();
     }
-
-    private bool TryGetAWSCredentials(string profileName, out AWSCredentials credentials, HashSet<string>? profileBreadCrumbs = null)
+    
+    private static bool TryGetAWSCredentials(string profileName, out AWSCredentials credentials, HashSet<string>? profileBreadCrumbs = null)
     {
         profileBreadCrumbs ??= new HashSet<string>();
         if (profileBreadCrumbs.Contains(profileName))

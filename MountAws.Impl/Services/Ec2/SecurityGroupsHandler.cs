@@ -1,4 +1,6 @@
 using System.Management.Automation;
+using Amazon.EC2;
+using Amazon.EC2.Model;
 using MountAnything;
 using MountAws.Api.Ec2;
 using MountAws.Services.Core;
@@ -9,7 +11,7 @@ namespace MountAws.Services.Ec2;
 
 public class SecurityGroupsHandler : PathHandler
 {
-    private readonly IEc2Api _ec2;
+    private readonly IAmazonEC2 _ec2;
 
     public static IItem CreateItem(string parentPath)
     {
@@ -17,7 +19,7 @@ public class SecurityGroupsHandler : PathHandler
             "Navigate the security groups in the current account and region");
     }
     
-    public SecurityGroupsHandler(string path, IPathHandlerContext context, IEc2Api ec2) : base(path, context)
+    public SecurityGroupsHandler(string path, IPathHandlerContext context, IAmazonEC2 ec2) : base(path, context)
     {
         _ec2 = ec2;
     }
@@ -45,7 +47,7 @@ public class SecurityGroupsHandler : PathHandler
             request.NextToken = nextToken;
             var response = _ec2.DescribeSecurityGroups(request);
 
-            return new PaginatedResponse<PSObject>
+            return new PaginatedResponse<SecurityGroup>
             {
                 PageOfResults = response.SecurityGroups.ToArray(),
                 NextToken = response.NextToken

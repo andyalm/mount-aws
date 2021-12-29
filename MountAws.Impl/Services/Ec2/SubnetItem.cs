@@ -1,12 +1,13 @@
 using System.Management.Automation;
+using Amazon.EC2.Model;
 
 namespace MountAws.Services.Ec2;
 
-public class SubnetItem : AwsItem
+public class SubnetItem : AwsItem<Subnet>
 {
-    public SubnetItem(string parentPath, PSObject subnet) : base(parentPath, subnet)
+    public SubnetItem(string parentPath, Subnet subnet) : base(parentPath, subnet)
     {
-        ItemName = Property<string>("SubnetId")!;
+        ItemName = UnderlyingObject.SubnetId;
     }
 
     public override string ItemName { get; }

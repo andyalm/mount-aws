@@ -6,7 +6,7 @@ using MountAws.Api.S3;
 
 namespace MountAws.Api.AwsSdk.S3;
 
-public class S3Registrar : IApiServiceRegistrar
+public class S3Registrar : IServiceRegistrar
 {
     public void Register(ContainerBuilder builder)
     {

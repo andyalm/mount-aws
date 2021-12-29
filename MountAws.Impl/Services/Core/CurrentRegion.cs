@@ -1,4 +1,6 @@
-namespace MountAws.Api;
+using MountAws.Api;
+
+namespace MountAws.Services.Core;
 
 public class CurrentRegion : TypedString
 {

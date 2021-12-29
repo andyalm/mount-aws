@@ -37,6 +37,6 @@ public class MountAwsProvider : MountAnythingProvider
         var apiAssemblyDir = Path.Combine(modulePath, "Impl");
         var assemblyLoadContext = new ImplAssemblyLoadContext(apiAssemblyDir);
         
-        return assemblyLoadContext.LoadFromAssemblyName(new AssemblyName("MountAws"));
+        return assemblyLoadContext.LoadFromAssemblyName(new AssemblyName("MountAws.Impl"));
     }
 }

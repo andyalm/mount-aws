@@ -1,16 +1,14 @@
-using System.Management.Automation;
-using MountAnything;
-using MountAws.Services.Core;
+using Amazon.Runtime.CredentialManagement;
 
-namespace MountAws;
+namespace MountAws.Services.Core;
 
-public class ProfileItem : AwsItem
+public class ProfileItem : AwsItem<CredentialProfile>
 {
-    public ProfileItem(PSObject profile) : base(string.Empty, profile)
+    public ProfileItem(CredentialProfile profile) : base(string.Empty, profile)
     {
         
     }
-    public override string ItemName => Property<string>("Name")!;
+    public override string ItemName => UnderlyingObject.Name;
     public override string ItemType => CoreItemTypes.Profile;
     public override bool IsContainer => true;
 }

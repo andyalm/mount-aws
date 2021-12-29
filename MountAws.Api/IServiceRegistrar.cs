@@ -2,7 +2,7 @@ using Autofac;
 
 namespace MountAws.Api;
 
-public interface IApiServiceRegistrar
+public interface IServiceRegistrar
 {
     void Register(ContainerBuilder builder);
 }

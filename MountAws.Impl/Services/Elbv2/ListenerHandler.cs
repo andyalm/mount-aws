@@ -1,3 +1,4 @@
+using Amazon.EC2;
 using MountAnything;
 using MountAws.Api;
 using MountAws.Api.Ec2;
@@ -8,9 +9,9 @@ namespace MountAws.Services.Elbv2;
 public class ListenerHandler : PathHandler
 {
     private readonly IElbv2Api _elbv2;
-    private readonly IEc2Api _ec2;
+    private readonly IAmazonEC2 _ec2;
 
-    public ListenerHandler(string path, IPathHandlerContext context, IElbv2Api elbv2, IEc2Api ec2) : base(path, context)
+    public ListenerHandler(string path, IPathHandlerContext context, IElbv2Api elbv2, IAmazonEC2 ec2) : base(path, context)
     {
         _elbv2 = elbv2;
         _ec2 = ec2;

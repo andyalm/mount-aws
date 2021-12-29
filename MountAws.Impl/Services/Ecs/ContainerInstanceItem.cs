@@ -12,7 +12,7 @@ public class ContainerInstanceItem : AwsItem
         ItemName = containerInstance.Property<string>("ContainerInstanceArn")!.Split("/").Last();
         if (ec2Instance != null)
         {
-            Links = ImmutableDictionary.Create<string,Item>().Add("Ec2Instance", ec2Instance);
+            Links = ImmutableDictionary.Create<string,IItem>().Add("Ec2Instance", ec2Instance);
         }
     }
 

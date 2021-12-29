@@ -6,7 +6,7 @@ using MountAws.Api.Route53;
 
 namespace MountAws.Api.AwsSdk.Route53;
 
-public class Route53Registrar : IApiServiceRegistrar
+public class Route53Registrar : IServiceRegistrar
 {
     public void Register(ContainerBuilder builder)
     {

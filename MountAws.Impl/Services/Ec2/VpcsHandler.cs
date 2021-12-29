@@ -1,3 +1,4 @@
+using Amazon.EC2;
 using MountAnything;
 using MountAws.Api.Ec2;
 using MountAws.Services.Core;
@@ -6,7 +7,7 @@ namespace MountAws.Services.Ec2;
 
 public class VpcsHandler : PathHandler
 {
-    private readonly IEc2Api _ec2;
+    private readonly IAmazonEC2 _ec2;
 
     public static IItem CreateItem(string parentPath)
     {
@@ -14,7 +15,7 @@ public class VpcsHandler : PathHandler
             "Navigate the vpcs in the current account and region");
     }
 
-    public VpcsHandler(string path, IPathHandlerContext context, IEc2Api ec2) : base(path, context)
+    public VpcsHandler(string path, IPathHandlerContext context, IAmazonEC2 ec2) : base(path, context)
     {
         _ec2 = ec2;
     }

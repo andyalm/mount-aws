@@ -75,7 +75,7 @@ public abstract class Item<T> : IItem where T : class
         return psObject;
     }
     
-    public ImmutableDictionary<string,Item> Links { get; protected init; } = ImmutableDictionary<string, Item>.Empty;
+    public ImmutableDictionary<string,IItem> Links { get; protected init; } = ImmutableDictionary<string, IItem>.Empty;
     public ImmutableDictionary<string,string> LinkPaths { get; protected init; } = ImmutableDictionary<string, string>.Empty;
 }
 

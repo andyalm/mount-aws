@@ -1,21 +1,21 @@
 using System.Management.Automation;
-using MountAnything;
+using Amazon.EC2.Model;
 
 namespace MountAws.Services.Ec2;
 
-public class SecurityGroupItem : AwsItem
+public class SecurityGroupItem : AwsItem<SecurityGroup>
 {
-    public SecurityGroupItem(string parentPath, PSObject securityGroup) : base(parentPath, securityGroup)
+    public SecurityGroupItem(string parentPath, SecurityGroup securityGroup) : base(parentPath, securityGroup)
     {
-        ItemName = securityGroup.Property<string>("GroupId")!;
+        ItemName = securityGroup.GroupId;
     }
 
     public override string ItemName { get; }
     public override bool IsContainer => true;
-    public string GroupName => Property<string>(nameof(GroupName))!;
+    public string GroupName => UnderlyingObject.GroupName;
     public override void CustomizePSObject(PSObject psObject)
     {
-        psObject.Properties.Add(new PSAliasProperty("Id", "GroupId"));
+        psObject.Properties.Add(new PSAliasProperty("Id", nameof(SecurityGroup.GroupId)));
         psObject.Properties.Add(new PSAliasProperty("Name", nameof(GroupName)));
         base.CustomizePSObject(psObject);
     }

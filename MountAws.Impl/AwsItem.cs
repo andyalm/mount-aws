@@ -11,3 +11,15 @@ public abstract class AwsItem : Item
 
     public override string TypeName => GetType().FullName!;
 }
+
+public abstract class AwsItem<T> : Item<T> where T : class
+{
+    protected AwsItem(string parentPath, T underlyingObject) : base(parentPath, underlyingObject)
+    {
+    }
+    public override string TypeName => GetType().FullName!;
+
+    public override string ItemType => GetType().Name.EndsWith("Item")
+        ? GetType().Name.Remove(GetType().Name.Length - 4)
+        : GetType().Name;
+}

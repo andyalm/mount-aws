@@ -6,7 +6,7 @@ using MountAws.Api.Ecr;
 
 namespace MountAws.Api.AwsSdk.ECR;
 
-public class EcrRegistrar : IApiServiceRegistrar
+public class EcrRegistrar : IServiceRegistrar
 {
     public void Register(ContainerBuilder builder)
     {

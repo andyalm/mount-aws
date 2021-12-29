@@ -1,16 +1,17 @@
 using System.Management.Automation;
+using Amazon.EC2.Model;
 using MountAnything;
 
 namespace MountAws.Services.Elbv2;
 
 public class LoadBalancerItem : AwsItem
 {
-    public IEnumerable<PSObject> SecurityGroups { get; }
+    public IEnumerable<SecurityGroup> SecurityGroups { get; }
     public string[] SecurityGroupNames { get; }
-    public LoadBalancerItem(string parentPath, PSObject loadBalancer, IEnumerable<PSObject> securityGroups) : base(parentPath, loadBalancer)
+    public LoadBalancerItem(string parentPath, PSObject loadBalancer, IEnumerable<SecurityGroup> securityGroups) : base(parentPath, loadBalancer)
     {
         SecurityGroups = securityGroups;
-        SecurityGroupNames = securityGroups.Select(g => g.Property<string>("GroupName")!).ToArray();
+        SecurityGroupNames = securityGroups.Select(g => g.GroupName).ToArray();
     }
 
     public override string ItemName => Property<string>("LoadBalancerName")!;

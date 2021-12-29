@@ -27,7 +27,7 @@ using Amazon.Runtime.Internal.Util;
 using Amazon.Runtime.SharedInterfaces;
 using Amazon.SecurityToken;
 
-namespace MountAws.Api.AwsSdk;
+namespace MountAws.Services.Core;
 
 public class SourceProfileAWSCredentials : RefreshingAWSCredentials
   {

@@ -1,5 +1,6 @@
 using System.Management.Automation;
 using System.Text.RegularExpressions;
+using Amazon.EC2;
 using MountAnything;
 using MountAws.Api.Ec2;
 using MountAws.Api.Ecs;
@@ -11,7 +12,7 @@ namespace MountAws.Services.Ecs;
 public class ContainerInstancesHandler : PathHandler
 {
     private readonly IEcsApi _ecs;
-    private readonly IEc2Api _ec2;
+    private readonly IAmazonEC2 _ec2;
     private readonly CurrentCluster _currentCluster;
 
     public static Item CreateItem(string parentPath)
@@ -20,7 +21,7 @@ public class ContainerInstancesHandler : PathHandler
             "Navigate the container instances within the ecs cluster");
     }
     
-    public ContainerInstancesHandler(string path, IPathHandlerContext context, IEcsApi ecs, IEc2Api ec2, CurrentCluster currentCluster) : base(path, context)
+    public ContainerInstancesHandler(string path, IPathHandlerContext context, IEcsApi ecs, IAmazonEC2 ec2, CurrentCluster currentCluster) : base(path, context)
     {
         _ecs = ecs;
         _ec2 = ec2;
@@ -59,7 +60,7 @@ public class ContainerInstancesHandler : PathHandler
             .Select(i => i.Property<string>("Ec2InstanceId"))
             .Where(i => !string.IsNullOrEmpty(i)).Cast<string>().Distinct();
 
-        var ec2InstancesById = _ec2.GetInstancesByIds(ec2InstanceIds).ToDictionary(i => i.Property<string>("InstanceId")!);
+        var ec2InstancesById = _ec2.GetInstancesByIds(ec2InstanceIds).ToDictionary(i => i.InstanceId);
 
         return containerInstances.Select(containerInstance =>
         {

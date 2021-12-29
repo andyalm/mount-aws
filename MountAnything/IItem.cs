@@ -12,7 +12,7 @@ public interface IItem
     bool IsContainer { get; }
     string TypeName { get; }
     IEnumerable<string> CacheablePaths { get; }
-    ImmutableDictionary<string, Item> Links { get; }
+    ImmutableDictionary<string, IItem> Links { get; }
     ImmutableDictionary<string, string> LinkPaths { get; }
     PSObject ToPipelineObject(Func<string,string> pathResolver);
 }

@@ -1,3 +1,4 @@
+using Amazon.EC2;
 using MountAnything;
 using MountAws.Api.Ec2;
 using MountAws.Api.Ecs;
@@ -11,10 +12,10 @@ public class ContainerInstanceHandler : PathHandler
     public static List<string> Include = new() { "TAGS", "CONTAINER_INSTANCE_HEALTH" };
 
     private readonly IEcsApi _ecs;
-    private readonly IEc2Api _ec2;
+    private readonly IAmazonEC2 _ec2;
     private readonly CurrentCluster _currentCluster;
 
-    public ContainerInstanceHandler(string path, IPathHandlerContext context, IEcsApi ecs, IEc2Api ec2, CurrentCluster currentCluster) : base(path, context)
+    public ContainerInstanceHandler(string path, IPathHandlerContext context, IEcsApi ecs, IAmazonEC2 ec2, CurrentCluster currentCluster) : base(path, context)
     {
         _ecs = ecs;
         _ec2 = ec2;

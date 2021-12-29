@@ -6,7 +6,7 @@ using MountAws.Api.Ecs;
 
 namespace MountAws.Api.AwsSdk.Ecs;
 
-public class EcsRegistrar : IApiServiceRegistrar
+public class EcsRegistrar : IServiceRegistrar
 {
     public void Register(ContainerBuilder builder)
     {

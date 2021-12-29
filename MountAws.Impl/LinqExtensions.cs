@@ -14,7 +14,7 @@ internal static class LinqExtensions
         }
     }
 
-    public static IEnumerable<PSObject> MultiGet<TKey>(this IDictionary<TKey, PSObject> dictionary,
+    public static IEnumerable<TValue> MultiGet<TKey, TValue>(this IDictionary<TKey, TValue> dictionary,
         IEnumerable<TKey> keys)
     {
         foreach (var key in keys)

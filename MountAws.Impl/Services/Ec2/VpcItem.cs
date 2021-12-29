@@ -1,12 +1,13 @@
 using System.Management.Automation;
+using Amazon.EC2.Model;
 
 namespace MountAws.Services.Ec2;
 
-public class VpcItem : AwsItem
+public class VpcItem : AwsItem<Vpc>
 {
-    public VpcItem(string parentPath, PSObject underlyingObject) : base(parentPath, underlyingObject)
+    public VpcItem(string parentPath, Vpc underlyingObject) : base(parentPath, underlyingObject)
     {
-        ItemName = Property<string>("VpcId")!;
+        ItemName = UnderlyingObject.VpcId;
     }
 
     public override string ItemName { get; }

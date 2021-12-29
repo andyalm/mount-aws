@@ -6,7 +6,7 @@ using MountAws.Api.Elbv2;
 
 namespace MountAws.Api.AwsSdk.Elbv2;
 
-public class Elbv2Registrar : IApiServiceRegistrar
+public class Elbv2Registrar : IServiceRegistrar
 {
     public void Register(ContainerBuilder builder)
     {
