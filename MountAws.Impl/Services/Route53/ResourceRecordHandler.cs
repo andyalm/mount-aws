@@ -1,13 +1,13 @@
+using Amazon.Route53;
 using MountAnything;
-using MountAws.Api.Route53;
 
 namespace MountAws.Services.Route53;
 
 public class ResourceRecordHandler : PathHandler
 {
-    private readonly IRoute53Api _route53;
+    private readonly IAmazonRoute53 _route53;
 
-    public ResourceRecordHandler(string path, IPathHandlerContext context, IRoute53Api route53) : base(path, context)
+    public ResourceRecordHandler(string path, IPathHandlerContext context, IAmazonRoute53 route53) : base(path, context)
     {
         _route53 = route53;
     }

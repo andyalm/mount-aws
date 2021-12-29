@@ -1,4 +1,4 @@
-namespace MountAws.Api.Route53;
+namespace MountAws.Services.Route53;
 
 public class RecordSetNotFoundException : ApplicationException
 {

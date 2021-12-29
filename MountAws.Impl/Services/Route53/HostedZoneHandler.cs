@@ -1,16 +1,16 @@
 using System.Management.Automation;
+using Amazon.Route53;
+using Amazon.Route53.Model;
 using MountAnything;
-using MountAws.Api.Route53;
-
 using static MountAws.PagingHelper;
 
 namespace MountAws.Services.Route53;
 
 public class HostedZoneHandler : PathHandler
 {
-    private readonly IRoute53Api _route53;
+    private readonly IAmazonRoute53 _route53;
 
-    public HostedZoneHandler(string path, IPathHandlerContext context, IRoute53Api route53) : base(path, context)
+    public HostedZoneHandler(string path, IPathHandlerContext context, IAmazonRoute53 route53) : base(path, context)
     {
         _route53 = route53;
     }
@@ -30,15 +30,7 @@ public class HostedZoneHandler : PathHandler
 
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
-        return GetWithPaging(nextToken =>
-        {
-            var response = _route53.ListResourceRecordSets(ItemName, nextToken);
-
-            return new PaginatedResponse<PSObject>
-            {
-                PageOfResults = response.Records.ToArray(),
-                NextToken = response.NextToken
-            };
-        }).Select(r => new ResourceRecordItem(Path, r));
+        return _route53.ListResourceRecordSets(ItemName)
+            .Select(r => new ResourceRecordItem(Path, r));
     }
 }

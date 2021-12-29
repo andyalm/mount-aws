@@ -1,13 +1,13 @@
 using System.Management.Automation;
-using MountAnything;
+using Amazon.Route53.Model;
 
 namespace MountAws.Services.Route53;
 
-public class ResourceRecordItem : AwsItem
+public class ResourceRecordItem : AwsItem<ResourceRecordSet>
 {
-    public ResourceRecordItem(string parentPath, PSObject record) : base(parentPath, record)
+    public ResourceRecordItem(string parentPath, ResourceRecordSet record) : base(parentPath, record)
     {
-        ItemName = Property<string>("Name")!;
+        ItemName = record.Name;
         TargetDescription = BuildTargetDescription();
     }
 
@@ -23,23 +23,6 @@ public class ResourceRecordItem : AwsItem
 
     private string BuildTargetDescription()
     {
-        var type = Property<PSObject>("Type")!.Property<string>("Value");
-        return type switch
-        {
-            "A" => AliasTargetDescription(),
-            "CNAME" => CNameTargetDescription(),
-            _ => ""
-        };
-    }
-
-    private string CNameTargetDescription()
-    {
-        return Property<IEnumerable<PSObject>>("ResourceRecords")?.FirstOrDefault()
-            ?.Property<string>("Value") ?? "";
-    }
-
-    private string AliasTargetDescription()
-    {
-        return Property<PSObject>("AliasTarget")?.Property<string>("DNSName") ?? "";
+        return UnderlyingObject.AliasTarget?.DNSName ?? UnderlyingObject.ResourceRecords?.FirstOrDefault()?.Value ?? "";
     }
 }
