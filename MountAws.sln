@@ -13,13 +13,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionFiles", "SolutionFi
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MountAnything", "MountAnything\MountAnything.csproj", "{CA79A7BB-5873-4536-B629-8372E6458AE3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MountAws.Api", "MountAws.Api\MountAws.Api.csproj", "{CAB9D052-C309-419B-BBB2-4A87561F70B5}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MountAws.Api.AwsSdk", "MountAws.Api.AwsSdk\MountAws.Api.AwsSdk.csproj", "{B3248237-1F3C-49CE-AD5A-BE424A273F9F}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MountAws.Host", "MountAws.Host\MountAws.Host.csproj", "{3BEE8F29-9DB0-49B8-BB28-B82FE366700E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MountAws.Host.Abstractions", "MountAws.Host.Abstractions\MountAws.Host.Abstractions.csproj", "{9BCEC310-6E87-4B0A-9CFE-D10DDCC53DAE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Host", "Host", "{8D07A2BB-29F3-43B9-A960-71F332275584}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,14 +36,6 @@ Global
 		{CA79A7BB-5873-4536-B629-8372E6458AE3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA79A7BB-5873-4536-B629-8372E6458AE3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CA79A7BB-5873-4536-B629-8372E6458AE3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{CAB9D052-C309-419B-BBB2-4A87561F70B5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{CAB9D052-C309-419B-BBB2-4A87561F70B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{CAB9D052-C309-419B-BBB2-4A87561F70B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{CAB9D052-C309-419B-BBB2-4A87561F70B5}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B3248237-1F3C-49CE-AD5A-BE424A273F9F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B3248237-1F3C-49CE-AD5A-BE424A273F9F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B3248237-1F3C-49CE-AD5A-BE424A273F9F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B3248237-1F3C-49CE-AD5A-BE424A273F9F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3BEE8F29-9DB0-49B8-BB28-B82FE366700E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3BEE8F29-9DB0-49B8-BB28-B82FE366700E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3BEE8F29-9DB0-49B8-BB28-B82FE366700E}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -54,5 +44,9 @@ Global
 		{9BCEC310-6E87-4B0A-9CFE-D10DDCC53DAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BCEC310-6E87-4B0A-9CFE-D10DDCC53DAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9BCEC310-6E87-4B0A-9CFE-D10DDCC53DAE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9BCEC310-6E87-4B0A-9CFE-D10DDCC53DAE} = {8D07A2BB-29F3-43B9-A960-71F332275584}
+		{3BEE8F29-9DB0-49B8-BB28-B82FE366700E} = {8D07A2BB-29F3-43B9-A960-71F332275584}
 	EndGlobalSection
 EndGlobal

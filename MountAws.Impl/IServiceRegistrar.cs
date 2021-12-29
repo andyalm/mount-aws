@@ -1,6 +1,6 @@
 using Autofac;
 
-namespace MountAws.Api;
+namespace MountAws;
 
 public interface IServiceRegistrar
 {

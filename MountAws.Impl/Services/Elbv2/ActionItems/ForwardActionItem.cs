@@ -1,18 +1,15 @@
-using System.Management.Automation;
+using Amazon.ElasticLoadBalancingV2;
 using MountAnything;
-using MountAws.Api;
-using MountAws.Api.Elbv2;
+using Action = Amazon.ElasticLoadBalancingV2.Model.Action;
 
 namespace MountAws.Services.Elbv2;
 
 public class ForwardActionItem : ActionItem
 {
-    public ForwardActionItem(string parentPath, PSObject action) : base(parentPath, action)
+    public ForwardActionItem(string parentPath, Action action) : base(parentPath, action)
     {
-        TargetGroupArn = string.IsNullOrEmpty(action.Property<string>("TargetGroupArn"))
-            ? action.Property<PSObject>("ForwardConfig")!.Property<IEnumerable<PSObject>>("TargetGroups")!.Single().Property<string>("TargetGroupArn")!
-            : action.Property<string>("TargetGroupArn")!;
-        TargetGroupName = Elbv2ApiExtensions.TargetGroupName(TargetGroupArn);
+        TargetGroupArn = action.TargetGroupArn()!;
+        TargetGroupName = action.TargetGroupName()!;
     }
     public override string ItemType => Elbv2ItemTypes.ForwardAction;
     public override bool IsContainer => true;
@@ -21,7 +18,7 @@ public class ForwardActionItem : ActionItem
     public string TargetGroupArn { get; }
     public string TargetGroupName { get; }
 
-    public override IEnumerable<Item> GetChildren(IElbv2Api elbv2)
+    public override IEnumerable<IItem> GetChildren(IAmazonElasticLoadBalancingV2 elbv2)
     {
         return new[]
         {

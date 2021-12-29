@@ -1,16 +1,15 @@
 using Amazon.EC2;
+using Amazon.ElasticLoadBalancingV2;
 using MountAnything;
-using MountAws.Api.Ec2;
-using MountAws.Api.Elbv2;
 
 namespace MountAws.Services.Elbv2;
 
 public class RuleActionHandler : PathHandler
 {
-    private readonly IElbv2Api _elbv2;
+    private readonly IAmazonElasticLoadBalancingV2 _elbv2;
     private readonly IAmazonEC2 _ec2;
 
-    public RuleActionHandler(string path, IPathHandlerContext context, IElbv2Api elbv2, IAmazonEC2 ec2) : base(path, context)
+    public RuleActionHandler(string path, IPathHandlerContext context, IAmazonElasticLoadBalancingV2 elbv2, IAmazonEC2 ec2) : base(path, context)
     {
         _elbv2 = elbv2;
         _ec2 = ec2;

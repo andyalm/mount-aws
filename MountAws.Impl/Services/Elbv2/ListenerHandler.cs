@@ -1,17 +1,15 @@
 using Amazon.EC2;
+using Amazon.ElasticLoadBalancingV2;
 using MountAnything;
-using MountAws.Api;
-using MountAws.Api.Ec2;
-using MountAws.Api.Elbv2;
 
 namespace MountAws.Services.Elbv2;
 
 public class ListenerHandler : PathHandler
 {
-    private readonly IElbv2Api _elbv2;
+    private readonly IAmazonElasticLoadBalancingV2 _elbv2;
     private readonly IAmazonEC2 _ec2;
 
-    public ListenerHandler(string path, IPathHandlerContext context, IElbv2Api elbv2, IAmazonEC2 ec2) : base(path, context)
+    public ListenerHandler(string path, IPathHandlerContext context, IAmazonElasticLoadBalancingV2 elbv2, IAmazonEC2 ec2) : base(path, context)
     {
         _elbv2 = elbv2;
         _ec2 = ec2;
@@ -27,7 +25,7 @@ public class ListenerHandler : PathHandler
         }
 
         var listener = _elbv2.DescribeListeners(loadBalancerItem.LoadBalancerArn)
-            .SingleOrDefault(l => l.Property<string>("Port") == ItemName);
+            .SingleOrDefault(l => l.Port.ToString() == ItemName);
         if (listener != null)
         {
             return new ListenerItem(ParentPath, listener);

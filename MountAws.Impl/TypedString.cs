@@ -1,4 +1,4 @@
-namespace MountAws.Api;
+namespace MountAws;
 
 public abstract class TypedString
 {

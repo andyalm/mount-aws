@@ -1,14 +1,15 @@
 using System.Management.Automation;
+using Amazon.ElasticLoadBalancingV2;
 using MountAnything;
-using MountAws.Api.Elbv2;
+using Action = Amazon.ElasticLoadBalancingV2.Model.Action;
 
 namespace MountAws.Services.Elbv2;
 
-public abstract class ActionItem : AwsItem
+public abstract class ActionItem : AwsItem<Action>
 {
-    public static ActionItem Create(string parentPath, PSObject action)
+    public static ActionItem Create(string parentPath, Action action)
     {
-        var actionType = action.Property<PSObject>("Type")!.Property<string>("Value")!;
+        var actionType = action.Type.Value;
         return actionType switch
         {
             "forward" => CreateForwardAction(parentPath, action),
@@ -18,9 +19,9 @@ public abstract class ActionItem : AwsItem
         };
     }
 
-    private static ActionItem CreateForwardAction(string parentPath, PSObject action)
+    private static ActionItem CreateForwardAction(string parentPath, Action action)
     {
-        if (action.Property<PSObject>("ForwardConfig")?.Property<PSObject>("TargetGroups")?.Property<int>("Count") > 1)
+        if (action.ForwardConfig?.TargetGroups?.Count > 1)
         {
             return new WeightedForwardActionItem(parentPath, action);
         }
@@ -32,9 +33,9 @@ public abstract class ActionItem : AwsItem
     
     public override string TypeName => typeof(ActionItem).FullName!;
 
-    protected ActionItem(string parentPath, PSObject action) : base(parentPath, action)
+    protected ActionItem(string parentPath, Action action) : base(parentPath, action)
     {
-        ItemName = action.Property<PSObject>("Type")!.Property<string>("Value")!;
+        ItemName = action.Type.Value;
     }
     
     public override string ItemName { get; }
@@ -45,8 +46,8 @@ public abstract class ActionItem : AwsItem
         psObject.Properties.Add(new PSNoteProperty("Description", Description));
     }
 
-    public virtual IEnumerable<Item> GetChildren(IElbv2Api elbv2)
+    public virtual IEnumerable<IItem> GetChildren(IAmazonElasticLoadBalancingV2 elbv2)
     {
-        return Enumerable.Empty<Item>();
+        return Enumerable.Empty<IItem>();
     }
 }

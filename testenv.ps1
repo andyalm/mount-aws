@@ -5,4 +5,4 @@ param(
 
 $DebugPreference=$Debug ? 'Continue' : 'SilentlyContinue'
 dotnet build
-pwsh -Interactive -NoProfile -NoExit -c "Set-Variable -Scope Global -Name DebugPreference -Value $DebugPreference;New-Alias ls Get-ChildItem;New-Alias cat Get-Content;Import-Module $PWD/MountAws.Host/bin/Debug/net6.0/MountAws.psd1 && cd aws:"
+pwsh -Interactive -NoExit -c "Set-Variable -Scope Global -Name DebugPreference -Value $DebugPreference;Import-Module $PWD/MountAws.Host/bin/Debug/net6.0/MountAws.psd1 && cd aws:"

@@ -1,27 +1,25 @@
 using System.Management.Automation;
-using MountAnything;
-using MountAws.Api;
+using Amazon.ElasticLoadBalancingV2.Model;
+using Action = Amazon.ElasticLoadBalancingV2.Model.Action;
 
 namespace MountAws.Services.Elbv2;
 
-public class RuleItem : AwsItem
+public class RuleItem : AwsItem<Rule>
 {
     public string RuleArn { get; }
-    public IEnumerable<PSObject> Actions { get; }
-    public IEnumerable<PSObject> Conditions { get; }
+    public IEnumerable<Action> Actions => UnderlyingObject.Actions;
+    public IEnumerable<RuleCondition> Conditions => UnderlyingObject.Conditions;
     public string ConditionDescription { get; }
-    public RuleItem(string parentPath, PSObject rule) : base(parentPath, rule)
+    public RuleItem(string parentPath, Rule rule) : base(parentPath, rule)
     {
-        RuleArn = Property<string>("RuleArn")!;
-        Actions = Property<IEnumerable<PSObject>>("Actions")!;
-        Conditions = Property<IEnumerable<PSObject>>("Conditions")!;
+        RuleArn = rule.RuleArn;
         ConditionDescription = string.Join("|", Conditions.Select(ToConditionDescription));
     }
 
-    public override string ItemName => Property<string>("Priority")!;
+    public override string ItemName => UnderlyingObject.Priority;
     public override string ItemType => Elbv2ItemTypes.Rule;
     public override bool IsContainer => true;
-    public string ActionDescription => ActionItem.Create(FullPath, Property<IEnumerable<PSObject>>("Actions")!.Last()).Description;
+    public string ActionDescription => ActionItem.Create(FullPath, Actions.Last()).Description;
 
     public override void CustomizePSObject(PSObject psObject)
     {
@@ -30,16 +28,16 @@ public class RuleItem : AwsItem
         psObject.Properties.Add(new PSNoteProperty(nameof(ConditionDescription), ConditionDescription));
     }
     
-    private static string ToConditionDescription(PSObject condition)
+    private static string ToConditionDescription(RuleCondition condition)
     {
-        var field = condition.Property<string>("Field");
-        var values = condition.Property<IEnumerable<PSObject>>("Values")!;
+        var field = condition.Field;
+        var values = condition.Values;
         switch (field)
         {
             case "http-header":
-                var httpHeaderConfig = condition.Property<PSObject>("HttpHeaderConfig")!;
+                var httpHeaderConfig = condition.HttpHeaderConfig;
                 return
-                    $"{field} {httpHeaderConfig.Property<string>("HttpHeaderName")} matches ({string.Join(",", values)})";
+                    $"{field} {httpHeaderConfig.HttpHeaderName} matches ({string.Join(",", values)})";
             default:
                 return $"{field} matches ({string.Join(",", values)})";
         }

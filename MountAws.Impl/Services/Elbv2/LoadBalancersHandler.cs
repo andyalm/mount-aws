@@ -1,9 +1,7 @@
-using System.Management.Automation;
 using Amazon.EC2;
 using Amazon.EC2.Model;
+using Amazon.ElasticLoadBalancingV2;
 using MountAnything;
-using MountAws.Api.Ec2;
-using MountAws.Api.Elbv2;
 using MountAws.Services.Core;
 using MountAws.Services.Ec2;
 using static MountAws.PagingHelper;
@@ -12,7 +10,7 @@ namespace MountAws.Services.Elbv2;
 
 public class LoadBalancersHandler : PathHandler
 {
-    private readonly IElbv2Api _elbv2;
+    private readonly IAmazonElasticLoadBalancingV2 _elbv2;
     private readonly IAmazonEC2 _ec2;
 
     public static Item CreateItem(string parentPath)
@@ -21,7 +19,7 @@ public class LoadBalancersHandler : PathHandler
             "List and filter the load balancers within the current account and region");
     }
     
-    public LoadBalancersHandler(string path, IPathHandlerContext context, IElbv2Api elbv2, IAmazonEC2 ec2) : base(path, context)
+    public LoadBalancersHandler(string path, IPathHandlerContext context, IAmazonElasticLoadBalancingV2 elbv2, IAmazonEC2 ec2) : base(path, context)
     {
         _elbv2 = elbv2;
         _ec2 = ec2;
@@ -39,19 +37,10 @@ public class LoadBalancersHandler : PathHandler
 
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
-        var loadBalancers = GetWithPaging(nextToken =>
-            {
-                var response = _elbv2.DescribeLoadBalancers(nextToken);
+        var loadBalancers = _elbv2.DescribeLoadBalancers();
 
-                return new PaginatedResponse<PSObject>
-                {
-                    PageOfResults = response.LoadBalancers,
-                    NextToken = response.NextToken
-                };
-            }).ToArray();
-        
         var securityGroupIds = loadBalancers
-                .SelectMany(lb => lb.Property<IEnumerable<string>>("SecurityGroups") ?? Enumerable.Empty<string>())
+                .SelectMany(lb => lb.SecurityGroups ?? Enumerable.Empty<string>())
                 .Distinct()
                 .ToList();
 
@@ -70,7 +59,7 @@ public class LoadBalancersHandler : PathHandler
             };
         }).ToDictionary(sg => sg.GroupId);
 
-        return loadBalancers.Select(lb => new LoadBalancerItem(Path, lb, securityGroups.MultiGet(lb.Property<IEnumerable<string>>("SecurityGroups")!)))
+        return loadBalancers.Select(lb => new LoadBalancerItem(Path, lb, securityGroups.MultiGet(lb.SecurityGroups)))
             .OrderBy(lb => lb.ItemName);
     }
 }

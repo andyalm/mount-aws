@@ -1,14 +1,14 @@
+using Amazon.ElasticLoadBalancingV2;
+using Amazon.ElasticLoadBalancingV2.Model;
 using MountAnything;
-using MountAws.Api.Elbv2;
-using TargetGroupNotFoundException = MountAws.Api.Elbv2.TargetGroupNotFoundException;
 
 namespace MountAws.Services.Elbv2;
 
 public class TargetGroupHandler : PathHandler, IRemoveItemHandler
 {
-    private readonly IElbv2Api _elbv2;
+    private readonly IAmazonElasticLoadBalancingV2 _elbv2;
 
-    public TargetGroupHandler(string path, IPathHandlerContext context, IElbv2Api elbv2) : base(path, context)
+    public TargetGroupHandler(string path, IPathHandlerContext context, IAmazonElasticLoadBalancingV2 elbv2) : base(path, context)
     {
         _elbv2 = elbv2;
     }

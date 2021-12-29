@@ -1,16 +1,16 @@
-using System.Management.Automation;
-using MountAnything;
+using Amazon.ElasticLoadBalancingV2.Model;
+using Action = Amazon.ElasticLoadBalancingV2.Model.Action;
 
 namespace MountAws.Services.Elbv2;
 
-public class ListenerItem : AwsItem
+public class ListenerItem : AwsItem<Listener>
 {
-    public ListenerItem(string parentPath, PSObject listener) : base(parentPath, listener) {}
+    public ListenerItem(string parentPath, Listener listener) : base(parentPath, listener) {}
 
-    public override string ItemName => Property<string>("Port")!;
+    public override string ItemName => UnderlyingObject.Port.ToString();
     public override string ItemType => Elbv2ItemTypes.Listener;
     public override bool IsContainer => true;
-    public int Port => Property<int>("Port");
-    public string ListenerArn => Property<string>("ListenerArn")!;
-    public IEnumerable<PSObject> DefaultActions => Property<IEnumerable<PSObject>>("DefaultActions")!;
+    public int Port => UnderlyingObject.Port;
+    public string ListenerArn => UnderlyingObject.ListenerArn;
+    public IEnumerable<Action> DefaultActions => UnderlyingObject.DefaultActions;
 }
