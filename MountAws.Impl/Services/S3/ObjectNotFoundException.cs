@@ -1,4 +1,4 @@
-namespace MountAws.Api.S3;
+namespace MountAws.Services.S3;
 
 public class ObjectNotFoundException : ApplicationException
 {

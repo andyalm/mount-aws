@@ -1,14 +1,21 @@
 using System.Management.Automation;
+using Amazon.S3.Model;
 using MountAnything;
-using MountAws.Api;
 
 namespace MountAws.Services.S3;
 
 public class ObjectItem : AwsItem
 {
-    public ObjectItem(string parentPath, PSObject s3Object) : base(parentPath, s3Object)
+    public ObjectItem(string parentPath, GetObjectResponse s3Object) : base(parentPath, new PSObject(s3Object))
     {
-        ItemName = ItemPath.GetLeaf(s3Object.Property<string>("Key")!);
+        ItemName = ItemPath.GetLeaf(s3Object.Key);
+        ItemType = S3ItemTypes.File;
+        IsContainer = false;
+    }
+    
+    public ObjectItem(string parentPath, S3Object s3Object) : base(parentPath, new PSObject(s3Object))
+    {
+        ItemName = ItemPath.GetLeaf(s3Object.Key);
         ItemType = S3ItemTypes.File;
         IsContainer = false;
     }

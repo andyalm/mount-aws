@@ -1,13 +1,13 @@
+using Amazon.S3;
 using MountAnything;
-using MountAws.Api.S3;
 
 namespace MountAws.Services.S3;
 
 public class BucketHandler : PathHandler
 {
-    private readonly IS3Api _s3;
+    private readonly IAmazonS3 _s3;
 
-    public BucketHandler(string path, IPathHandlerContext context, IS3Api s3) : base(path, context)
+    public BucketHandler(string path, IPathHandlerContext context, IAmazonS3 s3) : base(path, context)
     {
         _s3 = s3;
     }

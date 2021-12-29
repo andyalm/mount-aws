@@ -1,7 +1,7 @@
 using System.Management.Automation.Provider;
+using Amazon.S3;
 using MountAnything;
 using MountAnything.Content;
-using MountAws.Api.S3;
 
 namespace MountAws.Services.S3;
 
@@ -12,9 +12,9 @@ public class ObjectHandler : PathHandler, IContentReaderHandler,
 {
     private readonly ObjectPath _objectPath;
     private readonly CurrentBucket _currentBucket;
-    private readonly IS3Api _s3;
+    private readonly IAmazonS3 _s3;
     
-    public ObjectHandler(string path, IPathHandlerContext context, ObjectPath objectPath, CurrentBucket currentBucket, IS3Api s3) : base(path, context)
+    public ObjectHandler(string path, IPathHandlerContext context, ObjectPath objectPath, CurrentBucket currentBucket, IAmazonS3 s3) : base(path, context)
     {
         _objectPath = objectPath;
         _currentBucket = currentBucket;

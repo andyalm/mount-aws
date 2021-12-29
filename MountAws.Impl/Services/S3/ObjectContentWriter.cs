@@ -1,16 +1,16 @@
 using System.Collections;
 using System.Management.Automation.Provider;
-using MountAws.Api.S3;
+using Amazon.S3;
 
 namespace MountAws.Services.S3;
 
 public class ObjectContentWriter : IContentWriter
 {
-    private readonly IS3Api _s3;
+    private readonly IAmazonS3 _s3;
     private readonly string _bucketName;
     private readonly string _objectKey;
 
-    public ObjectContentWriter(IS3Api s3, string bucketName, string objectKey)
+    public ObjectContentWriter(IAmazonS3 s3, string bucketName, string objectKey)
     {
         _s3 = s3;
         _bucketName = bucketName;
