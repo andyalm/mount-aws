@@ -1,13 +1,14 @@
+using Amazon.ECS;
 using MountAnything;
-using MountAws.Api.Ecs;
+using MountAws.Api.AwsSdk.Ecs;
 
 namespace MountAws.Services.Ecs;
 
 public class TaskDefinitionHandler : PathHandler
 {
-    private readonly IEcsApi _ecs;
+    private readonly IAmazonECS _ecs;
 
-    public TaskDefinitionHandler(string path, IPathHandlerContext context, IEcsApi ecs) : base(path, context)
+    public TaskDefinitionHandler(string path, IPathHandlerContext context, IAmazonECS ecs) : base(path, context)
     {
         _ecs = ecs;
     }
@@ -18,7 +19,7 @@ public class TaskDefinitionHandler : PathHandler
         var taskDefinitionName = $"{family}:{ItemName}";
         var taskDefinition = _ecs.DescribeTaskDefinition(taskDefinitionName);
 
-        return new TaskDefinitionItem(ParentPath, taskDefinition);
+        return new TaskDefinitionItem(ParentPath, taskDefinition.TaskDefinition, taskDefinition.Tags);
     }
 
     protected override IEnumerable<IItem> GetChildItemsImpl()

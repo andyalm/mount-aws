@@ -1,15 +1,16 @@
+using Amazon.ECS;
 using MountAnything;
-using MountAws.Api.Ecs;
+using MountAws.Api.AwsSdk.Ecs;
 using static MountAws.PagingHelper;
 
 namespace MountAws.Services.Ecs;
 
 public class ServiceHandler : PathHandler, IRemoveItemHandler
 {
-    private readonly IEcsApi _ecs;
+    private readonly IAmazonECS _ecs;
     private readonly CurrentCluster _currentCluster;
 
-    public ServiceHandler(string path, IPathHandlerContext context, IEcsApi ecs, CurrentCluster currentCluster) : base(path, context)
+    public ServiceHandler(string path, IPathHandlerContext context, IAmazonECS ecs, CurrentCluster currentCluster) : base(path, context)
     {
         _ecs = ecs;
         _currentCluster = currentCluster;
@@ -31,19 +32,7 @@ public class ServiceHandler : PathHandler, IRemoveItemHandler
 
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
-        var taskArns = GetWithPaging(nextToken =>
-        {
-            var response = _ecs.ListTasksByService(_currentCluster.Name,
-                ItemName,
-                nextToken
-            );
-
-            return new PaginatedResponse<string>
-            {
-                PageOfResults = response.TaskArns,
-                NextToken = nextToken
-            };
-        });
+        var taskArns = _ecs.ListTasksByService(_currentCluster.Name, ItemName);
 
         return taskArns.Chunk(10).SelectMany(taskArnChunk =>
         {

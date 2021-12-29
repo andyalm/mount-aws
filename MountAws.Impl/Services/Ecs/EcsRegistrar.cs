@@ -2,15 +2,14 @@ using Amazon;
 using Amazon.ECS;
 using Amazon.Runtime;
 using Autofac;
-using MountAws.Api.Ecs;
+using MountAws.Api;
 
-namespace MountAws.Api.AwsSdk.Ecs;
+namespace MountAws.Services.Ecs;
 
 public class EcsRegistrar : IServiceRegistrar
 {
     public void Register(ContainerBuilder builder)
     {
-        builder.RegisterType<AwsSdkEcsApi>().As<IEcsApi>();
         builder.RegisterType<AmazonECSClient>().As<IAmazonECS>()
             .UsingConstructor(typeof(AWSCredentials), typeof(RegionEndpoint));
     }

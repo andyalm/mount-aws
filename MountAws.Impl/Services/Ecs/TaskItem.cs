@@ -1,17 +1,17 @@
 using System.Collections.Immutable;
-using System.Management.Automation;
 using MountAnything;
+using Task = Amazon.ECS.Model.Task;
 
 namespace MountAws.Services.Ecs;
 
-public class TaskItem : AwsItem
+public class TaskItem : AwsItem<Task>
 {
 
-    public TaskItem(string parentPath, PSObject task, LinkGenerator linkGenerator) : base(parentPath, task)
+    public TaskItem(string parentPath, Task task, LinkGenerator linkGenerator) : base(parentPath, task)
     {
-        ItemName = Property<string>("TaskArn")!.Split("/").Last();
+        ItemName = task.TaskArn.Split("/").Last();
         LinkPaths = ImmutableDictionary.Create<string,string>()
-            .Add("TaskDefinition", linkGenerator.TaskDefinition(Property<string>("TaskDefinitionArn")!));
+            .Add("TaskDefinition", linkGenerator.TaskDefinition(task.TaskDefinitionArn));
     }
 
     public override string ItemName { get; }

@@ -1,9 +1,9 @@
-using System.Management.Automation;
 using System.Text.RegularExpressions;
 using Amazon.EC2;
+using Amazon.ECS;
+using Amazon.ECS.Model;
 using MountAnything;
-using MountAws.Api.Ec2;
-using MountAws.Api.Ecs;
+using MountAws.Api.AwsSdk.Ecs;
 using MountAws.Services.Core;
 using MountAws.Services.Ec2;
 
@@ -11,7 +11,7 @@ namespace MountAws.Services.Ecs;
 
 public class ContainerInstancesHandler : PathHandler
 {
-    private readonly IEcsApi _ecs;
+    private readonly IAmazonECS _ecs;
     private readonly IAmazonEC2 _ec2;
     private readonly CurrentCluster _currentCluster;
 
@@ -21,7 +21,7 @@ public class ContainerInstancesHandler : PathHandler
             "Navigate the container instances within the ecs cluster");
     }
     
-    public ContainerInstancesHandler(string path, IPathHandlerContext context, IEcsApi ecs, IAmazonEC2 ec2, CurrentCluster currentCluster) : base(path, context)
+    public ContainerInstancesHandler(string path, IPathHandlerContext context, IAmazonECS ecs, IAmazonEC2 ec2, CurrentCluster currentCluster) : base(path, context)
     {
         _ecs = ecs;
         _ec2 = ec2;
@@ -54,17 +54,17 @@ public class ContainerInstancesHandler : PathHandler
         return ToItems(containerInstances);
     }
 
-    private IEnumerable<Item> ToItems(PSObject[] containerInstances)
+    private IEnumerable<IItem> ToItems(ContainerInstance[] containerInstances)
     {
         var ec2InstanceIds = containerInstances
-            .Select(i => i.Property<string>("Ec2InstanceId"))
-            .Where(i => !string.IsNullOrEmpty(i)).Cast<string>().Distinct();
+            .Select(i => i.Ec2InstanceId)
+            .Where(i => !string.IsNullOrEmpty(i)).Distinct();
 
         var ec2InstancesById = _ec2.GetInstancesByIds(ec2InstanceIds).ToDictionary(i => i.InstanceId);
 
         return containerInstances.Select(containerInstance =>
         {
-            var ec2InstanceId = containerInstance.Property<string>("Ec2InstanceId");
+            var ec2InstanceId = containerInstance.Ec2InstanceId;
             var ec2Item = string.IsNullOrEmpty(ec2InstanceId) && ec2InstancesById.TryGetValue(ec2InstanceId!, out var ec2Instance)
                 ? LinkGenerator.EC2Instance(ec2Instance)
                 : null;

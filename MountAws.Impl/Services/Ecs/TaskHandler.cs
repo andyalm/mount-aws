@@ -1,15 +1,16 @@
 using System.Management.Automation;
+using Amazon.ECS;
 using MountAnything;
-using MountAws.Api.Ecs;
+using MountAws.Api.AwsSdk.Ecs;
 
 namespace MountAws.Services.Ecs;
 
 public class TaskHandler : PathHandler, IRemoveItemHandler, IRemoveItemParameters<RemoveTaskParameters>
 {
-    private readonly IEcsApi _ecs;
+    private readonly IAmazonECS _ecs;
     private readonly CurrentCluster _currentCluster;
 
-    public TaskHandler(string path, IPathHandlerContext context, IEcsApi ecs, CurrentCluster currentCluster) : base(path, context)
+    public TaskHandler(string path, IPathHandlerContext context, IAmazonECS ecs, CurrentCluster currentCluster) : base(path, context)
     {
         _ecs = ecs;
         _currentCluster = currentCluster;

@@ -1,4 +1,4 @@
-namespace MountAws.Api.Ecs;
+namespace MountAws.Services.Ecs;
 
 public class ContainerInstanceNotFoundException : ApplicationException
 {

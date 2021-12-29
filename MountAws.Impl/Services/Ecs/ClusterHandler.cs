@@ -1,14 +1,15 @@
+using Amazon.ECS;
+using Amazon.ECS.Model;
 using MountAnything;
-using MountAws.Api.Ecs;
-using ClusterNotFoundException = MountAws.Api.Ecs.ClusterNotFoundException;
+using MountAws.Api.AwsSdk.Ecs;
 
 namespace MountAws.Services.Ecs;
 
 public class ClusterHandler : PathHandler
 {
-    private readonly IEcsApi _ecs;
+    private readonly IAmazonECS _ecs;
 
-    public ClusterHandler(string path, IPathHandlerContext context, IEcsApi ecs) : base(path, context)
+    public ClusterHandler(string path, IPathHandlerContext context, IAmazonECS ecs) : base(path, context)
     {
         _ecs = ecs;
     }

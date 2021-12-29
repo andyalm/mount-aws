@@ -1,7 +1,8 @@
 using Amazon.EC2;
+using Amazon.ECS;
 using MountAnything;
+using MountAws.Api.AwsSdk.Ecs;
 using MountAws.Api.Ec2;
-using MountAws.Api.Ecs;
 using MountAws.Services.Ec2;
 using static MountAws.PagingHelper;
 
@@ -11,11 +12,11 @@ public class ContainerInstanceHandler : PathHandler
 {
     public static List<string> Include = new() { "TAGS", "CONTAINER_INSTANCE_HEALTH" };
 
-    private readonly IEcsApi _ecs;
+    private readonly IAmazonECS _ecs;
     private readonly IAmazonEC2 _ec2;
     private readonly CurrentCluster _currentCluster;
 
-    public ContainerInstanceHandler(string path, IPathHandlerContext context, IEcsApi ecs, IAmazonEC2 ec2, CurrentCluster currentCluster) : base(path, context)
+    public ContainerInstanceHandler(string path, IPathHandlerContext context, IAmazonECS ecs, IAmazonEC2 ec2, CurrentCluster currentCluster) : base(path, context)
     {
         _ecs = ecs;
         _ec2 = ec2;
@@ -32,7 +33,7 @@ public class ContainerInstanceHandler : PathHandler
         try
         {
             var containerInstance = _ecs.DescribeContainerInstance(_currentCluster.Name, ItemName, Include);
-            var ec2InstanceId = containerInstance.Property<string>("Ec2InstanceId");
+            var ec2InstanceId = containerInstance.Ec2InstanceId;
             var ec2Item = ec2InstanceId == null ? null : GetEC2Item(ec2InstanceId);
             return new ContainerInstanceItem(ParentPath, containerInstance, ec2Item);
         }
@@ -42,7 +43,7 @@ public class ContainerInstanceHandler : PathHandler
         }
     }
 
-    private Item? GetByEc2InstanceId()
+    private IItem? GetByEc2InstanceId()
     {
         var containerInstance = _ecs.QueryContainerInstances(_currentCluster.Name, ItemName).FirstOrDefault();
         if (containerInstance == null)
@@ -50,7 +51,7 @@ public class ContainerInstanceHandler : PathHandler
             return null;
         }
         
-        var ec2Item = GetEC2Item(containerInstance.Property<string>("Ec2InstanceId")!);
+        var ec2Item = GetEC2Item(containerInstance.Ec2InstanceId);
         return new ContainerInstanceItem(ParentPath, containerInstance, ec2Item);
     }
 
@@ -78,16 +79,7 @@ public class ContainerInstanceHandler : PathHandler
             return Enumerable.Empty<Item>();
         }
         
-        var taskArns = GetWithPaging(nextToken =>
-        {
-            var response = _ecs.ListTasksByContainerInstance(_currentCluster.Name, item.ItemName, nextToken);
-
-            return new PaginatedResponse<string>
-            {
-                PageOfResults = response.TaskArns.ToArray(),
-                NextToken = response.NextToken
-            };
-        });
+        var taskArns = _ecs.ListTasksByContainerInstance(_currentCluster.Name, item.ItemName);
 
         return taskArns.Chunk(100).SelectMany(taskArnChunk =>
         {

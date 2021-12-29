@@ -1,14 +1,13 @@
+using Amazon.ECS;
 using MountAnything;
-using MountAws.Api.Ecs;
+using MountAws.Api.AwsSdk.Ecs;
 using MountAws.Services.Core;
-
-using static MountAws.PagingHelper;
 
 namespace MountAws.Services.Ecs;
 
 public class ServicesHandler : PathHandler
 {
-    private readonly IEcsApi _ecs;
+    private readonly IAmazonECS _ecs;
     private readonly CurrentCluster _currentCluster;
 
     public static Item CreateItem(string parentPath)
@@ -17,7 +16,7 @@ public class ServicesHandler : PathHandler
             "Navigate the ECS services and its tasks and other related objects");
     }
     
-    public ServicesHandler(string path, IPathHandlerContext context, IEcsApi ecs, CurrentCluster currentCluster) : base(path, context)
+    public ServicesHandler(string path, IPathHandlerContext context, IAmazonECS ecs, CurrentCluster currentCluster) : base(path, context)
     {
         _ecs = ecs;
         _currentCluster = currentCluster;
@@ -30,16 +29,7 @@ public class ServicesHandler : PathHandler
 
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
-        var serviceArns = GetWithPaging(nextToken =>
-        {
-            var response = _ecs.ListServices(_currentCluster.Name, nextToken);
-
-            return new PaginatedResponse<string>
-            {
-                PageOfResults = response.ServiceArns,
-                NextToken = response.NextToken,
-            };
-        });
+        var serviceArns = _ecs.ListServices(_currentCluster.Name);
 
         return serviceArns.Chunk(10).SelectMany(serviceArnChunk =>
         {

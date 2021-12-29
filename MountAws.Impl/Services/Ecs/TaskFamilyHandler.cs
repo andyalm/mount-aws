@@ -1,15 +1,14 @@
+using Amazon.ECS;
 using MountAnything;
-using MountAws.Api.Ecs;
-
-using static MountAws.PagingHelper;
+using MountAws.Api.AwsSdk.Ecs;
 
 namespace MountAws.Services.Ecs;
 
 public class TaskFamilyHandler : PathHandler
 {
-    private readonly IEcsApi _ecs;
+    private readonly IAmazonECS _ecs;
 
-    public TaskFamilyHandler(string path, IPathHandlerContext context, IEcsApi ecs) : base(path, context)
+    public TaskFamilyHandler(string path, IPathHandlerContext context, IAmazonECS ecs) : base(path, context)
     {
         _ecs = ecs;
     }
@@ -35,15 +34,7 @@ public class TaskFamilyHandler : PathHandler
 
     private IEnumerable<TaskDefinitionItem> GetTaskDefinitions(bool isActive)
     {
-        return GetWithPaging(nextToken =>
-        {
-            var response = _ecs.ListTaskDefinitionsByFamily(ItemName, isActive, nextToken);
-
-            return new PaginatedResponse<string>
-            {
-                PageOfResults = response.TaskDefinitionArns,
-                NextToken = response.NextToken
-            };
-        }).Select(arn => new TaskDefinitionItem(Path, arn));
+        return _ecs.ListTaskDefinitionsByFamily(ItemName, isActive)
+            .Select(arn => new TaskDefinitionItem(Path, arn));
     }
 }
