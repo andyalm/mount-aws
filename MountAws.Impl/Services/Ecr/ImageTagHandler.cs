@@ -1,14 +1,14 @@
+using Amazon.ECR;
 using MountAnything;
-using MountAws.Api.Ecr;
 
 namespace MountAws.Services.Ecr;
 
 public class ImageTagHandler : PathHandler
 {
-    private readonly IEcrApi _ecr;
+    private readonly IAmazonECR _ecr;
     private readonly RepositoryPath _repositoryPath;
 
-    public ImageTagHandler(string path, IPathHandlerContext context, IEcrApi ecr, RepositoryPath repositoryPath) : base(path, context)
+    public ImageTagHandler(string path, IPathHandlerContext context, IAmazonECR ecr, RepositoryPath repositoryPath) : base(path, context)
     {
         _ecr = ecr;
         _repositoryPath = repositoryPath;

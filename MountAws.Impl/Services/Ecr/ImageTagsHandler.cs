@@ -1,9 +1,6 @@
-using System.Management.Automation;
+using Amazon.ECR;
 using MountAnything;
-using MountAws.Api.Ecr;
 using MountAws.Services.Core;
-
-using static MountAws.PagingHelper;
 
 namespace MountAws.Services.Ecr;
 
@@ -15,10 +12,10 @@ public class ImageTagsHandler : PathHandler
             "Navigate the docker image tags for this repository");
     }
     
-    private readonly IEcrApi _ecr;
+    private readonly IAmazonECR _ecr;
     private readonly RepositoryPath _repositoryPath;
 
-    public ImageTagsHandler(string path, IPathHandlerContext context, IEcrApi ecr, RepositoryPath repositoryPath) : base(path, context)
+    public ImageTagsHandler(string path, IPathHandlerContext context, IAmazonECR ecr, RepositoryPath repositoryPath) : base(path, context)
     {
         _ecr = ecr;
         _repositoryPath = repositoryPath;
@@ -38,15 +35,7 @@ public class ImageTagsHandler : PathHandler
             return Enumerable.Empty<Item>();
         }
         
-        return GetWithPaging(nextToken =>
-        {
-            var response = _ecr.ListTaggedImages(_repositoryPath.Value, nextToken);
-
-            return new PaginatedResponse<PSObject>
-            {
-                PageOfResults = response.ImageIds,
-                NextToken = response.NextToken
-            };
-        }).Select(i => new ImageTagItem(Path, i, repositoryItem.UnderlyingObject));
+        return _ecr.ListTaggedImages(_repositoryPath.Value)
+            .Select(i => new ImageTagItem(Path, i, repositoryItem.Repository!));
     }
 }

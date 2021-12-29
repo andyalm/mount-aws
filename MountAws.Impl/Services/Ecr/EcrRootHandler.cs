@@ -1,8 +1,6 @@
+using Amazon.ECR;
 using MountAnything;
-using MountAws.Api.Ecr;
 using MountAws.Services.Core;
-
-using static MountAws.PagingHelper;
 
 namespace MountAws.Services.Ecr;
 
@@ -14,9 +12,9 @@ public class EcrRootHandler : PathHandler
             "Navigate the ECR repositories");
     }
     
-    private readonly IEcrApi _ecr;
+    private readonly IAmazonECR _ecr;
 
-    public EcrRootHandler(string path, IPathHandlerContext context, IEcrApi ecr) : base(path, context)
+    public EcrRootHandler(string path, IPathHandlerContext context, IAmazonECR ecr) : base(path, context)
     {
         _ecr = ecr;
     }

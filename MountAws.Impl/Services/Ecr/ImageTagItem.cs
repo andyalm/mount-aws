@@ -1,21 +1,22 @@
 using System.Management.Automation;
+using Amazon.ECR.Model;
 using MountAnything;
 using MountAws.Api;
 
 namespace MountAws.Services.Ecr;
 
-public class ImageTagItem : AwsItem
+public class ImageTagItem : AwsItem<ImageIdentifier>
 {
-    private readonly PSObject _repository;
+    private readonly Repository _repository;
 
-    public ImageTagItem(string parentPath, PSObject imageIdentifier, PSObject repository) : base(parentPath, imageIdentifier)
+    public ImageTagItem(string parentPath, ImageIdentifier imageIdentifier, Repository repository) : base(parentPath, imageIdentifier)
     {
         _repository = repository;
     }
 
-    public override string ItemName => Property<string>("ImageTag")!;
+    public override string ItemName => UnderlyingObject.ImageTag;
     public override string ItemType => EcrItemTypes.ImageTag;
-    public string RepositoryUri => $"{_repository.Property<string>("RepositoryUri")}:{ItemName}";
+    public string RepositoryUri => $"{_repository.RepositoryUri}:{ItemName}";
     public override bool IsContainer => false;
 
     public override void CustomizePSObject(PSObject psObject)
