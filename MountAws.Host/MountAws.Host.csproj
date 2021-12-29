@@ -4,27 +4,13 @@
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
     <PublishDir>$(MSBuildProjectDirectory)\..\bin\MountAws\</PublishDir>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Autofac" Version="6.3.0" />
-    <PackageReference Include="System.Management.Automation" Version="7.2.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="*.ps1xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Services\**\*.ps1xml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\MountAnything\MountAnything.csproj" />
-    <ProjectReference Include="..\MountAws.Api\MountAws.Api.csproj" />
+    <ProjectReference Include="..\MountAws.Host.Abstractions\MountAws.Host.Abstractions.csproj" />
   </ItemGroup>
 
   <Target Name="CopyModuleToOutput" AfterTargets="Build">
@@ -33,9 +19,14 @@
 
   <Target Name="CopyModuleToPublishOutput" AfterTargets="Publish">
     <ItemGroup>
-      <AwsSdkDependency Include="$(OutputPath)\AwsSdk\*.*" />
+      <ImplAssembly Include="$(OutputPath)\Impl\*.*" />
     </ItemGroup>
-    <Copy SourceFiles="@(AwsSdkDependency)" DestinationFolder="$(PublishDir)\AwsSdk\" />
+    <ItemGroup>
+      <PSXmlFile Include="$(OutputPath)\**\*.ps1xml" />
+    </ItemGroup>
+    <Copy SourceFiles="@(ImplAssembly)" DestinationFolder="$(PublishDir)\Impl\" />
+    <Copy SourceFiles="@(PSXmlFile)"
+          DestinationFiles="$(PublishDir)\%(RecursiveDir)\%(Filename)%(Extension)" />
     <Exec Command="pwsh CreateManifest.ps1 $(PublishDir)" WorkingDirectory="$(MSBuildProjectDirectory)" />
   </Target>
 

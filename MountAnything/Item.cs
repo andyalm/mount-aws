@@ -40,6 +40,7 @@ public abstract class Item<T> : IItem where T : class
     public PSObject ToPipelineObject(Func<string,string> pathResolver)
     {
         var psObject = UnderlyingObject is PSObject underlyingObject ? underlyingObject : new PSObject(UnderlyingObject);
+        psObject.TypeNames.Clear(); 
         psObject.TypeNames.Add(TypeName);
         var itemNameProperty = psObject.Properties["ItemName"];
         if (itemNameProperty == null)

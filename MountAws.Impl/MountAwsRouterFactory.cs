@@ -1,11 +1,8 @@
-﻿using System.Collections.ObjectModel;
-using System.Management.Automation;
-using System.Management.Automation.Provider;
-using System.Reflection;
 using Autofac;
-using MountAnything;
 using MountAnything.Routing;
 using MountAws.Api;
+using MountAws.Api.AwsSdk;
+using MountAws.Host.Abstractions;
 using MountAws.Services.Ec2;
 using MountAws.Services.Ecr;
 using MountAws.Services.Ecs;
@@ -14,29 +11,17 @@ using MountAws.Services.Route53;
 using MountAws.Services.S3;
 
 namespace MountAws;
-[CmdletProvider("MountAws", ProviderCapabilities.ExpandWildcards | ProviderCapabilities.Filter)]
-public class MountAwsProvider : MountAnythingProvider
-{
-    
-    
-    protected override Collection<PSDriveInfo> InitializeDefaultDrives()
-    {
-        return new Collection<PSDriveInfo>
-        {
-            new("aws", ProviderInfo, ItemSeparator.ToString(),
-                "Allows you to navigate aws services as a virtual filesystem", null)
-        };
-    }
 
-    public override Router CreateRouter()
+public class MountAwsRouterFactory : IRouterFactory
+{
+    public Router CreateRouter()
     {
-        var apiAssembly = LoadApiAssembly();
-        
         var router = Router.Create<ProfilesHandler>();
         router.RegisterServices(builder =>
         {
             builder.RegisterInstance(new CurrentRegion("us-east-1"));
-            var registrars = apiAssembly.GetTypes()
+            var registrars = typeof(CoreRegistrar).Assembly
+                .GetTypes()
                 .Where(t => typeof(IApiServiceRegistrar).IsAssignableFrom(t) && !t.IsAbstract)
                 .Select(Activator.CreateInstance)
                 .Cast<IApiServiceRegistrar>();
@@ -68,14 +53,5 @@ public class MountAwsProvider : MountAnythingProvider
         });
 
         return router;
-    }
-
-    private Assembly LoadApiAssembly()
-    {
-        var modulePath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
-        var apiAssemblyDir = Path.Combine(modulePath, "AwsSdk");
-        var assemblyLoadContext = new AwsApiAssemblyLoadContext(apiAssemblyDir);
-        
-        return assemblyLoadContext.LoadFromAssemblyName(new AssemblyName("MountAws.Api.AwsSdk"));
     }
 }

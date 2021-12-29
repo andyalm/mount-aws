@@ -4,7 +4,7 @@ using Autofac;
 
 namespace MountAnything.Routing;
 
-public class Route : IRouter
+public class Route : IRoutable
 {
     private Action<RouteMatch, ContainerBuilder> _serviceRegistrations;
     private readonly List<Route> _childRoutes = new();
