@@ -14,18 +14,7 @@ public static class Ec2ApiExtensions
     {
         var request = !string.IsNullOrEmpty(filter) ? ParseInstanceFilter(filter) : new DescribeInstancesRequest();
         
-        return GetWithPaging(nextToken =>
-        {
-            request.NextToken = nextToken;
-            
-            var response = client.DescribeInstances(request);
-
-            return new PaginatedResponse<Instance>
-            {
-                PageOfResults = response.Instances.ToArray(),
-                NextToken = response.NextToken
-            };
-        });
+        return client.DescribeInstances(request);
     }
 
     public static IEnumerable<Instance> GetInstancesByIds(this IAmazonEC2 ec2, IEnumerable<string> instanceIds)
@@ -39,7 +28,7 @@ public static class Ec2ApiExtensions
         return ec2.DescribeInstances(new DescribeInstancesRequest
             {
                 InstanceIds = instanceIdList
-            }).Instances;
+            });
     }
 
     public static DescribeInstancesRequest ParseInstanceFilter(string filterString)
@@ -108,17 +97,22 @@ public static class Ec2ApiExtensions
         }
     }
     
-    public static (IEnumerable<Instance> Instances, string NextToken) DescribeInstances(this IAmazonEC2 ec2, DescribeInstancesRequest request)
+    public static IEnumerable<Instance> DescribeInstances(this IAmazonEC2 ec2, DescribeInstancesRequest request)
     {
         // only set max results if no filters applied (it sometimes doesn't return results)
-        if(!request.Filters.Any() && !request.InstanceIds.Any())
+        if (!request.Filters.Any() && !request.InstanceIds.Any())
         {
             request.MaxResults = 100;
         }
-        var response = ec2.DescribeInstancesAsync(request).GetAwaiter().GetResult();
-        
-        return (response.Reservations.SelectMany(r => r.Instances),
+        return Paginate(nextToken =>
+        {
+            request.NextToken = nextToken;
+
+            var response = ec2.DescribeInstancesAsync(request).GetAwaiter().GetResult();
+
+            return (response.Reservations.SelectMany(r => r.Instances),
                 response.NextToken);
+        });
     }
 
     public static void TerminateInstance(this IAmazonEC2 ec2, string instanceId)
@@ -148,20 +142,20 @@ public static class Ec2ApiExtensions
         }
     }
 
-    public static (IEnumerable<SecurityGroup> SecurityGroups, string NextToken) DescribeSecurityGroups(this IAmazonEC2 ec2, DescribeSecurityGroupsRequest request)
+    public static IEnumerable<SecurityGroup> DescribeSecurityGroups(this IAmazonEC2 ec2, DescribeSecurityGroupsRequest request)
     {
         // only set max results if no filters applied (it sometimes doesn't return results)
         if(!request.Filters.Any() && !request.GroupIds.Any())
         {
             request.MaxResults = 100;
         }
-
-        if (!string.IsNullOrEmpty(request.NextToken))
+        return Paginate(nextToken =>
         {
-            request.NextToken = request.NextToken;
-        }
-        var response = ec2.DescribeSecurityGroupsAsync(request).GetAwaiter().GetResult();
-        return (response.SecurityGroups, response.NextToken);
+            request.NextToken = nextToken;
+
+            var response = ec2.DescribeSecurityGroupsAsync(request).GetAwaiter().GetResult();
+            return (response.SecurityGroups, response.NextToken);
+        });
     }
 
     public static IEnumerable<Subnet> DescribeSubnetsByVpc(this IAmazonEC2 ec2, string vpcId)

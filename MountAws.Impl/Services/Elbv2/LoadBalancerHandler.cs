@@ -31,7 +31,7 @@ public class LoadBalancerHandler : PathHandler
             var securityGroups = _ec2.DescribeSecurityGroups(new DescribeSecurityGroupsRequest
             {
                 GroupIds = loadBalancer.SecurityGroups
-            }).SecurityGroups;
+            });
             return new LoadBalancerItem(ParentPath, loadBalancer, securityGroups);
         }
         catch (LoadBalancerNotFoundException)

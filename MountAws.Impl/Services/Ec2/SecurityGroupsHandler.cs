@@ -1,11 +1,7 @@
-using System.Management.Automation;
 using Amazon.EC2;
 using Amazon.EC2.Model;
 using MountAnything;
-using MountAws.Api.Ec2;
 using MountAws.Services.Core;
-
-using static MountAws.PagingHelper;
 
 namespace MountAws.Services.Ec2;
 
@@ -42,17 +38,8 @@ public class SecurityGroupsHandler : PathHandler
 
     private IEnumerable<IItem> GetChildSecurityGroups(DescribeSecurityGroupsRequest request)
     {
-        return GetWithPaging(nextToken =>
-        {
-            request.NextToken = nextToken;
-            var response = _ec2.DescribeSecurityGroups(request);
-
-            return new PaginatedResponse<SecurityGroup>
-            {
-                PageOfResults = response.SecurityGroups.ToArray(),
-                NextToken = response.NextToken
-            };
-        }).Select(s => new SecurityGroupItem(Path, s))
+        return _ec2.DescribeSecurityGroups(request)
+            .Select(s => new SecurityGroupItem(Path, s))
             .OrderBy(s => s.GroupName);
     }
 }

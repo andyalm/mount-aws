@@ -17,24 +17,20 @@ public static class EcrApiExtensions
 
     public static IEnumerable<Repository> DescribeRepositories(this IAmazonECR ecr)
     {
-        return GetWithPaging(nextToken =>
+        return Paginate(nextToken =>
         {
             var response = ecr.DescribeRepositoriesAsync(new DescribeRepositoriesRequest
             {
                 NextToken = nextToken
             }).GetAwaiter().GetResult();
 
-            return new PaginatedResponse<Repository>
-            {
-                PageOfResults = response.Repositories.ToArray(),
-                NextToken = response.NextToken
-            };
+            return (response.Repositories, response.NextToken);
         });
     }
 
     public static IEnumerable<ImageIdentifier> ListTaggedImages(this IAmazonECR ecr, string repositoryName, string? nextToken = null)
     {
-        return GetWithPaging(nextToken =>
+        return Paginate(nextToken =>
         {
             var response = ecr.ListImagesAsync(new ListImagesRequest
             {
@@ -46,11 +42,7 @@ public static class EcrApiExtensions
                 NextToken = nextToken
             }).GetAwaiter().GetResult();
 
-            return new PaginatedResponse<ImageIdentifier>
-            {
-                PageOfResults = response.ImageIds.ToArray(),
-                NextToken = response.NextToken
-            };
+            return (response.ImageIds, response.NextToken);
         });
     }
     

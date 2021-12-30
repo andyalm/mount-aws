@@ -22,7 +22,7 @@ public class InstanceHandler : PathHandler, IRemoveItemHandler
             return null;
         }
         
-        var instances = _ec2.DescribeInstances(request).Instances.ToArray();
+        var instances = _ec2.DescribeInstances(request).ToArray();
         WriteDebug($"Found {instances.Length} instances");
         if (instances.Length == 1)
         {

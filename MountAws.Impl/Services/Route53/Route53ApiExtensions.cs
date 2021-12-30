@@ -8,7 +8,7 @@ public static class Route53ApiExtensions
 {
     public static IEnumerable<HostedZone> ListHostedZones(this IAmazonRoute53 route53)
     {
-        return GetWithPaging(nextToken =>
+        return Paginate(nextToken =>
         {
             var response = route53.ListHostedZonesAsync(new ListHostedZonesRequest
             {
@@ -16,11 +16,7 @@ public static class Route53ApiExtensions
                 MaxItems = "100"
             }).GetAwaiter().GetResult();
 
-            return new PaginatedResponse<HostedZone>
-            {
-                PageOfResults = response.HostedZones.ToArray(),
-                NextToken = response.NextMarker
-            };
+            return (response.HostedZones, response.NextMarker);
         });
     }
 
@@ -34,7 +30,7 @@ public static class Route53ApiExtensions
 
     public static IEnumerable<ResourceRecordSet> ListResourceRecordSets(this IAmazonRoute53 route53, string zoneId)
     {
-        return GetWithPaging(nextToken =>
+        return Paginate(nextToken =>
         {
             var response = route53.ListResourceRecordSetsAsync(new ListResourceRecordSetsRequest(zoneId)
             {
@@ -42,11 +38,7 @@ public static class Route53ApiExtensions
                 StartRecordName = nextToken
             }).GetAwaiter().GetResult();
 
-            return new PaginatedResponse<ResourceRecordSet>
-            {
-                PageOfResults = response.ResourceRecordSets.ToArray(),
-                NextToken = response.NextRecordName
-            };
+            return (response.ResourceRecordSets, response.NextRecordName);
         });
     }
 

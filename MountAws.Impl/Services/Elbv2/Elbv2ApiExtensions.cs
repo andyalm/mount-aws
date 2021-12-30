@@ -18,18 +18,14 @@ public static class Elbv2ApiExtensions
 
     public static IEnumerable<LoadBalancer> DescribeLoadBalancers(this IAmazonElasticLoadBalancingV2 elbv2)
     {
-        return GetWithPaging(nextToken =>
+        return Paginate(nextToken =>
         {
             var response = elbv2.DescribeLoadBalancersAsync(new DescribeLoadBalancersRequest
             {
                 Marker = nextToken
             }).GetAwaiter().GetResult();
 
-            return new PaginatedResponse<LoadBalancer>
-            {
-                PageOfResults = response.LoadBalancers.ToArray(),
-                NextToken = response.NextMarker
-            };
+            return (response.LoadBalancers, response.NextMarker);
         });
     }
 
@@ -43,21 +39,17 @@ public static class Elbv2ApiExtensions
 
     public static IEnumerable<TargetGroup> DescribeTargetGroups(this IAmazonElasticLoadBalancingV2 elbv2)
     {
-        return GetWithPaging(nextToken =>
+        return Paginate(nextToken =>
         {
             var response = elbv2
-                .DescribeTargetGroupsAsync(new Amazon.ElasticLoadBalancingV2.Model.DescribeTargetGroupsRequest
+                .DescribeTargetGroupsAsync(new DescribeTargetGroupsRequest
                 {
                     Marker = nextToken,
                     PageSize = 100
                 })
                 .GetAwaiter().GetResult();
 
-            return new PaginatedResponse<TargetGroup>
-            {
-                PageOfResults = response.TargetGroups.ToArray(),
-                NextToken = response.NextMarker
-            };
+            return (response.TargetGroups, response.NextMarker);
         });
     }
 

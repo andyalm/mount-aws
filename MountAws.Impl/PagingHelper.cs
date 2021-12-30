@@ -2,8 +2,8 @@ namespace MountAws;
 
 public class PagingHelper
 {
-    public static IEnumerable<TReturn> GetWithPaging<TReturn>(
-        Func<string?, PaginatedResponse<TReturn>> requestPageAction, int? maxPages = null)
+    public static IEnumerable<TReturn> Paginate<TReturn>(
+        Func<string?, (IEnumerable<TReturn> PageOfResults, string? NextToken)> requestPageAction, int? maxPages = null)
     {
         string? nextToken = null;
         int totalPages = 0;
@@ -19,10 +19,4 @@ public class PagingHelper
             nextToken = response.NextToken;
         } while (nextToken != null && (maxPages == null || totalPages < maxPages));
     }
-}
-
-public record PaginatedResponse<T>
-{
-    public T[] PageOfResults { get; init; } = Array.Empty<T>();
-    public string? NextToken { get; init; }
 }

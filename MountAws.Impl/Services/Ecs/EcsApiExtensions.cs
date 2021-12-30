@@ -22,18 +22,14 @@ public static class EcsApiExtensions
     }
     public static IEnumerable<string> ListClusters(this IAmazonECS ecs)
     {
-        return GetWithPaging(nextToken =>
+        return Paginate(nextToken =>
         {
             var response = ecs.ListClustersAsync(new ListClustersRequest
             {
                 NextToken = nextToken
             }).GetAwaiter().GetResult();
 
-            return new PaginatedResponse<string>
-            {
-                PageOfResults = response.ClusterArns.ToArray(),
-                NextToken = response.NextToken
-            };
+            return (response.ClusterArns, response.NextToken);
         });
     }
 
@@ -65,7 +61,7 @@ public static class EcsApiExtensions
 
     public static IEnumerable<string> ListContainerInstances(this IAmazonECS ecs, string cluster, string? filter = null)
     {
-        return GetWithPaging(nextToken =>
+        return Paginate(nextToken =>
         {
             var response = ecs.ListContainerInstancesAsync(new ListContainerInstancesRequest
             {
@@ -74,11 +70,7 @@ public static class EcsApiExtensions
                 NextToken = nextToken
             }).GetAwaiter().GetResult();
 
-            return new PaginatedResponse<string>
-            {
-                PageOfResults = response.ContainerInstanceArns.ToArray(),
-                NextToken = response.NextToken
-            };
+            return (response.ContainerInstanceArns, response.NextToken);
         });
     }
 
@@ -117,7 +109,7 @@ public static class EcsApiExtensions
 
     public static IEnumerable<string> ListServices(this IAmazonECS ecs, string cluster)
     {
-        return GetWithPaging(nextToken =>
+        return Paginate(nextToken =>
         {
             var response = ecs.ListServicesAsync(new ListServicesRequest
             {
@@ -125,11 +117,7 @@ public static class EcsApiExtensions
                 NextToken = nextToken
             }).GetAwaiter().GetResult();
 
-            return new PaginatedResponse<string>
-            {
-                PageOfResults = response.ServiceArns.ToArray(),
-                NextToken = response.NextToken
-            };
+            return (response.ServiceArns, response.NextToken);
         });
     }
 
@@ -145,7 +133,7 @@ public static class EcsApiExtensions
 
     public static IEnumerable<string> ListTasksByContainerInstance(this IAmazonECS ecs, string cluster, string containerInstanceId)
     {
-        return GetWithPaging(nextToken =>
+        return Paginate(nextToken =>
         {
             var response = ecs.ListTasksAsync(new ListTasksRequest
             {
@@ -154,17 +142,13 @@ public static class EcsApiExtensions
                 NextToken = nextToken
             }).GetAwaiter().GetResult();
 
-            return new PaginatedResponse<string>
-            {
-                PageOfResults = response.TaskArns.ToArray(),
-                NextToken = response.NextToken
-            };
+            return (response.TaskArns, response.NextToken);
         });
     }
     
     public static IEnumerable<string> ListTasksByService(this IAmazonECS ecs, string cluster, string serviceName)
     {
-        return GetWithPaging(nextToken =>
+        return Paginate(nextToken =>
         {
             var response = ecs.ListTasksAsync(new ListTasksRequest
             {
@@ -173,11 +157,7 @@ public static class EcsApiExtensions
                 NextToken = nextToken
             }).GetAwaiter().GetResult();
 
-            return new PaginatedResponse<string>
-            {
-                PageOfResults = response.TaskArns.ToArray(),
-                NextToken = response.NextToken
-            };
+            return (response.TaskArns, response.NextToken);
         });
     }
 
@@ -213,7 +193,7 @@ public static class EcsApiExtensions
 
     public static IEnumerable<string> ListTaskFamilies(this IAmazonECS ecs, string? familyPrefix, int? maxResults = null)
     {
-        return GetWithPaging(nextToken =>
+        return Paginate(nextToken =>
         {
             var request = new ListTaskDefinitionFamiliesRequest
             {
@@ -228,17 +208,13 @@ public static class EcsApiExtensions
 
             var response = ecs.ListTaskDefinitionFamiliesAsync(request).GetAwaiter().GetResult();
 
-            return new PaginatedResponse<string>
-            {
-                PageOfResults = response.Families.ToArray(),
-                NextToken = response.NextToken
-            };
+            return (response.Families.ToArray(), response.NextToken);
         });
     }
 
     public static IEnumerable<string> ListTaskDefinitionsByFamily(this IAmazonECS ecs, string family, bool isActive = true)
     {
-        return GetWithPaging(nextToken =>
+        return Paginate(nextToken =>
         {
             var response = ecs.ListTaskDefinitionsAsync(new ListTaskDefinitionsRequest
             {
@@ -248,11 +224,7 @@ public static class EcsApiExtensions
                 NextToken = nextToken
             }).GetAwaiter().GetResult();
 
-            return new PaginatedResponse<string>
-            {
-                PageOfResults = response.TaskDefinitionArns.ToArray(),
-                NextToken = response.NextToken
-            };
+            return (response.TaskDefinitionArns, response.NextToken);
         });
     }
 

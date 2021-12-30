@@ -4,7 +4,6 @@ using Amazon.ElasticLoadBalancingV2;
 using MountAnything;
 using MountAws.Services.Core;
 using MountAws.Services.Ec2;
-using static MountAws.PagingHelper;
 
 namespace MountAws.Services.Elbv2;
 
@@ -44,20 +43,10 @@ public class LoadBalancersHandler : PathHandler
                 .Distinct()
                 .ToList();
 
-        var securityGroups = GetWithPaging(nextToken =>
-        {
-            var response = _ec2.DescribeSecurityGroups(new DescribeSecurityGroupsRequest
+        var securityGroups = _ec2.DescribeSecurityGroups(new DescribeSecurityGroupsRequest
             {
-                GroupIds = securityGroupIds,
-                NextToken = nextToken
-            });
-
-            return new PaginatedResponse<SecurityGroup>
-            {
-                PageOfResults = response.SecurityGroups.ToArray(),
-                NextToken = response.NextToken
-            };
-        }).ToDictionary(sg => sg.GroupId);
+                GroupIds = securityGroupIds
+            }).ToDictionary(sg => sg.GroupId);
 
         return loadBalancers.Select(lb => new LoadBalancerItem(Path, lb, securityGroups.MultiGet(lb.SecurityGroups)))
             .OrderBy(lb => lb.ItemName);
