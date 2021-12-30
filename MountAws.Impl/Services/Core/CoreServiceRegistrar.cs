@@ -49,7 +49,7 @@ public class CoreServiceRegistrar : IServiceRegistrar
             }
 
             credentials = new SourceProfileAWSCredentials(sourceCredentials, profile.Options.RoleArn,
-                profile.Options.RoleSessionName, new AssumeRoleAWSCredentialsOptions
+                profile.Options.RoleSessionName ?? "MountAws", new AssumeRoleAWSCredentialsOptions
                 {
                     ExternalId = profile.Options.ExternalID,
                     MfaSerialNumber = profile.Options.MfaSerial
