@@ -74,3 +74,7 @@ The following services are currently supported:
  * [ELBV2](docs/Services/ELBV2.md)
  * [Route53](docs/Services/Route53.md)
  * [S3](docs/Services/S3.md)
+
+## Contributing
+
+I'm only one guy, so have focused my efforts on supporting services I'm familiar with and use frequently. I plan to add support for more services as I have time. However, I also welcome contributions from others. Feel free to submit PR's that support additional services. I have put together a [developer guide](docs/DeveloperGuide.md) to help you figure out how to contribute.

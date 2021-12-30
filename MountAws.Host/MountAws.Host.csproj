@@ -12,16 +12,18 @@
     <ProjectReference Include="..\MountAnything\MountAnything.csproj" />
     <ProjectReference Include="..\MountAws.Host.Abstractions\MountAws.Host.Abstractions.csproj" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <ImplProject Include="..\MountAws.Impl\MountAws.Impl.csproj" />
+  </ItemGroup>
 
   <Target Name="CopyModuleToOutput" AfterTargets="Build">
+    <MSBuild Projects="@(ImplProject)" Targets="Restore;Build" />
     <Exec Command="pwsh CreateManifest.ps1 $(OutputPath)" WorkingDirectory="$(MSBuildProjectDirectory)" />
   </Target>
 
   <Target Name="PublishImpl" BeforeTargets="Publish">
-    <ItemGroup>
-      <PublishDependency Include="..\MountAws.Impl\MountAws.Impl.csproj" />
-    </ItemGroup>
-    <MSBuild Projects="@(PublishDependency)" Targets="Restore;Build;Publish" />
+    <MSBuild Projects="@(ImplProject)" Targets="Publish" />
   </Target>
 
   <Target Name="CopyModuleToPublishOutput" AfterTargets="Publish">
