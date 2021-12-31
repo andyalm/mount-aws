@@ -6,12 +6,21 @@ namespace MountAws;
 
 public static class LinkGeneratorExtensions
 {
-    public static InstanceItem EC2Instance(this LinkGenerator linkGenerator, Instance instance)
+    private static ItemPath Ec2ServicePath(this LinkGenerator linkGenerator)
     {
-        var ec2ServicePath = linkGenerator.EC2ServicePath();
+        return linkGenerator.ConstructPath(2, "ec2");
+    }
+    public static InstanceItem Ec2Instance(this LinkGenerator linkGenerator, Instance instance)
+    {
+        var ec2ServicePath = linkGenerator.Ec2ServicePath();
         var parentPath = ec2ServicePath.Combine("instances");
 
         return new InstanceItem(parentPath, instance);
+    }
+
+    private static ItemPath EcsServicePath(this LinkGenerator linkGenerator)
+    {
+        return linkGenerator.ConstructPath(2, "ecs");
     }
 
     public static ItemPath TaskDefinition(this LinkGenerator linkGenerator, string taskDefinitionArn)
@@ -20,15 +29,5 @@ public static class LinkGeneratorExtensions
         var taskDefinition = taskDefinitionArn.Split("/").Last().Replace(":", "/");
 
         return ecsServicePath.Combine("task-families", taskDefinition);
-    }
-
-    private static ItemPath EC2ServicePath(this LinkGenerator linkGenerator)
-    {
-        return linkGenerator.ConstructPath(2, "ec2");
-    }
-    
-    private static ItemPath EcsServicePath(this LinkGenerator linkGenerator)
-    {
-        return linkGenerator.ConstructPath(2, "ecs");
     }
 }

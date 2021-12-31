@@ -2,9 +2,7 @@ using Amazon.EC2;
 using Amazon.ECS;
 using MountAnything;
 using MountAws.Api.AwsSdk.Ecs;
-using MountAws.Api.Ec2;
 using MountAws.Services.Ec2;
-using static MountAws.PagingHelper;
 
 namespace MountAws.Services.Ecs;
 
@@ -68,7 +66,7 @@ public class ContainerInstanceHandler : PathHandler
             return null;
         }
         
-        return LinkGenerator.EC2Instance(ec2Instance);
+        return LinkGenerator.Ec2Instance(ec2Instance);
     }
 
     protected override IEnumerable<IItem> GetChildItemsImpl()

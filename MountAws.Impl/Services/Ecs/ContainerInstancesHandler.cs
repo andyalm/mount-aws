@@ -66,7 +66,7 @@ public class ContainerInstancesHandler : PathHandler
         {
             var ec2InstanceId = containerInstance.Ec2InstanceId;
             var ec2Item = string.IsNullOrEmpty(ec2InstanceId) && ec2InstancesById.TryGetValue(ec2InstanceId!, out var ec2Instance)
-                ? LinkGenerator.EC2Instance(ec2Instance)
+                ? LinkGenerator.Ec2Instance(ec2Instance)
                 : null;
 
             return new ContainerInstanceItem(Path, containerInstance, ec2Item);
