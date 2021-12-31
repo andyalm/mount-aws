@@ -2,9 +2,9 @@ using MountAnything.Routing;
 
 namespace MountAws.Services.Ec2;
 
-public static class Routes
+public class Ec2Routes : IServiceRoutes
 {
-    public static void MapEc2(this Route route)
+    public void AddServiceRoutes(Route route)
     {
         route.MapLiteral<Ec2RootHandler>("ec2", ec2 =>
         {

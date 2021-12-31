@@ -3,9 +3,9 @@ using MountAnything.Routing;
 
 namespace MountAws.Services.Ecr;
 
-public static class Routes
+public class EcrRoutes : IServiceRoutes
 {
-    public static void MapEcr(this Route route)
+    public void AddServiceRoutes(Route route)
     {
         route.MapLiteral<EcrRootHandler>("ecr", ecr =>
         {

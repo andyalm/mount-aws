@@ -2,9 +2,9 @@ using MountAnything.Routing;
 
 namespace MountAws.Services.Route53;
 
-public static class Routes
+public class Route53Routes : IServiceRoutes
 {
-    public static void MapRoute53(this Route route)
+    public void AddServiceRoutes(Route route)
     {
         route.MapLiteral<Route53RootHandler>("route53", route53 =>
         {

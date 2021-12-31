@@ -2,9 +2,9 @@ using MountAnything.Routing;
 
 namespace MountAws.Services.Elbv2;
 
-public static class Routes
+public class Elbv2Routes : IServiceRoutes
 {
-    public static void MapElbv2(this Route route)
+    public void AddServiceRoutes(Route route)
     {
         route.MapLiteral<Elbv2RootHandler>("elbv2", elbv2 =>
         {
@@ -40,8 +40,11 @@ public static class Routes
             });
         });
     }
+}
 
-    private static void MapTargetGroup(this Route targetGroupRoute)
+static class Elbv2RouteExtensions
+{
+    public static void MapTargetGroup(this Route targetGroupRoute)
     {
         targetGroupRoute.Map<TargetGroupHandler>(targetGroup =>
         {

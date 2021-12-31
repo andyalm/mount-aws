@@ -3,9 +3,9 @@ using MountAnything.Routing;
 
 namespace MountAws.Services.Ecs;
 
-public static class Routes
+public class EcsRoutes : IServiceRoutes
 {
-    public static void MapEcs(this Route route)
+    public void AddServiceRoutes(Route route)
     {
         route.MapLiteral<ECSRootHandler>("ecs", ecs =>
         {

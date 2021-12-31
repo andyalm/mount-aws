@@ -3,9 +3,9 @@ using MountAnything.Routing;
 
 namespace MountAws.Services.S3;
 
-public static class Routes
+public class Routes : IServiceRoutes
 {
-    public static void MapS3(this Route route)
+    public void AddServiceRoutes(Route route)
     {
         route.MapLiteral<S3RootHandler>("s3", s3 =>
         {
