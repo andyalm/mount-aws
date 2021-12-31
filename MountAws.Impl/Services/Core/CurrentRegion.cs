@@ -1,10 +1,5 @@
-using MountAws.Api;
+using MountAnything;
 
 namespace MountAws.Services.Core;
 
-public class CurrentRegion : TypedString
-{
-    public CurrentRegion(string value) : base(value)
-    {
-    }
-}
+public record CurrentRegion(string Value) : TypedString(Value);
