@@ -6,23 +6,23 @@ namespace MountAws.Services.S3;
 
 public class ObjectItem : AwsItem
 {
-    public ObjectItem(string parentPath, GetObjectResponse s3Object) : base(parentPath, new PSObject(s3Object))
+    public ObjectItem(ItemPath parentPath, GetObjectResponse s3Object) : base(parentPath, new PSObject(s3Object))
     {
-        ItemName = ItemPath.GetLeaf(s3Object.Key);
+        ItemName = new ItemPath(s3Object.Key).Name;
         ItemType = S3ItemTypes.File;
         IsContainer = false;
     }
     
-    public ObjectItem(string parentPath, S3Object s3Object) : base(parentPath, new PSObject(s3Object))
+    public ObjectItem(ItemPath parentPath, S3Object s3Object) : base(parentPath, new PSObject(s3Object))
     {
-        ItemName = ItemPath.GetLeaf(s3Object.Key);
+        ItemName = new ItemPath(s3Object.Key).Name;
         ItemType = S3ItemTypes.File;
         IsContainer = false;
     }
     
-    public ObjectItem(string parentPath, string prefix) : base(parentPath, new PSObject())
+    public ObjectItem(ItemPath parentPath, string prefix) : base(parentPath, new PSObject())
     {
-        ItemName = ItemPath.GetLeaf(prefix.TrimEnd('/'));
+        ItemName = new ItemPath(prefix.TrimEnd('/')).Name;
         ItemType = S3ItemTypes.Directory;
         IsContainer = true;
     }

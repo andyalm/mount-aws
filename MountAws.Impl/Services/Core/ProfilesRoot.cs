@@ -5,7 +5,7 @@ namespace MountAws;
 
 public class ProfilesRoot : Item
 {
-    public ProfilesRoot() : base(string.Empty, new PSObject())
+    public ProfilesRoot() : base(ItemPath.Root, new PSObject())
     {
         
     }

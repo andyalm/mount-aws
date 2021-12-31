@@ -6,7 +6,7 @@ namespace MountAws.Services.Elbv2;
 
 public class ForwardActionItem : ActionItem
 {
-    public ForwardActionItem(string parentPath, Action action) : base(parentPath, action)
+    public ForwardActionItem(ItemPath parentPath, Action action) : base(parentPath, action)
     {
         TargetGroupArn = action.TargetGroupArn()!;
         TargetGroupName = action.TargetGroupName()!;

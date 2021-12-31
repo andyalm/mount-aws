@@ -6,7 +6,7 @@ namespace MountAws.Services.Ecr;
 
 public class ImageTagsHandler : PathHandler
 {
-    public static Item CreateItem(string parentPath)
+    public static Item CreateItem(ItemPath parentPath)
     {
         return new GenericContainerItem(parentPath, "image-tags",
             "Navigate the docker image tags for this repository");
@@ -15,7 +15,7 @@ public class ImageTagsHandler : PathHandler
     private readonly IAmazonECR _ecr;
     private readonly RepositoryPath _repositoryPath;
 
-    public ImageTagsHandler(string path, IPathHandlerContext context, IAmazonECR ecr, RepositoryPath repositoryPath) : base(path, context)
+    public ImageTagsHandler(ItemPath path, IPathHandlerContext context, IAmazonECR ecr, RepositoryPath repositoryPath) : base(path, context)
     {
         _ecr = ecr;
         _repositoryPath = repositoryPath;

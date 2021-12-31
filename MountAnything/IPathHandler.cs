@@ -2,7 +2,7 @@ namespace MountAnything;
 
 public interface IPathHandler
 {
-    string Path { get; }
+    ItemPath Path { get; }
     bool Exists();
     IItem? GetItem(Freshness? freshness = null);
     Freshness GetItemCommandDefaultFreshness { get; }

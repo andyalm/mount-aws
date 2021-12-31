@@ -16,7 +16,7 @@ public class ContainerInstanceHandler : PathHandler
     private readonly IAmazonEC2 _ec2;
     private readonly CurrentCluster _currentCluster;
 
-    public ContainerInstanceHandler(string path, IPathHandlerContext context, IAmazonECS ecs, IAmazonEC2 ec2, CurrentCluster currentCluster) : base(path, context)
+    public ContainerInstanceHandler(ItemPath path, IPathHandlerContext context, IAmazonECS ecs, IAmazonEC2 ec2, CurrentCluster currentCluster) : base(path, context)
     {
         _ecs = ecs;
         _ec2 = ec2;

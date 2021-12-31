@@ -88,7 +88,7 @@ public static class S3ApiExtensions
     }
     
     public static IEnumerable<IItem> ListChildItems(this IAmazonS3 s3,
-        string bucketName, string parentPath,
+        string bucketName, ItemPath parentPath,
         string? prefix = null,
         int? maxResults = null)
     {

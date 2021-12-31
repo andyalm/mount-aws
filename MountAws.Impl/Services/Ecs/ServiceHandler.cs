@@ -10,7 +10,7 @@ public class ServiceHandler : PathHandler, IRemoveItemHandler
     private readonly IAmazonECS _ecs;
     private readonly CurrentCluster _currentCluster;
 
-    public ServiceHandler(string path, IPathHandlerContext context, IAmazonECS ecs, CurrentCluster currentCluster) : base(path, context)
+    public ServiceHandler(ItemPath path, IPathHandlerContext context, IAmazonECS ecs, CurrentCluster currentCluster) : base(path, context)
     {
         _ecs = ecs;
         _currentCluster = currentCluster;

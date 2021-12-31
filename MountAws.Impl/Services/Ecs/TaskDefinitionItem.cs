@@ -1,11 +1,12 @@
 using System.Management.Automation;
 using Amazon.ECS.Model;
+using MountAnything;
 
 namespace MountAws.Services.Ecs;
 
 public class TaskDefinitionItem : AwsItem
 {
-    public TaskDefinitionItem(string parentPath, TaskDefinition taskDefinition, Tag[] tags) : base(parentPath, new PSObject(taskDefinition))
+    public TaskDefinitionItem(ItemPath parentPath, TaskDefinition taskDefinition, Tag[] tags) : base(parentPath, new PSObject(taskDefinition))
     {
         var taskFamilyAndRevision = taskDefinition.TaskDefinitionArn.Split("/").Last();
         var parts = taskFamilyAndRevision.Split(":");
@@ -14,7 +15,7 @@ public class TaskDefinitionItem : AwsItem
         UnderlyingObject.Properties.Add(new PSNoteProperty("Tags", tags));
     }
     
-    public TaskDefinitionItem(string parentPath, string taskDefinitionArn) : base(parentPath, new PSObject())
+    public TaskDefinitionItem(ItemPath parentPath, string taskDefinitionArn) : base(parentPath, new PSObject())
     {
         var taskFamilyAndRevision = taskDefinitionArn.Split("/").Last();
         var parts = taskFamilyAndRevision.Split(":");

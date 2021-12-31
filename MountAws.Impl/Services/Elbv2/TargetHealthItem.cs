@@ -1,5 +1,6 @@
 using System.Management.Automation;
 using Amazon.ElasticLoadBalancingV2.Model;
+using MountAnything;
 
 namespace MountAws.Services.Elbv2;
 
@@ -7,7 +8,7 @@ public class TargetHealthItem : AwsItem<TargetHealthDescription>
 {
     private TargetDescription Target { get; }
     private TargetHealth TargetHealth { get; }
-    public TargetHealthItem(string parentPath, TargetHealthDescription targetHealth) : base(parentPath, targetHealth)
+    public TargetHealthItem(ItemPath parentPath, TargetHealthDescription targetHealth) : base(parentPath, targetHealth)
     {
         Target = targetHealth.Target;
         if (Target.Port > 0)

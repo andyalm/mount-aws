@@ -7,7 +7,7 @@ namespace MountAws.Services.Ecs;
 
 public class ContainerInstanceItem : AwsItem<ContainerInstance>
 {
-    public ContainerInstanceItem(string parentPath, ContainerInstance containerInstance, InstanceItem? ec2Instance) : base(parentPath, containerInstance)
+    public ContainerInstanceItem(ItemPath parentPath, ContainerInstance containerInstance, InstanceItem? ec2Instance) : base(parentPath, containerInstance)
     {
         ItemName = containerInstance.ContainerInstanceArn.Split("/").Last();
         if (ec2Instance != null)

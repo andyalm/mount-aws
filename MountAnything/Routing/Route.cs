@@ -20,7 +20,7 @@ public class Route : IRoutable
         _serviceRegistrations = serviceRegistrations ?? ((_, _) => {});
     }
     
-    public bool TryGetResolver(string path, out HandlerResolver resolver)
+    public bool TryGetResolver(ItemPath path, out HandlerResolver resolver)
     {
         foreach (var childRoute in _childRoutes)
         {
@@ -31,7 +31,7 @@ public class Route : IRoutable
             }
         }
         
-        var regexMatch = Regex.Match(path);
+        var regexMatch = Regex.Match(path.FullName);
         if (regexMatch.Success)
         {
             var routeMatch = new RouteMatch(path, HandlerType)

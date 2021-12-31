@@ -8,7 +8,7 @@ public class TaskFamilyHandler : PathHandler
 {
     private readonly IAmazonECS _ecs;
 
-    public TaskFamilyHandler(string path, IPathHandlerContext context, IAmazonECS ecs) : base(path, context)
+    public TaskFamilyHandler(ItemPath path, IPathHandlerContext context, IAmazonECS ecs) : base(path, context)
     {
         _ecs = ecs;
     }

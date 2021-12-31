@@ -8,7 +8,7 @@ public class InstanceHandler : PathHandler, IRemoveItemHandler
 {
     private readonly IAmazonEC2 _ec2;
 
-    public InstanceHandler(string path, IPathHandlerContext context, IAmazonEC2 ec2) : base(path, context)
+    public InstanceHandler(ItemPath path, IPathHandlerContext context, IAmazonEC2 ec2) : base(path, context)
     {
         _ec2 = ec2;
     }

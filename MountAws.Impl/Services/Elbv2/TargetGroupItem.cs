@@ -7,7 +7,7 @@ namespace MountAws.Services.Elbv2;
 public class TargetGroupItem : AwsItem<TargetGroup>
 {
 
-    public TargetGroupItem(string parentPath, TargetGroup targetGroup) : base(parentPath, targetGroup) {}
+    public TargetGroupItem(ItemPath parentPath, TargetGroup targetGroup) : base(parentPath, targetGroup) {}
 
     public override string ItemName => UnderlyingObject.TargetGroupName;
     public override string ItemType => Elbv2ItemTypes.TargetGroup;
@@ -19,7 +19,7 @@ public class WeightedTargetGroupItem : TargetGroupItem
 {
     public int Weight { get; }
     
-    public WeightedTargetGroupItem(string parentPath, TargetGroup targetGroup, int weight) : base(parentPath, targetGroup)
+    public WeightedTargetGroupItem(ItemPath parentPath, TargetGroup targetGroup, int weight) : base(parentPath, targetGroup)
     {
         Weight = weight;
     }

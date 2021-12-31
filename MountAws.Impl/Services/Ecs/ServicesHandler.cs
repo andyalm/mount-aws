@@ -10,13 +10,13 @@ public class ServicesHandler : PathHandler
     private readonly IAmazonECS _ecs;
     private readonly CurrentCluster _currentCluster;
 
-    public static Item CreateItem(string parentPath)
+    public static Item CreateItem(ItemPath parentPath)
     {
         return new GenericContainerItem(parentPath, "services",
             "Navigate the ECS services and its tasks and other related objects");
     }
     
-    public ServicesHandler(string path, IPathHandlerContext context, IAmazonECS ecs, CurrentCluster currentCluster) : base(path, context)
+    public ServicesHandler(ItemPath path, IPathHandlerContext context, IAmazonECS ecs, CurrentCluster currentCluster) : base(path, context)
     {
         _ecs = ecs;
         _currentCluster = currentCluster;

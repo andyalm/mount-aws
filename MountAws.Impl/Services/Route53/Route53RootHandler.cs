@@ -5,13 +5,13 @@ namespace MountAws.Services.Route53;
 
 public class Route53RootHandler : PathHandler
 {
-    public static IItem CreateItem(string parentPath)
+    public static IItem CreateItem(ItemPath parentPath)
     {
         return new GenericContainerItem(parentPath, "route53",
             "Navigate Route53 objects as a virtual filesystem");
     }
     
-    public Route53RootHandler(string path, IPathHandlerContext context) : base(path, context)
+    public Route53RootHandler(ItemPath path, IPathHandlerContext context) : base(path, context)
     {
     }
 

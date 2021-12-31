@@ -6,7 +6,7 @@ namespace MountAws.Services.S3;
 
 public class PolicyItem : AwsItem
 {
-    public PolicyItem(string parentPath) : base(parentPath, new PSObject()) {}
+    public PolicyItem(ItemPath parentPath) : base(parentPath, new PSObject()) {}
 
     public override string ItemName => "policy";
     public override string ItemType => S3ItemTypes.BucketPolicy;

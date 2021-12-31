@@ -5,7 +5,7 @@ namespace MountAws.Services.Ecs;
 
 public class TaskFamilyItem : AwsItem
 {
-    public TaskFamilyItem(string parentPath, string family) : base(parentPath, new PSObject())
+    public TaskFamilyItem(ItemPath parentPath, string family) : base(parentPath, new PSObject())
     {
         ItemName = family;
     }

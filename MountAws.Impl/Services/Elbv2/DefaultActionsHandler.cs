@@ -10,13 +10,13 @@ public class DefaultActionsHandler : PathHandler
     private readonly IAmazonElasticLoadBalancingV2 _elbv2;
     private readonly IAmazonEC2 _ec2;
 
-    public static Item CreateItem(string parentPath)
+    public static Item CreateItem(ItemPath parentPath)
     {
         return new GenericContainerItem(parentPath, "default-actions",
             "List the default actions for the load balancer listener");
     }
 
-    public DefaultActionsHandler(string path, IPathHandlerContext context, IAmazonElasticLoadBalancingV2 elbv2, IAmazonEC2 ec2) : base(path, context)
+    public DefaultActionsHandler(ItemPath path, IPathHandlerContext context, IAmazonElasticLoadBalancingV2 elbv2, IAmazonEC2 ec2) : base(path, context)
     {
         _elbv2 = elbv2;
         _ec2 = ec2;

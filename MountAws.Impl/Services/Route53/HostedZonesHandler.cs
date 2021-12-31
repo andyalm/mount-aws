@@ -8,13 +8,13 @@ public class HostedZonesHandler : PathHandler
 {
     private readonly IAmazonRoute53 _route53;
 
-    public static IItem CreateItem(string parentPath)
+    public static IItem CreateItem(ItemPath parentPath)
     {
         return new GenericContainerItem(parentPath, "hosted-zones",
             "Contains hosted zones and child dns records");
     }
     
-    public HostedZonesHandler(string path, IPathHandlerContext context, IAmazonRoute53 route53) : base(path, context)
+    public HostedZonesHandler(ItemPath path, IPathHandlerContext context, IAmazonRoute53 route53) : base(path, context)
     {
         _route53 = route53;
     }

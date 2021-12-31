@@ -10,7 +10,7 @@ public class HostedZoneHandler : PathHandler
 {
     private readonly IAmazonRoute53 _route53;
 
-    public HostedZoneHandler(string path, IPathHandlerContext context, IAmazonRoute53 route53) : base(path, context)
+    public HostedZoneHandler(ItemPath path, IPathHandlerContext context, IAmazonRoute53 route53) : base(path, context)
     {
         _route53 = route53;
     }

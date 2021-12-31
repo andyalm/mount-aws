@@ -7,7 +7,7 @@ public class TargetHealthHandler : PathHandler
 {
     private readonly IAmazonElasticLoadBalancingV2 _elbv2;
 
-    public TargetHealthHandler(string path, IPathHandlerContext context, IAmazonElasticLoadBalancingV2 elbv2) : base(path, context)
+    public TargetHealthHandler(ItemPath path, IPathHandlerContext context, IAmazonElasticLoadBalancingV2 elbv2) : base(path, context)
     {
         _elbv2 = elbv2;
     }

@@ -5,7 +5,7 @@ namespace MountAws.Services.S3;
 
 public class BucketItem : AwsItem
 {
-    public BucketItem(string parentPath, string bucketName) : base(parentPath, new PSObject(new
+    public BucketItem(ItemPath parentPath, string bucketName) : base(parentPath, new PSObject(new
     {
         BucketName = bucketName
     }))

@@ -1,11 +1,12 @@
 using System.Management.Automation;
 using Amazon.Route53.Model;
+using MountAnything;
 
 namespace MountAws.Services.Route53;
 
 public class ResourceRecordItem : AwsItem<ResourceRecordSet>
 {
-    public ResourceRecordItem(string parentPath, ResourceRecordSet record) : base(parentPath, record)
+    public ResourceRecordItem(ItemPath parentPath, ResourceRecordSet record) : base(parentPath, record)
     {
         ItemName = record.Name;
         TargetDescription = BuildTargetDescription();

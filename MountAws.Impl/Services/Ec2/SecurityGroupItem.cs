@@ -1,11 +1,12 @@
 using System.Management.Automation;
 using Amazon.EC2.Model;
+using MountAnything;
 
 namespace MountAws.Services.Ec2;
 
 public class SecurityGroupItem : AwsItem<SecurityGroup>
 {
-    public SecurityGroupItem(string parentPath, SecurityGroup securityGroup) : base(parentPath, securityGroup)
+    public SecurityGroupItem(ItemPath parentPath, SecurityGroup securityGroup) : base(parentPath, securityGroup)
     {
         ItemName = securityGroup.GroupId;
     }

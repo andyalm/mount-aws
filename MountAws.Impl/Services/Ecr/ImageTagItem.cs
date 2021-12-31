@@ -9,7 +9,7 @@ public class ImageTagItem : AwsItem<ImageIdentifier>
 {
     private readonly Repository _repository;
 
-    public ImageTagItem(string parentPath, ImageIdentifier imageIdentifier, Repository repository) : base(parentPath, imageIdentifier)
+    public ImageTagItem(ItemPath parentPath, ImageIdentifier imageIdentifier, Repository repository) : base(parentPath, imageIdentifier)
     {
         _repository = repository;
     }

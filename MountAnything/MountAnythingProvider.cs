@@ -189,8 +189,7 @@ public abstract class MountAnythingProvider : NavigationCmdletProvider,
 
     private (IPathHandler Handler, ILifetimeScope Container) GetPathHandler(string path)
     {
-        path = ItemPath.Normalize(path);
-        return Router.RouteToHandler(path, this);
+        return Router.RouteToHandler(new ItemPath(path), this);
     }
 
     private TReturn? WithPathHandler<TReturn>(string path, Func<IPathHandler,TReturn> action)
@@ -228,18 +227,18 @@ public abstract class MountAnythingProvider : NavigationCmdletProvider,
     
     private object? GetDynamicParameters(string path, Type handlerParameterInterface)
     {
-        path = ItemPath.Normalize(path);
-        var handlerResolver = Router.GetResolver(path);
+        var itemPath = new ItemPath(path);
+        var handlerResolver = Router.GetResolver(itemPath);
 
         return handlerResolver.CreateDynamicParameters(handlerParameterInterface);
     }
     
-    public string ToProviderPath(string path)
+    public string ToProviderPath(ItemPath path)
     {
-        return $"{ItemSeparator}{path.Replace("/", ItemSeparator.ToString())}";
+        return $"{ItemSeparator}{path.FullName.Replace(ItemPath.Separator.ToString(), ItemSeparator.ToString())}";
     }
 
-    public string ToFullyQualifiedProviderPath(string path)
+    public string ToFullyQualifiedProviderPath(ItemPath path)
     {
         return $"{PSDriveInfo.Name}:{ToProviderPath(path)}";
     }
@@ -253,15 +252,14 @@ public abstract class MountAnythingProvider : NavigationCmdletProvider,
     protected override string[] ExpandPath(string path)
     {
         WriteDebug($"ExpandPath({path})");
-        var normalizedPath = ItemPath.Normalize(path);
-        var handlerPath = ItemPath.GetParent(normalizedPath);
-        var pattern = ItemPath.GetLeaf(normalizedPath);
-        var returnValue = WithPathHandler(handlerPath, handler =>
+        var itemPath = new ItemPath(path);
+        var handlerPath = itemPath.Parent;
+        var pattern = itemPath.Name;
+        var returnValue = WithPathHandler(handlerPath.FullName, handler =>
         {
             WriteDebug($"{handler.GetType().Name}.ExpandPath({pattern})");
             return handler.GetChildItems(pattern)
-                .Select(i => ToProviderPath(i.FullPath))
-                .Select(p => ItemPath.GetParent(p) == "/" && p.StartsWith("/") ? p.Substring(1) : p)
+                .Select(i => i.FullPath.Parts.Length == 1 ? ToProviderPath(i.FullPath).Substring(1) : ToProviderPath(i.FullPath))
                 .ToArray();
         }) ?? Array.Empty<string>();
         foreach (var expandedPath in returnValue)

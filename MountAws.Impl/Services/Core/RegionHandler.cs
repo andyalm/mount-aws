@@ -13,7 +13,7 @@ namespace MountAws;
 
 public class RegionHandler : PathHandler
 {
-    public RegionHandler(string path, IPathHandlerContext context) : base(path, context)
+    public RegionHandler(ItemPath path, IPathHandlerContext context) : base(path, context)
     {
        
     }

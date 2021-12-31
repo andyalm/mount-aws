@@ -12,13 +12,13 @@ public class LoadBalancersHandler : PathHandler
     private readonly IAmazonElasticLoadBalancingV2 _elbv2;
     private readonly IAmazonEC2 _ec2;
 
-    public static Item CreateItem(string parentPath)
+    public static Item CreateItem(ItemPath parentPath)
     {
         return new GenericContainerItem(parentPath, "load-balancers",
             "List and filter the load balancers within the current account and region");
     }
     
-    public LoadBalancersHandler(string path, IPathHandlerContext context, IAmazonElasticLoadBalancingV2 elbv2, IAmazonEC2 ec2) : base(path, context)
+    public LoadBalancersHandler(ItemPath path, IPathHandlerContext context, IAmazonElasticLoadBalancingV2 elbv2, IAmazonEC2 ec2) : base(path, context)
     {
         _elbv2 = elbv2;
         _ec2 = ec2;

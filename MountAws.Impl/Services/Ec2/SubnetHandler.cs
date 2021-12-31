@@ -8,7 +8,7 @@ public class SubnetHandler : PathHandler
 {
     private readonly IAmazonEC2 _ec2;
 
-    public SubnetHandler(string path, IPathHandlerContext context, IAmazonEC2 ec2) : base(path, context)
+    public SubnetHandler(ItemPath path, IPathHandlerContext context, IAmazonEC2 ec2) : base(path, context)
     {
         _ec2 = ec2;
     }

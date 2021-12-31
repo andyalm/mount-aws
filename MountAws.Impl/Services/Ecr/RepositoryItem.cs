@@ -8,15 +8,15 @@ public class RepositoryItem : AwsItem
 {
     public Repository? Repository { get; }
     
-    public RepositoryItem(string parentPath, string prefix) : base(parentPath, new PSObject())
+    public RepositoryItem(ItemPath parentPath, string prefix) : base(parentPath, new PSObject())
     {
         ItemName = prefix;
         ItemType = EcrItemTypes.Directory;
     }
 
-    public RepositoryItem(string parentPath, Repository repository) : base(parentPath, repository.ToPSObject())
+    public RepositoryItem(ItemPath parentPath, Repository repository) : base(parentPath, repository.ToPSObject())
     {
-        ItemName = ItemPath.GetLeaf(repository.RepositoryName);
+        ItemName = repository.RepositoryName.Split(ItemPath.Separator).Last();
         ItemType = EcrItemTypes.Repository;
         RepositoryUri = repository.RepositoryUri;
         Repository = repository;

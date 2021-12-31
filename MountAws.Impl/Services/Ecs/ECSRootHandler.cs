@@ -5,13 +5,13 @@ namespace MountAws.Services.Ecs;
 
 public class ECSRootHandler : PathHandler
 {
-    public static Item CreateItem(string parentPath)
+    public static Item CreateItem(ItemPath parentPath)
     {
         return new GenericContainerItem(parentPath, "ecs",
             "Navigate ECS clusters, services, tasks, etc");
     }
 
-    public ECSRootHandler(string path, IPathHandlerContext context) : base(path, context)
+    public ECSRootHandler(ItemPath path, IPathHandlerContext context) : base(path, context)
     {
         
     }

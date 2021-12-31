@@ -8,7 +8,7 @@ public class ImageTagHandler : PathHandler
     private readonly IAmazonECR _ecr;
     private readonly RepositoryPath _repositoryPath;
 
-    public ImageTagHandler(string path, IPathHandlerContext context, IAmazonECR ecr, RepositoryPath repositoryPath) : base(path, context)
+    public ImageTagHandler(ItemPath path, IPathHandlerContext context, IAmazonECR ecr, RepositoryPath repositoryPath) : base(path, context)
     {
         _ecr = ecr;
         _repositoryPath = repositoryPath;

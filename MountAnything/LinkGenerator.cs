@@ -2,24 +2,24 @@ namespace MountAnything;
 
 public class LinkGenerator
 {
-    public string BasePath { get; }
+    public ItemPath BasePath { get; }
 
-    public LinkGenerator(string basePath)
+    public LinkGenerator(ItemPath basePath)
     {
         BasePath = basePath;
     }
     
-    public string ConstructPath(int numberOfParentPathParts, string childPath)
+    public ItemPath ConstructPath(int numberOfParentPathParts, string childPath)
     {
-        var parts = BasePath.Split(ItemPath.Separator);
+        var parts = BasePath.Parts;
         if (parts.Length < numberOfParentPathParts)
         {
             throw new InvalidOperationException(
                 $"There is not enough context in the current path to construct a path to '{childPath}'");
         }
 
-        var parentPath = string.Join(ItemPath.Separator, parts[..numberOfParentPathParts]);
+        var parentPath = new ItemPath(string.Join(ItemPath.Separator, parts[..numberOfParentPathParts]));
 
-        return ItemPath.Combine(parentPath, childPath);
+        return parentPath.Combine(childPath);
     }
 }

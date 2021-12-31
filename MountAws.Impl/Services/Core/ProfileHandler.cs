@@ -10,7 +10,7 @@ public class ProfileHandler : PathHandler
 {
     private readonly CredentialProfileStoreChain _credentialChain;
 
-    public ProfileHandler(string path, IPathHandlerContext context) : base(path, context)
+    public ProfileHandler(ItemPath path, IPathHandlerContext context) : base(path, context)
     {
         _credentialChain = new CredentialProfileStoreChain();
     }

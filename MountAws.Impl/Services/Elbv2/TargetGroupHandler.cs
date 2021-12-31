@@ -8,7 +8,7 @@ public class TargetGroupHandler : PathHandler, IRemoveItemHandler
 {
     private readonly IAmazonElasticLoadBalancingV2 _elbv2;
 
-    public TargetGroupHandler(string path, IPathHandlerContext context, IAmazonElasticLoadBalancingV2 elbv2) : base(path, context)
+    public TargetGroupHandler(ItemPath path, IPathHandlerContext context, IAmazonElasticLoadBalancingV2 elbv2) : base(path, context)
     {
         _elbv2 = elbv2;
     }

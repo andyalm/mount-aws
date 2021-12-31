@@ -9,13 +9,13 @@ public class TaskDefinitionsHandler : PathHandler
 {
     private readonly IAmazonECS _ecs;
 
-    public static IItem CreateItem(string parentPath)
+    public static IItem CreateItem(ItemPath parentPath)
     {
         return new GenericContainerItem(parentPath, "task-definitions",
             "Navigate the task families in the current account and region");
     }
     
-    public TaskDefinitionsHandler(string path, IPathHandlerContext context, IAmazonECS ecs) : base(path, context)
+    public TaskDefinitionsHandler(ItemPath path, IPathHandlerContext context, IAmazonECS ecs) : base(path, context)
     {
         _ecs = ecs;
     }

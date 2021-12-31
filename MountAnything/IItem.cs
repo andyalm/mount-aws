@@ -5,14 +5,14 @@ namespace MountAnything;
 
 public interface IItem
 {
-    string ParentPath { get; }
-    string FullPath { get; }
+    ItemPath ParentPath { get; }
+    ItemPath FullPath { get; }
     string ItemName { get; }
     string ItemType { get; }
     bool IsContainer { get; }
     string TypeName { get; }
-    IEnumerable<string> CacheablePaths { get; }
+    IEnumerable<ItemPath> CacheablePaths { get; }
     ImmutableDictionary<string, IItem> Links { get; }
-    ImmutableDictionary<string, string> LinkPaths { get; }
-    PSObject ToPipelineObject(Func<string,string> pathResolver);
+    ImmutableDictionary<string, ItemPath> LinkPaths { get; }
+    PSObject ToPipelineObject(Func<ItemPath,string> pathResolver);
 }

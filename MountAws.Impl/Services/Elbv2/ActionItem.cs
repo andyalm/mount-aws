@@ -7,7 +7,7 @@ namespace MountAws.Services.Elbv2;
 
 public abstract class ActionItem : AwsItem<Action>
 {
-    public static ActionItem Create(string parentPath, Action action)
+    public static ActionItem Create(ItemPath parentPath, Action action)
     {
         var actionType = action.Type.Value;
         return actionType switch
@@ -19,21 +19,18 @@ public abstract class ActionItem : AwsItem<Action>
         };
     }
 
-    private static ActionItem CreateForwardAction(string parentPath, Action action)
+    private static ActionItem CreateForwardAction(ItemPath parentPath, Action action)
     {
-        if (action.ForwardConfig?.TargetGroups?.Count > 1)
+        return action.ForwardConfig?.TargetGroups?.Count switch
         {
-            return new WeightedForwardActionItem(parentPath, action);
-        }
-        else
-        {
-            return new ForwardActionItem(parentPath, action);
-        }
+            > 1 => new WeightedForwardActionItem(parentPath, action),
+            _ => new ForwardActionItem(parentPath, action)
+        };
     }
     
     public override string TypeName => typeof(ActionItem).FullName!;
 
-    protected ActionItem(string parentPath, Action action) : base(parentPath, action)
+    protected ActionItem(ItemPath parentPath, Action action) : base(parentPath, action)
     {
         ItemName = action.Type.Value;
     }

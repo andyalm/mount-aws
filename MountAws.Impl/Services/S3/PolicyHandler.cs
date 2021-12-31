@@ -10,10 +10,10 @@ public class PolicyHandler : PathHandler, IContentReaderHandler
     private readonly IAmazonS3 _s3;
     private string BucketName { get; }
 
-    public PolicyHandler(string path, IPathHandlerContext context, IAmazonS3 s3) : base(path, context)
+    public PolicyHandler(ItemPath path, IPathHandlerContext context, IAmazonS3 s3) : base(path, context)
     {
         _s3 = s3;
-        BucketName = ItemPath.GetLeaf(ParentPath);
+        BucketName = ParentPath.Name;
     }
 
     protected override IItem? GetItemImpl()

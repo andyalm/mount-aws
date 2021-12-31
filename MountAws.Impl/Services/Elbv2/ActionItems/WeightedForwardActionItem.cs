@@ -7,7 +7,7 @@ namespace MountAws.Services.Elbv2;
 
 public class WeightedForwardActionItem : ActionItem
 {
-    public WeightedForwardActionItem(string parentPath, Action action) : base(parentPath, action)
+    public WeightedForwardActionItem(ItemPath parentPath, Action action) : base(parentPath, action)
     {
         WeightedTargetGroups = action.ForwardConfig
             .TargetGroups

@@ -9,7 +9,7 @@ public class RepositoryHandler : PathHandler
     private readonly IAmazonECR _ecr;
     private readonly RepositoryPath _repositoryPath;
 
-    public RepositoryHandler(string path, IPathHandlerContext context, IAmazonECR ecr, RepositoryPath repositoryPath) : base(path, context)
+    public RepositoryHandler(ItemPath path, IPathHandlerContext context, IAmazonECR ecr, RepositoryPath repositoryPath) : base(path, context)
     {
         _ecr = ecr;
         _repositoryPath = repositoryPath;
@@ -35,7 +35,7 @@ public class RepositoryHandler : PathHandler
         if (_repositoryPath.Value.Contains(ItemPath.Separator))
         {
             return new RepositoryHandler(ParentPath, Context, _ecr,
-                    new RepositoryPath(ItemPath.GetParent(_repositoryPath.Value)))
+                    new RepositoryPath(new ItemPath(_repositoryPath.Value).Parent.FullName))
                 .GetChildItems().SingleOrDefault(i => i.ItemName.Equals(ItemName, StringComparison.OrdinalIgnoreCase));
         }
 

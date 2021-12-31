@@ -1,13 +1,14 @@
 using System.Management.Automation;
 using System.Text;
 using Amazon.ElasticLoadBalancingV2.Model;
+using MountAnything;
 using Action = Amazon.ElasticLoadBalancingV2.Model.Action;
 
 namespace MountAws.Services.Elbv2;
 
 public class RedirectActionItem : ActionItem
 {
-    public RedirectActionItem(string parentPath, Action action) : base(parentPath, action)
+    public RedirectActionItem(ItemPath parentPath, Action action) : base(parentPath, action)
     {
         RedirectLocation = BuildRedirectLocation(action.RedirectConfig);
     }

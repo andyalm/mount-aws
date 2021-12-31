@@ -1,10 +1,11 @@
 using Amazon.Runtime.CredentialManagement;
+using MountAnything;
 
 namespace MountAws.Services.Core;
 
 public class ProfileItem : AwsItem<CredentialProfile>
 {
-    public ProfileItem(CredentialProfile profile) : base(string.Empty, profile)
+    public ProfileItem(CredentialProfile profile) : base(ItemPath.Root, profile)
     {
         
     }

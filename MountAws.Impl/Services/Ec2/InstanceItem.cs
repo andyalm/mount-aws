@@ -6,7 +6,7 @@ namespace MountAws.Services.Ec2;
 
 public class InstanceItem : AwsItem<Instance>
 {
-    public InstanceItem(string parentPath, Instance instance) : base(parentPath, instance)
+    public InstanceItem(ItemPath parentPath, Instance instance) : base(parentPath, instance)
     {
         Name = UnderlyingObject.Tags
             .SingleOrDefault(t =>

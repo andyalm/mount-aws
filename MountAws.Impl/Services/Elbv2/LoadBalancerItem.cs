@@ -9,7 +9,7 @@ public class LoadBalancerItem : AwsItem<LoadBalancer>
 {
     public IEnumerable<SecurityGroup> SecurityGroups { get; }
     public string[] SecurityGroupNames { get; }
-    public LoadBalancerItem(string parentPath, LoadBalancer loadBalancer, IEnumerable<SecurityGroup> securityGroups) : base(parentPath, loadBalancer)
+    public LoadBalancerItem(ItemPath parentPath, LoadBalancer loadBalancer, IEnumerable<SecurityGroup> securityGroups) : base(parentPath, loadBalancer)
     {
         SecurityGroups = securityGroups;
         SecurityGroupNames = securityGroups.Select(g => g.GroupName).ToArray();

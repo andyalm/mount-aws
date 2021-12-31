@@ -8,14 +8,14 @@ public class TaskDefinitionHandler : PathHandler
 {
     private readonly IAmazonECS _ecs;
 
-    public TaskDefinitionHandler(string path, IPathHandlerContext context, IAmazonECS ecs) : base(path, context)
+    public TaskDefinitionHandler(ItemPath path, IPathHandlerContext context, IAmazonECS ecs) : base(path, context)
     {
         _ecs = ecs;
     }
 
     protected override IItem? GetItemImpl()
     {
-        var family = ItemPath.GetLeaf(ParentPath);
+        var family = ParentPath.Name;
         var taskDefinitionName = $"{family}:{ItemName}";
         var taskDefinition = _ecs.DescribeTaskDefinition(taskDefinitionName);
 

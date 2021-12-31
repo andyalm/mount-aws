@@ -6,7 +6,7 @@ namespace MountAws.Services.Ecs;
 
 public class ClusterItem : AwsItem<Cluster>
 {
-    public ClusterItem(string parentPath, Cluster cluster) : base(parentPath, cluster) {}
+    public ClusterItem(ItemPath parentPath, Cluster cluster) : base(parentPath, cluster) {}
 
     public override string ItemName => UnderlyingObject.ClusterName;
     public override string ItemType => EcsItemTypes.Cluster;

@@ -8,13 +8,13 @@ public class Cache
     {
         foreach (var path in item.CacheablePaths)
         {
-            if(_objects.TryGetValue(path, out var cachedItem))
+            if(_objects.TryGetValue(path.FullName, out var cachedItem))
             {
                 cachedItem.Item = item;
             }
             else
             {
-                _objects[path] = new CachedItem(item);
+                _objects[path.FullName] = new CachedItem(item);
             }
         }
 
@@ -24,9 +24,9 @@ public class Cache
         }
     }
 
-    public bool TryGetItem(string path, out (IItem Item, DateTimeOffset FreshnessTimestamp) cachedObject)
+    public bool TryGetItem(ItemPath path, out (IItem Item, DateTimeOffset FreshnessTimestamp) cachedObject)
     {
-        if (_objects.TryGetValue(path, out var cachedItem))
+        if (_objects.TryGetValue(path.FullName, out var cachedItem))
         {
             cachedObject = (cachedItem.Item, cachedItem.FreshnessTimestamp);
             return true;
@@ -43,15 +43,15 @@ public class Cache
         {
             SetItem(childItem);
         }
-        var cachedItem = _objects[item.FullPath];
+        var cachedItem = _objects[item.FullPath.FullName];
         cachedItem.ChildPaths = childItems.Select(i => i.FullPath).ToList();
     }
 
-    public bool TryGetChildItems(string path, out (IEnumerable<IItem> ChildItems, DateTimeOffset FreshnessTimestamp) cachedObject)
+    public bool TryGetChildItems(ItemPath path, out (IEnumerable<IItem> ChildItems, DateTimeOffset FreshnessTimestamp) cachedObject)
     {
-        if (_objects.TryGetValue(path, out var cachedItem) && cachedItem.ChildPaths != null)
+        if (_objects.TryGetValue(path.FullName, out var cachedItem) && cachedItem.ChildPaths != null)
         {
-            var childItems = cachedItem.ChildPaths.Select(childPath => _objects[childPath].Item).ToArray();
+            var childItems = cachedItem.ChildPaths.Select(childPath => _objects[childPath.FullName].Item).ToArray();
             cachedObject = (childItems, cachedItem.FreshnessTimestamp);
             return true;
         }
@@ -80,7 +80,7 @@ public class Cache
                 FreshnessTimestamp = DateTimeOffset.UtcNow;
             }
         }
-        public List<string>? ChildPaths { get; set; }
+        public List<ItemPath>? ChildPaths { get; set; }
         public DateTimeOffset FreshnessTimestamp { get; private set; }
     }
 }

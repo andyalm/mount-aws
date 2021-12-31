@@ -9,7 +9,7 @@ public class ClusterHandler : PathHandler
 {
     private readonly IAmazonECS _ecs;
 
-    public ClusterHandler(string path, IPathHandlerContext context, IAmazonECS ecs) : base(path, context)
+    public ClusterHandler(ItemPath path, IPathHandlerContext context, IAmazonECS ecs) : base(path, context)
     {
         _ecs = ecs;
     }

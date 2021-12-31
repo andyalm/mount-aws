@@ -9,13 +9,13 @@ public class VpcsHandler : PathHandler
 {
     private readonly IAmazonEC2 _ec2;
 
-    public static IItem CreateItem(string parentPath)
+    public static IItem CreateItem(ItemPath parentPath)
     {
         return new GenericContainerItem(parentPath, "vpcs",
             "Navigate the vpcs in the current account and region");
     }
 
-    public VpcsHandler(string path, IPathHandlerContext context, IAmazonEC2 ec2) : base(path, context)
+    public VpcsHandler(ItemPath path, IPathHandlerContext context, IAmazonEC2 ec2) : base(path, context)
     {
         _ec2 = ec2;
     }

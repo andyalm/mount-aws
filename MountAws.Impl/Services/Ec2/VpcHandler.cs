@@ -8,7 +8,7 @@ public class VpcHandler : PathHandler
 {
     private readonly IAmazonEC2 _ec2;
 
-    public VpcHandler(string path, IPathHandlerContext context, IAmazonEC2 ec2) : base(path, context)
+    public VpcHandler(ItemPath path, IPathHandlerContext context, IAmazonEC2 ec2) : base(path, context)
     {
         _ec2 = ec2;
     }

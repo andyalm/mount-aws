@@ -8,13 +8,13 @@ public class BucketsHandler : PathHandler
 {
     private readonly IAmazonS3 _s3;
 
-    public static Item CreateItem(string parentPath)
+    public static Item CreateItem(ItemPath parentPath)
     {
         return new GenericContainerItem(parentPath, "buckets",
             "The s3 buckets in the current account/region");
     }
     
-    public BucketsHandler(string path, IPathHandlerContext context, IAmazonS3 s3) : base(path, context)
+    public BucketsHandler(ItemPath path, IPathHandlerContext context, IAmazonS3 s3) : base(path, context)
     {
         _s3 = s3;
     }

@@ -10,7 +10,7 @@ public class TaskHandler : PathHandler, IRemoveItemHandler, IRemoveItemParameter
     private readonly IAmazonECS _ecs;
     private readonly CurrentCluster _currentCluster;
 
-    public TaskHandler(string path, IPathHandlerContext context, IAmazonECS ecs, CurrentCluster currentCluster) : base(path, context)
+    public TaskHandler(ItemPath path, IPathHandlerContext context, IAmazonECS ecs, CurrentCluster currentCluster) : base(path, context)
     {
         _ecs = ecs;
         _currentCluster = currentCluster;

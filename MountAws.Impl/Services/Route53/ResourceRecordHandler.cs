@@ -7,14 +7,14 @@ public class ResourceRecordHandler : PathHandler
 {
     private readonly IAmazonRoute53 _route53;
 
-    public ResourceRecordHandler(string path, IPathHandlerContext context, IAmazonRoute53 route53) : base(path, context)
+    public ResourceRecordHandler(ItemPath path, IPathHandlerContext context, IAmazonRoute53 route53) : base(path, context)
     {
         _route53 = route53;
     }
 
     protected override IItem? GetItemImpl()
     {
-        var hostedZoneId = ItemPath.GetLeaf(ParentPath);
+        var hostedZoneId = ItemName;
         try
         {
             var resourceRecord = _route53.GetResourceRecordSet(hostedZoneId, ItemName);

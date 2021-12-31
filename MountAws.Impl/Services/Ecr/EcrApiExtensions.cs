@@ -46,7 +46,7 @@ public static class EcrApiExtensions
         });
     }
     
-    public static IEnumerable<RepositoryItem> GetChildRepositories(this IAmazonECR ecr, string parentPath, string? prefix = null)
+    public static IEnumerable<RepositoryItem> GetChildRepositories(this IAmazonECR ecr, ItemPath parentPath, string? prefix = null)
     {
         var allRepositories = ecr.DescribeRepositories();
         if (prefix == null)

@@ -5,12 +5,12 @@ namespace MountAws.Services.Ec2;
 
 public class Ec2RootHandler : PathHandler
 {
-    public static Item CreateItem(string parentPath)
+    public static Item CreateItem(ItemPath parentPath)
     {
         return new GenericContainerItem(parentPath, "ec2", "Navigate EC2 instances and related objects");
     }
     
-    public Ec2RootHandler(string path, IPathHandlerContext context) : base(path, context)
+    public Ec2RootHandler(ItemPath path, IPathHandlerContext context) : base(path, context)
     {
         
     }

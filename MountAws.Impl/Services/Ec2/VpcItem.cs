@@ -1,11 +1,12 @@
 using System.Management.Automation;
 using Amazon.EC2.Model;
+using MountAnything;
 
 namespace MountAws.Services.Ec2;
 
 public class VpcItem : AwsItem<Vpc>
 {
-    public VpcItem(string parentPath, Vpc underlyingObject) : base(parentPath, underlyingObject)
+    public VpcItem(ItemPath parentPath, Vpc underlyingObject) : base(parentPath, underlyingObject)
     {
         ItemName = UnderlyingObject.VpcId;
     }

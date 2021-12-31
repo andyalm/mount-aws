@@ -5,15 +5,14 @@ namespace MountAnything;
 
 public abstract class Item<T> : IItem where T : class
 {
-    protected Item(string parentPath, T underlyingObject)
+    protected Item(ItemPath parentPath, T underlyingObject)
     {
         ParentPath = parentPath;
         UnderlyingObject = underlyingObject;
     }
     
-    public string ParentPath { get; }
-
-    public string FullPath => ItemPath.Combine(ParentPath, ItemName);
+    public ItemPath ParentPath { get; }
+    public ItemPath FullPath => ParentPath.Combine(ItemName);
     public abstract string ItemName { get; }
     public abstract string ItemType { get; }
     public T UnderlyingObject { get; }
@@ -23,21 +22,21 @@ public abstract class Item<T> : IItem where T : class
     
     public virtual IEnumerable<string> Aliases => Enumerable.Empty<string>();
 
-    public IEnumerable<string> CacheablePaths
+    public IEnumerable<ItemPath> CacheablePaths
     {
         get
         {
             yield return FullPath;
             foreach (var alias in Aliases)
             {
-                yield return ItemPath.Combine(ParentPath, alias);
+                yield return ParentPath.Combine(alias);
             }
         }
     }
 
     public virtual void CustomizePSObject(PSObject psObject) {}
 
-    public PSObject ToPipelineObject(Func<string,string> pathResolver)
+    public PSObject ToPipelineObject(Func<ItemPath,string> pathResolver)
     {
         var psObject = UnderlyingObject is PSObject underlyingObject ? underlyingObject : new PSObject(UnderlyingObject);
         psObject.TypeNames.Clear(); 
@@ -76,12 +75,12 @@ public abstract class Item<T> : IItem where T : class
     }
     
     public ImmutableDictionary<string,IItem> Links { get; protected init; } = ImmutableDictionary<string, IItem>.Empty;
-    public ImmutableDictionary<string,string> LinkPaths { get; protected init; } = ImmutableDictionary<string, string>.Empty;
+    public ImmutableDictionary<string,ItemPath> LinkPaths { get; protected init; } = ImmutableDictionary<string, ItemPath>.Empty;
 }
 
 public abstract class Item : Item<PSObject>
 {
-    protected Item(string parentPath, PSObject underlyingObject) : base(parentPath, underlyingObject)
+    protected Item(ItemPath parentPath, PSObject underlyingObject) : base(parentPath, underlyingObject)
     {
     }
 

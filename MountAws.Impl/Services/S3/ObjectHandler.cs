@@ -14,7 +14,7 @@ public class ObjectHandler : PathHandler, IContentReaderHandler,
     private readonly CurrentBucket _currentBucket;
     private readonly IAmazonS3 _s3;
     
-    public ObjectHandler(string path, IPathHandlerContext context, ObjectPath objectPath, CurrentBucket currentBucket, IAmazonS3 s3) : base(path, context)
+    public ObjectHandler(ItemPath path, IPathHandlerContext context, ObjectPath objectPath, CurrentBucket currentBucket, IAmazonS3 s3) : base(path, context)
     {
         _objectPath = objectPath;
         _currentBucket = currentBucket;

@@ -6,7 +6,7 @@ namespace MountAws.Services.Elbv2;
 
 public class TargetGroupsHandler : PathHandler
 {
-    public static IItem CreateItem(string parentPath)
+    public static IItem CreateItem(ItemPath parentPath)
     {
         return new GenericContainerItem(parentPath, "target-groups",
             "Navigate the target groups in the current account and region");
@@ -14,7 +14,7 @@ public class TargetGroupsHandler : PathHandler
     
     private readonly IAmazonElasticLoadBalancingV2 _elbv2;
 
-    public TargetGroupsHandler(string path, IPathHandlerContext context, IAmazonElasticLoadBalancingV2 elbv2) : base(path, context)
+    public TargetGroupsHandler(ItemPath path, IPathHandlerContext context, IAmazonElasticLoadBalancingV2 elbv2) : base(path, context)
     {
         _elbv2 = elbv2;
     }

@@ -7,7 +7,7 @@ public class BucketHandler : PathHandler
 {
     private readonly IAmazonS3 _s3;
 
-    public BucketHandler(string path, IPathHandlerContext context, IAmazonS3 s3) : base(path, context)
+    public BucketHandler(ItemPath path, IPathHandlerContext context, IAmazonS3 s3) : base(path, context)
     {
         _s3 = s3;
     }

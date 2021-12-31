@@ -9,13 +9,13 @@ public class SecurityGroupsHandler : PathHandler
 {
     private readonly IAmazonEC2 _ec2;
 
-    public static IItem CreateItem(string parentPath)
+    public static IItem CreateItem(ItemPath parentPath)
     {
         return new GenericContainerItem(parentPath, "security-groups",
             "Navigate the security groups in the current account and region");
     }
     
-    public SecurityGroupsHandler(string path, IPathHandlerContext context, IAmazonEC2 ec2) : base(path, context)
+    public SecurityGroupsHandler(ItemPath path, IPathHandlerContext context, IAmazonEC2 ec2) : base(path, context)
     {
         _ec2 = ec2;
     }

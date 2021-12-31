@@ -5,7 +5,7 @@ namespace MountAws.Services.Core;
 
 public class GenericContainerItem : Item
 {
-    public GenericContainerItem(string parentPath, string name, string description, string itemType = "Container") 
+    public GenericContainerItem(ItemPath parentPath, string name, string description, string itemType = "Container") 
         : base(parentPath, new PSObject(new
         {
             Name = name,

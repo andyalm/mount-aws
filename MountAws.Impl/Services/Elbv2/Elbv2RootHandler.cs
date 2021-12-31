@@ -5,13 +5,13 @@ namespace MountAws.Services.Elbv2;
 
 public class Elbv2RootHandler : PathHandler
 {
-    public static Item CreateItem(string parentPath)
+    public static Item CreateItem(ItemPath parentPath)
     {
         return new GenericContainerItem(parentPath, "elbv2",
             "Navigate load balancers and associated objects");
     }
     
-    public Elbv2RootHandler(string path, IPathHandlerContext context) : base(path, context)
+    public Elbv2RootHandler(ItemPath path, IPathHandlerContext context) : base(path, context)
     {
     }
 

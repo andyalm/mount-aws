@@ -15,13 +15,13 @@ public class ContainerInstancesHandler : PathHandler
     private readonly IAmazonEC2 _ec2;
     private readonly CurrentCluster _currentCluster;
 
-    public static Item CreateItem(string parentPath)
+    public static Item CreateItem(ItemPath parentPath)
     {
         return new GenericContainerItem(parentPath, "container-instances",
             "Navigate the container instances within the ecs cluster");
     }
     
-    public ContainerInstancesHandler(string path, IPathHandlerContext context, IAmazonECS ecs, IAmazonEC2 ec2, CurrentCluster currentCluster) : base(path, context)
+    public ContainerInstancesHandler(ItemPath path, IPathHandlerContext context, IAmazonECS ecs, IAmazonEC2 ec2, CurrentCluster currentCluster) : base(path, context)
     {
         _ecs = ecs;
         _ec2 = ec2;

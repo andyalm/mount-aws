@@ -6,7 +6,7 @@ namespace MountAws.Services.S3;
 
 public class ObjectsHandler : PathHandler
 {
-    public static Item CreateItem(string parentPath)
+    public static Item CreateItem(ItemPath parentPath)
     {
         return new GenericContainerItem(parentPath, "objects",
             "Navigate the objects in the s3 bucket like a filesystem");
@@ -15,7 +15,7 @@ public class ObjectsHandler : PathHandler
     private readonly IAmazonS3 _s3;
     private readonly CurrentBucket _currentBucket;
 
-    public ObjectsHandler(string path, IPathHandlerContext context, IAmazonS3 s3, CurrentBucket currentBucket) : base(path, context)
+    public ObjectsHandler(ItemPath path, IPathHandlerContext context, IAmazonS3 s3, CurrentBucket currentBucket) : base(path, context)
     {
         _s3 = s3;
         _currentBucket = currentBucket;

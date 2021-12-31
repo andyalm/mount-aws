@@ -6,7 +6,7 @@ namespace MountAnything.Routing;
 public class Router : IRoutable
 {
     private readonly List<Route> _routes = new();
-    private readonly Type? _rootHandlerType;
+    private readonly Type _rootHandlerType;
     private readonly Lazy<IContainer> _rootContainer;
     private Action<ContainerBuilder> _serviceRegistrations = _ => {};
 
@@ -33,20 +33,20 @@ public class Router : IRoutable
         _serviceRegistrations += serviceRegistration;
     }
 
-    public (IPathHandler Handler, ILifetimeScope Container) RouteToHandler(string path, IPathHandlerContext context)
+    public (IPathHandler Handler, ILifetimeScope Container) RouteToHandler(ItemPath path, IPathHandlerContext context)
     {
         var resolver = GetResolver(path);
         var lifetimeScope = _rootContainer.Value.BeginLifetimeScope(resolver.ServiceRegistrations);
         var handler = (IPathHandler)lifetimeScope.Resolve(resolver.HandlerType,
-            new NamedParameter("path", path),
+            new TypedParameter(typeof(ItemPath), path),
             new TypedParameter(typeof(IPathHandlerContext), context));
 
         return (handler, lifetimeScope);
     }
     
-    public HandlerResolver GetResolver(string path)
+    public HandlerResolver GetResolver(ItemPath path)
     {
-        if (string.IsNullOrEmpty(path) && _rootHandlerType != null)
+        if (path.IsRoot)
         {
             return new HandlerResolver(_rootHandlerType, _serviceRegistrations);
         }

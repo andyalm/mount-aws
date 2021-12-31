@@ -7,10 +7,10 @@ namespace MountAws.Services.Ecs;
 public class TaskItem : AwsItem<Task>
 {
 
-    public TaskItem(string parentPath, Task task, LinkGenerator linkGenerator) : base(parentPath, task)
+    public TaskItem(ItemPath parentPath, Task task, LinkGenerator linkGenerator) : base(parentPath, task)
     {
         ItemName = task.TaskArn.Split("/").Last();
-        LinkPaths = ImmutableDictionary.Create<string,string>()
+        LinkPaths = ImmutableDictionary.Create<string,ItemPath>()
             .Add("TaskDefinition", linkGenerator.TaskDefinition(task.TaskDefinitionArn));
     }
 

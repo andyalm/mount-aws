@@ -7,7 +7,7 @@ namespace MountAws.Services.Ec2;
 
 public class InstancesHandler : PathHandler
 {
-    public static Item CreateItem(string parentPath)
+    public static Item CreateItem(ItemPath parentPath)
     {
         return new GenericContainerItem(parentPath, "instances",
             "Find all the ec2 instances within the current account and region");
@@ -15,7 +15,7 @@ public class InstancesHandler : PathHandler
     
     private readonly IAmazonEC2 _ec2;
 
-    public InstancesHandler(string path, IPathHandlerContext context, IAmazonEC2 ec2) : base(path, context)
+    public InstancesHandler(ItemPath path, IPathHandlerContext context, IAmazonEC2 ec2) : base(path, context)
     {
         _ec2 = ec2;
     }

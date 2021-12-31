@@ -6,7 +6,7 @@ namespace MountAws.Services.Elbv2;
 
 public class DefaultActionItem : ActionItem
 {
-    public DefaultActionItem(string parentPath, Action action) : base(parentPath, action) {}
+    public DefaultActionItem(ItemPath parentPath, Action action) : base(parentPath, action) {}
 
     public override string ItemType => Elbv2ItemTypes.Action;
     public override bool IsContainer => false;

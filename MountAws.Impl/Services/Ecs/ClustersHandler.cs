@@ -11,13 +11,13 @@ public class ClustersHandler : PathHandler
 {
     private readonly IAmazonECS _ecs;
 
-    public static Item CreateItem(string parentPath)
+    public static Item CreateItem(ItemPath parentPath)
     {
         return new GenericContainerItem(parentPath, "clusters",
             "Navigate the ECS clusters in this account and region");
     }
     
-    public ClustersHandler(string path, IPathHandlerContext context, IAmazonECS ecs) : base(path, context)
+    public ClustersHandler(ItemPath path, IPathHandlerContext context, IAmazonECS ecs) : base(path, context)
     {
         _ecs = ecs;
     }

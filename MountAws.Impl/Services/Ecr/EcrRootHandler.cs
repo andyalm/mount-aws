@@ -6,7 +6,7 @@ namespace MountAws.Services.Ecr;
 
 public class EcrRootHandler : PathHandler
 {
-    public static Item CreateItem(string parentPath)
+    public static Item CreateItem(ItemPath parentPath)
     {
         return new GenericContainerItem(parentPath, "ecr",
             "Navigate the ECR repositories");
@@ -14,7 +14,7 @@ public class EcrRootHandler : PathHandler
     
     private readonly IAmazonECR _ecr;
 
-    public EcrRootHandler(string path, IPathHandlerContext context, IAmazonECR ecr) : base(path, context)
+    public EcrRootHandler(ItemPath path, IPathHandlerContext context, IAmazonECR ecr) : base(path, context)
     {
         _ecr = ecr;
     }

@@ -1,5 +1,6 @@
 using System.Management.Automation;
 using Amazon.ElasticLoadBalancingV2.Model;
+using MountAnything;
 using Action = Amazon.ElasticLoadBalancingV2.Model.Action;
 
 namespace MountAws.Services.Elbv2;
@@ -10,7 +11,7 @@ public class RuleItem : AwsItem<Rule>
     public IEnumerable<Action> Actions => UnderlyingObject.Actions;
     public IEnumerable<RuleCondition> Conditions => UnderlyingObject.Conditions;
     public string ConditionDescription { get; }
-    public RuleItem(string parentPath, Rule rule) : base(parentPath, rule)
+    public RuleItem(ItemPath parentPath, Rule rule) : base(parentPath, rule)
     {
         RuleArn = rule.RuleArn;
         ConditionDescription = string.Join("|", Conditions.Select(ToConditionDescription));

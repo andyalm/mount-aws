@@ -1,11 +1,12 @@
 using System.Management.Automation;
 using Amazon.Route53.Model;
+using MountAnything;
 
 namespace MountAws.Services.Route53;
 
 public class HostedZoneItem : AwsItem<HostedZone>
 {
-    public HostedZoneItem(string parentPath, HostedZone hostedZone) : base(parentPath, hostedZone)
+    public HostedZoneItem(ItemPath parentPath, HostedZone hostedZone) : base(parentPath, hostedZone)
     {
         ItemName = hostedZone.Id.Split("/").Last();
         Name = hostedZone.Name;

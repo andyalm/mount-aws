@@ -5,7 +5,7 @@ namespace MountAws;
 
 public abstract class AwsItem : Item
 {
-    protected AwsItem(string parentPath, PSObject underlyingObject) : base(parentPath, underlyingObject)
+    protected AwsItem(ItemPath parentPath, PSObject underlyingObject) : base(parentPath, underlyingObject)
     {
     }
 
@@ -18,7 +18,7 @@ public abstract class AwsItem : Item
 
 public abstract class AwsItem<T> : Item<T> where T : class
 {
-    protected AwsItem(string parentPath, T underlyingObject) : base(parentPath, underlyingObject)
+    protected AwsItem(ItemPath parentPath, T underlyingObject) : base(parentPath, underlyingObject)
     {
     }
     public override string TypeName => GetType().FullName!;
