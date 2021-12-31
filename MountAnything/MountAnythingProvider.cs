@@ -64,6 +64,7 @@ public abstract class MountAnythingProvider : NavigationCmdletProvider,
         {
             WithPathHandler(path, handler =>
             {
+                handler.SetDynamicParameters(typeof(IGetItemParameters<>), DynamicParameters);
                 var item = handler.GetItem(handler.GetItemCommandDefaultFreshness);
                 if (item != null)
                 {
@@ -81,6 +82,19 @@ public abstract class MountAnythingProvider : NavigationCmdletProvider,
         {
             WriteDebug(ex.ToString());
             throw;
+        }
+    }
+
+    protected override object? GetItemDynamicParameters(string path)
+    {
+        try
+        {
+            return GetDynamicParameters(path, typeof(IGetItemParameters<>));
+        }
+        catch (Exception ex)
+        {
+            WriteDebug(ex.ToString());
+            return null;
         }
     }
 
@@ -133,6 +147,7 @@ public abstract class MountAnythingProvider : NavigationCmdletProvider,
         {
             if (handler is INewItemHandler newItemHandler)
             {
+                handler.SetDynamicParameters(typeof(INewItemParameters<>), DynamicParameters);
                 newItemHandler.NewItem(itemTypeName, newItemValue);
             }
             else
@@ -142,13 +157,26 @@ public abstract class MountAnythingProvider : NavigationCmdletProvider,
         });
     }
 
+    protected override object? NewItemDynamicParameters(string path, string itemTypeName, object newItemValue)
+    {
+        try
+        {
+            return GetDynamicParameters(path, typeof(INewItemParameters<>));
+        }
+        catch (Exception ex)
+        {
+            WriteDebug(ex.ToString());
+            return null;
+        }
+    }
+
     protected override void RemoveItem(string path, bool recurse)
     {
         WithPathHandler(path, handler =>
         {
-            handler.SetDynamicParameters(typeof(IRemoveItemParameters<>), DynamicParameters);
             if (handler is IRemoveItemHandler removeItemHandler)
             {
+                handler.SetDynamicParameters(typeof(IRemoveItemParameters<>), DynamicParameters);
                 removeItemHandler.RemoveItem();
             }
             else
