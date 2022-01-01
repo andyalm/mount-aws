@@ -2,12 +2,11 @@
 using System.Management.Automation;
 using System.Management.Automation.Provider;
 using System.Reflection;
-
 using MountAnything;
 using MountAnything.Routing;
 using MountAws.Host.Abstractions;
 
-namespace MountAws;
+namespace MountAws.Host;
 [CmdletProvider("MountAws", ProviderCapabilities.ExpandWildcards | ProviderCapabilities.Filter)]
 public class MountAwsProvider : MountAnythingProvider
 {

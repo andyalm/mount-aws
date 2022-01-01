@@ -1,7 +1,7 @@
 using System.Reflection;
 using System.Runtime.Loader;
 
-namespace MountAws;
+namespace MountAws.Host;
 
 internal class ImplAssemblyLoadContext : AssemblyLoadContext
 {
