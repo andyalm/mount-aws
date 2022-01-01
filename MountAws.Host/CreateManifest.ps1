@@ -6,7 +6,7 @@ param(
 $ErrorActionPreference='Stop'
 
 $ModuleVersion='0.0.1'
-if($env:GITHUB_REF_NAME -and $env:GITHUB_REF_NAME -match '^v(?<Version>\d+\.\d+\.\d+)$') {
+if($env:GithubReleaseTag -and $env:GithubReleaseTag -match '^v(?<Version>\d+\.\d+\.\d+)$') {
     $ModuleVersion = $Matches.Version
 }
 
@@ -31,4 +31,5 @@ New-ModuleManifest -Path $(Join-Path $Directory MountAws.psd1) `
     -FunctionsToExport @() `
     -VariablesToExport @() `
     -CmdletsToExport @() `
-    -AliasesToExport @()
+    -AliasesToExport @() `
+    -ReleaseNotes $($env:GithubReleaseNotes ?? 'Unavailable')
