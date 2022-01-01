@@ -32,6 +32,13 @@
     <ItemGroup>
       <PSXmlFile Include="$(OutputPath)\**\*.ps1xml" />
     </ItemGroup>
+    <ItemGroup>
+      <PublishCruft Include="$(PublishDir)\System.*" />
+      <PublishCruft Include="$(PublishDir)\Microsoft.*" />
+      <PublishCruft Include="$(PublishDir)\Newtonsoft.*" />
+    </ItemGroup>
+    <Delete Files="@(PublishCruft)" />
+    <RemoveDir Directories="$(PublishDir)\runtimes" />
     <Copy SourceFiles="@(ImplAssembly)" DestinationFolder="$(PublishDir)\Impl\" />
     <Copy SourceFiles="@(PSXmlFile)"
           DestinationFiles="$(PublishDir)\%(RecursiveDir)\%(Filename)%(Extension)" />
