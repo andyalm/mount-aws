@@ -4,11 +4,9 @@ name: Publish
 
 # Controls when the action will run. 
 on:
-  # Triggers the workflow on push or pull request events but only for the main branch
-  push:
-    tags:
-      - v0.*.*
-      - v1.*.*
+  # Triggers the workflow when a stable or pre-release release is published
+  release:
+    types: [ published ]
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -19,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      Configuration: Release 
+      Configuration: Release
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -30,13 +28,13 @@ jobs:
         uses: actions/setup-dotnet@v1
         with:
           dotnet-version: 6.0.x
-      
-      - run: dotnet build
 
       - name: Publish Module to PowerShell Gallery
         run: pwsh publish.ps1
         env:
           NuGetApiKey: ${{ secrets.PS_GALLERY_KEY }}
+          GithubReleaseNotes: ${{ github.event.release.body }}
+          GithubReleaseTag: ${{ github.event.release.tag_name }}
     environment:
       name: PowerShell Gallery
       url: https://www.powershellgallery.com/packages/MountGitlab
