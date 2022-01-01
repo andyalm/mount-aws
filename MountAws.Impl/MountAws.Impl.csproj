@@ -34,12 +34,16 @@
 
   <Target Name="CopyToHostOutput" AfterTargets="Build">
     <ItemGroup>
+      <SharedAssembly Include="$(OutputPath)\Autofac.*" />
+    </ItemGroup>
+    <ItemGroup>
       <ImplAssembly Include="$(OutputPath)\AWSSDK.*" />
       <ImplAssembly Include="$(OutputPath)\MountAws.Impl.dll" />
     </ItemGroup>
     <ItemGroup>
       <PSXmlFile Include="**\*.ps1xml" />
     </ItemGroup>
+    <Copy SourceFiles="@(SharedAssembly)" DestinationFolder="$(MSBuildProjectDirectory)\..\MountAws.Host\bin\$(Configuration)\$(TargetFramework)" />
     <Copy SourceFiles="@(ImplAssembly)" DestinationFolder="$(MSBuildProjectDirectory)\..\MountAws.Host\bin\$(Configuration)\$(TargetFramework)\Impl\" />
     <Copy SourceFiles="@(PSXmlFile)" DestinationFiles="$(MSBuildProjectDirectory)\..\MountAws.Host\bin\$(Configuration)\$(TargetFramework)\%(RecursiveDir)\%(Filename)%(Extension)" />
   </Target>
