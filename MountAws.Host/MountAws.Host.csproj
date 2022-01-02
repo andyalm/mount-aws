@@ -8,7 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MountAnything\MountAnything.csproj" />
+    <PackageReference Include="MountAnything" Version="0.0.1-dev" />
+  </ItemGroup>
+  
+  <ItemGroup>
     <ProjectReference Include="..\MountAws.Host.Abstractions\MountAws.Host.Abstractions.csproj" />
   </ItemGroup>
   

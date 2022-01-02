@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MountAnything" Version="0.0.1-dev" />
     <PackageReference Include="Autofac" Version="6.3.0" />
     <PackageReference Include="System.Management.Automation" Version="7.2.0" />
     <PackageReference Include="AWSSDK.ECR" Version="3.7.2.6" />
@@ -28,13 +29,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\MountAnything\MountAnything.csproj" />
     <ProjectReference Include="..\MountAws.Host.Abstractions\MountAws.Host.Abstractions.csproj" />
   </ItemGroup>
 
   <Target Name="CopyToHostOutput" AfterTargets="Build">
     <ItemGroup>
       <SharedAssembly Include="$(OutputPath)\Autofac.*" />
+      <SharedAssembly Include="$(OutputPath)\MountAnything.*" />
     </ItemGroup>
     <ItemGroup>
       <ImplAssembly Include="$(OutputPath)\AWSSDK.*" />
