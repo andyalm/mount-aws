@@ -17,7 +17,8 @@ public class InstanceItem : AwsItem<Instance>
     public override string ItemName => UnderlyingObject.InstanceId;
     public override string ItemType => Ec2ItemTypes.Instance;
     public override bool IsContainer => false;
-    public override IEnumerable<string> Aliases
+
+    protected override IEnumerable<string> Aliases
     {
         get
         {
@@ -29,7 +30,7 @@ public class InstanceItem : AwsItem<Instance>
         }
     }
 
-    public override void CustomizePSObject(PSObject psObject)
+    protected override void CustomizePSObject(PSObject psObject)
     {
         psObject.Properties.Add(new PSNoteProperty(nameof(Name), Name));
         base.CustomizePSObject(psObject);

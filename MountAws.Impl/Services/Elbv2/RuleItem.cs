@@ -22,7 +22,7 @@ public class RuleItem : AwsItem<Rule>
     public override bool IsContainer => true;
     public string ActionDescription => ActionItem.Create(FullPath, Actions.Last()).Description;
 
-    public override void CustomizePSObject(PSObject psObject)
+    protected override void CustomizePSObject(PSObject psObject)
     {
         base.CustomizePSObject(psObject);
         psObject.Properties.Add(new PSNoteProperty(nameof(ActionDescription), ActionDescription));

@@ -34,7 +34,7 @@ public class TargetHealthItem : AwsItem<TargetHealthDescription>
     public string? HealthReason => TargetHealth?.Reason?.ToString();
     public string? HealthDescription => TargetHealth?.Description;
 
-    public override void CustomizePSObject(PSObject psObject)
+    protected override void CustomizePSObject(PSObject psObject)
     {
         base.CustomizePSObject(psObject);
         psObject.Properties.Add(new PSNoteProperty(nameof(Id), Id));

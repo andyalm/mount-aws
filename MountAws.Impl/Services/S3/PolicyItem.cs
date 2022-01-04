@@ -10,6 +10,6 @@ public class PolicyItem : AwsItem
 
     public override string ItemName => "policy";
     public override string ItemType => S3ItemTypes.BucketPolicy;
-    public override string TypeName => typeof(GenericContainerItem).FullName!;
+    protected override string TypeName => typeof(GenericContainerItem).FullName!;
     public override bool IsContainer => false;
 }

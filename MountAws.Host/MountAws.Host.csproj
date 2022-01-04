@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MountAnything" Version="0.0.1-dev" />
+    <PackageReference Include="MountAnything" Version="0.2.0" />
   </ItemGroup>
   
   <ItemGroup>
@@ -43,8 +43,7 @@
     <Delete Files="@(PublishCruft)" />
     <RemoveDir Directories="$(PublishDir)\runtimes" />
     <Copy SourceFiles="@(ImplAssembly)" DestinationFolder="$(PublishDir)\Impl\" />
-    <Copy SourceFiles="@(PSXmlFile)"
-          DestinationFiles="$(PublishDir)\%(RecursiveDir)\%(Filename)%(Extension)" />
+    <Copy SourceFiles="@(PSXmlFile)" DestinationFiles="$(PublishDir)\%(RecursiveDir)\%(Filename)%(Extension)" />
     <Exec Command="pwsh CreateManifest.ps1 $(PublishDir)" WorkingDirectory="$(MSBuildProjectDirectory)" />
   </Target>
 

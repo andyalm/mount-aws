@@ -26,7 +26,8 @@ public class TaskDefinitionItem : AwsItem
     public string Family { get; }
     public override string ItemName { get; }
     public override bool IsContainer => false;
-    public override void CustomizePSObject(PSObject psObject)
+
+    protected override void CustomizePSObject(PSObject psObject)
     {
         base.CustomizePSObject(psObject);
         psObject.Properties.Add(new PSNoteProperty("Family", Family));

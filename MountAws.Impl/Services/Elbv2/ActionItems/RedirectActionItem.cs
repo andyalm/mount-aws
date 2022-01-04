@@ -18,7 +18,7 @@ public class RedirectActionItem : ActionItem
     public override bool IsContainer => false;
     public override string Description => $"Redirects to {RedirectLocation}";
 
-    public override void CustomizePSObject(PSObject psObject)
+    protected override void CustomizePSObject(PSObject psObject)
     {
         base.CustomizePSObject(psObject);
         psObject.Properties.Add(new PSNoteProperty(nameof(RedirectLocation), RedirectLocation));

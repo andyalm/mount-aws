@@ -14,14 +14,15 @@ public class SecurityGroupItem : AwsItem<SecurityGroup>
     public override string ItemName { get; }
     public override bool IsContainer => true;
     public string GroupName => UnderlyingObject.GroupName;
-    public override void CustomizePSObject(PSObject psObject)
+
+    protected override void CustomizePSObject(PSObject psObject)
     {
         psObject.Properties.Add(new PSAliasProperty("Id", nameof(SecurityGroup.GroupId)));
         psObject.Properties.Add(new PSAliasProperty("Name", nameof(GroupName)));
         base.CustomizePSObject(psObject);
     }
 
-    public override IEnumerable<string> Aliases
+    protected override IEnumerable<string> Aliases
     {
         get
         {

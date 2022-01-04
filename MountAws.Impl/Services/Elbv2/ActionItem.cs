@@ -27,8 +27,8 @@ public abstract class ActionItem : AwsItem<Action>
             _ => new ForwardActionItem(parentPath, action)
         };
     }
-    
-    public override string TypeName => typeof(ActionItem).FullName!;
+
+    protected override string TypeName => typeof(ActionItem).FullName!;
 
     protected ActionItem(ItemPath parentPath, Action action) : base(parentPath, action)
     {
@@ -38,7 +38,8 @@ public abstract class ActionItem : AwsItem<Action>
     public override string ItemName { get; }
     
     public abstract string Description { get; }
-    public override void CustomizePSObject(PSObject psObject)
+
+    protected override void CustomizePSObject(PSObject psObject)
     {
         psObject.Properties.Add(new PSNoteProperty("Description", Description));
     }

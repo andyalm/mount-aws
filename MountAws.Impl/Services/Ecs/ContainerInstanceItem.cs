@@ -20,7 +20,7 @@ public class ContainerInstanceItem : AwsItem<ContainerInstance>
     public override string ItemType => EcsItemTypes.ContainerInstance;
     public override bool IsContainer => true;
 
-    public override IEnumerable<string> Aliases
+    protected override IEnumerable<string> Aliases
     {
         get
         {

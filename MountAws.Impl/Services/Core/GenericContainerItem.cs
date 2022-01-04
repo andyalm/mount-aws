@@ -21,5 +21,5 @@ public class GenericContainerItem : Item
     public override string ItemType { get; }
     public string Description { get; }
     public override bool IsContainer => true;
-    public override string TypeName => GetType().FullName!;
+    protected override string TypeName => GetType().FullName!;
 }

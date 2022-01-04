@@ -24,7 +24,7 @@ public class WeightedTargetGroupItem : TargetGroupItem
         Weight = weight;
     }
 
-    public override void CustomizePSObject(PSObject psObject)
+    protected override void CustomizePSObject(PSObject psObject)
     {
         psObject.Properties.Add(new PSNoteProperty("Weight", Weight));
     }

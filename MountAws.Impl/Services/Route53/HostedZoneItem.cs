@@ -16,7 +16,7 @@ public class HostedZoneItem : AwsItem<HostedZone>
     public string Name { get; }
     public override bool IsContainer => true;
 
-    public override IEnumerable<string> Aliases
+    protected override IEnumerable<string> Aliases
     {
         get
         {
@@ -24,7 +24,7 @@ public class HostedZoneItem : AwsItem<HostedZone>
         }
     }
 
-    public override void CustomizePSObject(PSObject psObject)
+    protected override void CustomizePSObject(PSObject psObject)
     {
         psObject.Properties.Add(new PSNoteProperty(nameof(Name), Name));
         psObject.Properties.Add(new PSAliasProperty("ShortId", "ItemName"));

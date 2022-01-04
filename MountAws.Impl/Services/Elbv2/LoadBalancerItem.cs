@@ -20,7 +20,7 @@ public class LoadBalancerItem : AwsItem<LoadBalancer>
     public override bool IsContainer => true;
     public string LoadBalancerArn => UnderlyingObject.LoadBalancerArn;
 
-    public override void CustomizePSObject(PSObject psObject)
+    protected override void CustomizePSObject(PSObject psObject)
     {
         var securityGroupIds = UnderlyingObject.SecurityGroups;
         psObject.Properties.Add(new PSNoteProperty("SecurityGroupIds", securityGroupIds));
