@@ -18,11 +18,6 @@ public class LoadBalancerHandler : PathHandler
         _ec2 = ec2;
     }
 
-    protected override bool ExistsImpl()
-    {
-        return GetItem() != null;
-    }
-
     protected override IItem? GetItemImpl()
     {
         try

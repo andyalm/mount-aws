@@ -1,6 +1,5 @@
 using Amazon.EC2;
 using MountAnything;
-using MountAws.Api.Ec2;
 using MountAws.Services.Core;
 
 namespace MountAws.Services.Ec2;
@@ -18,11 +17,6 @@ public class InstancesHandler : PathHandler
     public InstancesHandler(ItemPath path, IPathHandlerContext context, IAmazonEC2 ec2) : base(path, context)
     {
         _ec2 = ec2;
-    }
-
-    protected override bool ExistsImpl()
-    {
-        return true;
     }
 
     protected override IItem? GetItemImpl()
