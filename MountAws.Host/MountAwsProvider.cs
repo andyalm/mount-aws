@@ -19,7 +19,7 @@ public class MountAwsProvider : MountAnythingProvider
         };
     }
 
-    public override Router CreateRouter()
+    protected override Router CreateRouter()
     {
         var assembly = LoadImplAssembly();
         var routerFactoryType = assembly
