@@ -22,6 +22,7 @@ $FormatFiles = Get-ChildItem $Directory -Recurse |
 
 New-ModuleManifest -Path $(Join-Path $Directory MountAws.psd1) `
     -RootModule 'MountAws.Host.dll' `
+    -NestedModules Commands.psm1 `
     -ModuleVersion $ModuleVersion `
     -Guid 'ae6c3726-860c-4506-8acc-eed7930ead7f' `
     -Author 'Andy Alm' `
@@ -30,8 +31,8 @@ New-ModuleManifest -Path $(Join-Path $Directory MountAws.psd1) `
     -PowerShellVersion '7.2' `
     -FormatsToProcess $FormatFiles `
     -RequiredModules @() `
-    -FunctionsToExport @() `
+    -FunctionsToExport Switch-MountAwsProfile,Switch-MountAwsRegion `
     -VariablesToExport @() `
     -CmdletsToExport @() `
-    -AliasesToExport @() `
+    -AliasesToExport Switch-AwsProfile,Switch-AwsRegion,Switch-Region `
     -ReleaseNotes $($env:GithubReleaseNotes ?? 'Unavailable')

@@ -16,6 +16,12 @@
   </ItemGroup>
   
   <ItemGroup>
+    <Content Include="*.psm1">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  
+  <ItemGroup>
     <ImplProject Include="..\MountAws.Impl\MountAws.Impl.csproj" />
   </ItemGroup>
 
