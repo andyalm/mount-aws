@@ -17,7 +17,7 @@ public class Wafv2Routes : IServiceRoutes
                     builder.Register(_ => Scope.CLOUDFRONT);
                 });
                 
-                cloudfrontWebAcls.Map<WebAclHandler>();
+                cloudfrontWebAcls.MapWebAcl();
             });
             wafv2.MapLiteral<WebAclsHandler>("regional-web-acls", regionalWebAcls =>
             {
@@ -26,7 +26,22 @@ public class Wafv2Routes : IServiceRoutes
                     builder.Register(_ => Scope.REGIONAL);
                 });
                 
-                regionalWebAcls.Map<WebAclHandler>();
+                regionalWebAcls.MapWebAcl();
+            });
+        });
+    }
+}
+
+public static class Wafv2RouteExtensions
+{
+    public static void MapWebAcl(this IRoutable route)
+    {
+        route.Map<WebAclHandler>(webAcl =>
+        {
+            webAcl.MapLiteral<DefaultActionHandler>("default-action", defaultAction =>
+            {
+                defaultAction.MapLiteral<CustomHeadersHandler>("custom-request-headers");
+                defaultAction.MapLiteral<CustomHeadersHandler>("custom-response-headers");
             });
         });
     }

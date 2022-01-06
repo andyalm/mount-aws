@@ -21,12 +21,13 @@ public static class Wafv2ApiExtensions
         });
     }
 
-    public static WebACL GetWebAcl(this IAmazonWAFV2 wafv2, Scope scope, string name)
+    public static WebACL GetWebAcl(this IAmazonWAFV2 wafv2, Scope scope, (string Id, string Name) identifier)
     {
         return wafv2.GetWebACLAsync(new GetWebACLRequest
         {
             Scope = scope,
-            Name = name
+            Name = identifier.Name,
+            Id = identifier.Id
         }).GetAwaiter().GetResult().WebACL;
     }
 }
