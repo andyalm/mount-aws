@@ -17,10 +17,10 @@ public class WebAclHandler : PathHandler
 
     protected override IItem? GetItemImpl()
     {
-        var parentHandler = new WebAclsHandler(ParentPath, Context, _wafv2, _scope);
-        return parentHandler.GetChildItems(Freshness.Default)
-            .Cast<WebAclItem>()
-            .SingleOrDefault(i => i.ItemName.Equals(ItemName, StringComparison.OrdinalIgnoreCase));
+        var webAcl = _wafv2.ListWebAcls(_scope)
+            .SingleOrDefault(i => i.Name.Equals(ItemName, StringComparison.OrdinalIgnoreCase));
+
+        return webAcl != null ? new WebAclItem(ParentPath, webAcl) : null;
     }
 
     protected override IEnumerable<IItem> GetChildItemsImpl()
@@ -36,19 +36,16 @@ public class WebAclHandler : PathHandler
         {
             yield return defaultAction;
         }
+        yield return RulesHandler.CreateItem(Path, acl);
     }
 
     public override IEnumerable<IItemProperty> GetItemProperties(HashSet<string> propertyNames, Func<ItemPath, string> pathResolver)
     {
         return GetWebAcl()?.ToPSObject().AsItemProperties() ?? Enumerable.Empty<IItemProperty>();
     }
+    
 
-    public ActionItem? GetDefaultActionItem()
-    {
-        return GetWebAcl()?.DefaultActionItem(Path);
-    }
-
-    public WebACL? GetWebAcl()
+    private WebACL? GetWebAcl()
     {
         if (GetItem() is not WebAclItem item)
         {

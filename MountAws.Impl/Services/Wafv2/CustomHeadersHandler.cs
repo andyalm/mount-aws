@@ -1,27 +1,25 @@
-using Amazon.WAFV2;
 using Amazon.WAFV2.Model;
 using MountAnything;
-using MountAws.Services.Core;
 
 namespace MountAws.Services.Wafv2;
 
 public class CustomHeadersHandler : PathHandler
 {
+    private readonly ActionItem _defaultAction;
+
     public static CustomHeadersItem CreateItem(ItemPath parentPath, string itemName, string description, IEnumerable<CustomHTTPHeader> customHeaders)
     {
         return new CustomHeadersItem(parentPath, itemName, description, customHeaders);
     }
 
-    private readonly DefaultActionHandler _parentHandler;
-    
-    public CustomHeadersHandler(ItemPath path, IPathHandlerContext context, IAmazonWAFV2 wafv2, Scope scope) : base(path, context)
+    public CustomHeadersHandler(ItemPath path, IPathHandlerContext context, ActionItem defaultAction) : base(path, context)
     {
-        _parentHandler = new DefaultActionHandler(ParentPath, context, wafv2, scope);
+        _defaultAction = defaultAction;
     }
 
     protected override IItem? GetItemImpl()
     {
-        return _parentHandler.GetCustomHeadersChildItem();
+        return _defaultAction.GetCustomHeadersChildItem(ParentPath);
     }
 
     protected override IEnumerable<IItem> GetChildItemsImpl()
