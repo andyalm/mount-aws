@@ -1,5 +1,6 @@
 using Amazon.WAFV2;
 using Autofac;
+using MountAnything;
 using MountAnything.Routing;
 
 namespace MountAws.Services.Wafv2;
@@ -42,7 +43,7 @@ public static class Wafv2RouteExtensions
             {
                 builder.Register(c =>
                 {
-                    var webAclItem = c.Resolve<WebAclItem>();
+                    var webAclItem = c.Resolve<IItemAncestor<WebAclItem>>().Item;
                     var wafv2 = c.Resolve<IAmazonWAFV2>();
                     var scope = c.Resolve<Scope>();
 

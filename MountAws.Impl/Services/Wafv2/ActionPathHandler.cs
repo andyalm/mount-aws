@@ -63,15 +63,15 @@ public class DefaultActionHandler : ActionPathHandler
 
 public class RuleActionHandler : ActionPathHandler
 {
-    private readonly RuleItem _ruleItem;
+    private readonly IItemAncestor<RuleItem> _ruleItem;
 
-    public RuleActionHandler(ItemPath path, IPathHandlerContext context, RuleItem ruleItem) : base(path, context)
+    public RuleActionHandler(ItemPath path, IPathHandlerContext context, IItemAncestor<RuleItem> ruleItem) : base(path, context)
     {
         _ruleItem = ruleItem;
     }
 
     protected override ActionItem? GetActionItem()
     {
-        return _ruleItem.UnderlyingObject.ActionItem(ParentPath);
+        return _ruleItem.Item.UnderlyingObject.ActionItem(ParentPath);
     }
 }

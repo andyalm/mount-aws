@@ -5,21 +5,21 @@ namespace MountAws.Services.Wafv2;
 
 public class CustomHeadersHandler : PathHandler
 {
-    private readonly ActionItem _defaultAction;
+    private readonly IItemAncestor<ActionItem> _defaultAction;
 
     public static CustomHeadersItem CreateItem(ItemPath parentPath, string itemName, string description, IEnumerable<CustomHTTPHeader> customHeaders)
     {
         return new CustomHeadersItem(parentPath, itemName, description, customHeaders);
     }
 
-    public CustomHeadersHandler(ItemPath path, IPathHandlerContext context, ActionItem defaultAction) : base(path, context)
+    public CustomHeadersHandler(ItemPath path, IPathHandlerContext context, IItemAncestor<ActionItem> defaultAction) : base(path, context)
     {
         _defaultAction = defaultAction;
     }
 
     protected override IItem? GetItemImpl()
     {
-        return _defaultAction.GetCustomHeadersChildItem(ParentPath);
+        return _defaultAction.Item.GetCustomHeadersChildItem(ParentPath);
     }
 
     protected override IEnumerable<IItem> GetChildItemsImpl()
