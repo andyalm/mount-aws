@@ -10,7 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="AWSSDK.WAFV2" Version="3.7.*" />
-    <PackageReference Include="MountAnything" Version="0.3.0" />
+    <PackageReference Include="MountAnything" Version="0.3.1" />
     <PackageReference Include="System.Management.Automation" Version="7.2.0" />
     <PackageReference Include="AWSSDK.ECR" Version="3.7.*" />
     <PackageReference Include="AWSSDK.ECS" Version="3.7.*" />
