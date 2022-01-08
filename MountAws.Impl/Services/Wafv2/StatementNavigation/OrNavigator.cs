@@ -7,7 +7,7 @@ public class OrNavigator : StatementNavigator<OrStatement>
 {
     private readonly IAmazonWAFV2 _wafv2;
 
-    public OrNavigator(OrStatement statement, IAmazonWAFV2 wafv2) : base(statement)
+    public OrNavigator(OrStatement statement, int position, IAmazonWAFV2 wafv2) : base(statement, position)
     {
         _wafv2 = wafv2;
         Description = string.Join(" and ", GetChildren().Select(c => c.Description));
@@ -16,6 +16,6 @@ public class OrNavigator : StatementNavigator<OrStatement>
     public override string Description { get; }
     public override IEnumerable<IStatementNavigator> GetChildren()
     {
-        return Statement.Statements.Select(s => s.ToNavigator(_wafv2));
+        return Statement.Statements.Select((s,i) => s.ToNavigator(_wafv2, i + 1));
     }
 }

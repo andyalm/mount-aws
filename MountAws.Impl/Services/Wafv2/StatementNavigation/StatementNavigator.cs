@@ -4,12 +4,15 @@ public abstract class StatementNavigator<TStatement> : IStatementNavigator where
 {
     protected TStatement Statement { get; }
 
-    public StatementNavigator(TStatement statement)
+    protected StatementNavigator(TStatement statement, int position)
     {
         Statement = statement;
+        Position = position;
     }
 
-    public virtual string Name => Statement.GetType().Name.Replace("Statement", "");
+    public int Position { get; }
+    public virtual string Name => Statement.GetType().Name.Replace("Statement", "").PascalToKebabCase()!;
     public virtual string Description => Name;
+    object IStatementNavigator.UnderlyingObject => Statement;
     public virtual IEnumerable<IStatementNavigator> GetChildren() => Enumerable.Empty<IStatementNavigator>();
 }

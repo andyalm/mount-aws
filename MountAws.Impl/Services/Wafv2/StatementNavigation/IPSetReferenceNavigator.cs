@@ -5,7 +5,7 @@ namespace MountAws.Services.Wafv2.StatementNavigation;
 
 public class IPSetReferenceNavigator : StatementNavigator<IPSetReferenceStatement>
 {
-    public IPSetReferenceNavigator(IPSetReferenceStatement statement, IAmazonWAFV2 wafv2) : base(statement)
+    public IPSetReferenceNavigator(IPSetReferenceStatement statement, int position, IAmazonWAFV2 wafv2) : base(statement, position)
     {
         IPSet = wafv2.GetIPSet(statement.ARN);
         Description = $"{IPSet.Addresses.Count} ips: {IPSet.Description}";

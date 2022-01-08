@@ -39,7 +39,7 @@ public class RuleHandler : PathHandler
                 yield return overrideActionItem;
             }
 
-            yield return new StatementItem(Path, item.UnderlyingObject.Statement, _wafv2);
+            yield return new StatementItem(Path, item.UnderlyingObject.Statement, _wafv2, "statement");
         }
     }
 }

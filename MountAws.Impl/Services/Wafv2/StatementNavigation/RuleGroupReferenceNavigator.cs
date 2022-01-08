@@ -4,7 +4,7 @@ namespace MountAws.Services.Wafv2.StatementNavigation;
 
 public class RuleGroupReferenceNavigator : StatementNavigator<RuleGroupReferenceStatement>
 {
-    public RuleGroupReferenceNavigator(RuleGroupReferenceStatement reference) : base(reference)
+    public RuleGroupReferenceNavigator(RuleGroupReferenceStatement reference, int position) : base(reference, position)
     {
         Description = reference.ARN;
     }

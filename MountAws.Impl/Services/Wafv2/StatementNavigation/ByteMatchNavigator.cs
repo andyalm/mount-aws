@@ -5,7 +5,7 @@ namespace MountAws.Services.Wafv2.StatementNavigation;
 
 public class ByteMatchNavigator : StatementNavigator<ByteMatchStatement>
 {
-    public ByteMatchNavigator(ByteMatchStatement byteMatch) : base(byteMatch)
+    public ByteMatchNavigator(ByteMatchStatement byteMatch, int position) : base(byteMatch, position)
     {
         SearchString = Encoding.UTF8.GetString(byteMatch.SearchString.ToArray());
         var fieldToMatch = byteMatch.FieldToMatch.ToNavigator();

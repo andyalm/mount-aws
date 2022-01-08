@@ -5,7 +5,7 @@ namespace MountAws.Services.Wafv2.StatementNavigation;
 
 public class NotNavigator : StatementNavigator<NotStatement>
 {
-    public NotNavigator(NotStatement not, IAmazonWAFV2 wafv2) : base(not)
+    public NotNavigator(NotStatement not, int position, IAmazonWAFV2 wafv2) : base(not, position)
     {
         NegatedStatement = not.Statement.ToNavigator(wafv2);
         Description = $"not {NegatedStatement.Description}";

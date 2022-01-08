@@ -4,7 +4,7 @@ namespace MountAws.Services.Wafv2.StatementNavigation;
 
 public class ManagedRuleGroupNavigator : StatementNavigator<ManagedRuleGroupStatement>
 {
-    public ManagedRuleGroupNavigator(ManagedRuleGroupStatement statement) : base(statement)
+    public ManagedRuleGroupNavigator(ManagedRuleGroupStatement statement, int position) : base(statement, position)
     {
         Name = $"{statement.VendorName}:{statement.Name}";
         Description = $"ManagedRule: {Name}";

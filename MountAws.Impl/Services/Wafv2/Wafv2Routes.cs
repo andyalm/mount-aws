@@ -56,7 +56,21 @@ public static class Wafv2RouteExtensions
                 rules.Map<RuleHandler>(rule =>
                 {
                     rule.MapAction<RuleActionHandler>("action");
-                    rule.MapLiteral<StatementHandler>("statement");
+                    rule.MapLiteral<StatementHandler>("statement", statement =>
+                    {
+                        statement.RegisterServices((match, builder) =>
+                        {
+                            if (match.Values.TryGetValue("StatementPath", out var statementPath))
+                            {
+                                builder.RegisterInstance(new StatementPath(statementPath));
+                            }
+                            else
+                            {
+                                builder.RegisterInstance(new StatementPath(ItemPath.Root));
+                            }
+                        });
+                        statement.MapRegex<StatementHandler>("(?<StatementPath>[a-z0-9-_/]+)");
+                    });
                 });
             });
         });
