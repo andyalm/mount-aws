@@ -7,10 +7,12 @@ namespace MountAws.Services.Wafv2;
 public class RuleHandler : PathHandler
 {
     private readonly Lazy<WebACL> _webAcl;
-    
-    public RuleHandler(ItemPath path, IPathHandlerContext context, Lazy<WebACL> webAcl) : base(path, context)
+    private readonly IAmazonWAFV2 _wafv2;
+
+    public RuleHandler(ItemPath path, IPathHandlerContext context, Lazy<WebACL> webAcl, IAmazonWAFV2 wafv2) : base(path, context)
     {
         _webAcl = webAcl;
+        _wafv2 = wafv2;
     }
 
     protected override IItem? GetItemImpl()
@@ -18,7 +20,7 @@ public class RuleHandler : PathHandler
         var rule = _webAcl.Value.Rules
             .SingleOrDefault(r => r.Name.Equals(ItemName, StringComparison.OrdinalIgnoreCase));
 
-        return rule != null ? new RuleItem(ParentPath, rule) : null;
+        return rule != null ? new RuleItem(ParentPath, rule, _wafv2) : null;
     }
 
     protected override IEnumerable<IItem> GetChildItemsImpl()
@@ -36,6 +38,8 @@ public class RuleHandler : PathHandler
             {
                 yield return overrideActionItem;
             }
+
+            yield return new StatementItem(Path, item.UnderlyingObject.Statement, _wafv2);
         }
     }
 }

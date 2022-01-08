@@ -1,12 +1,14 @@
 using System.Management.Automation;
+using Amazon.WAFV2;
 using Amazon.WAFV2.Model;
 using MountAnything;
+using MountAws.Services.Wafv2.StatementNavigation;
 
 namespace MountAws.Services.Wafv2;
 
 public class RuleItem : AwsItem<Rule>
 {
-    public RuleItem(ItemPath parentPath, Rule underlyingObject) : base(parentPath, underlyingObject)
+    public RuleItem(ItemPath parentPath, Rule underlyingObject, IAmazonWAFV2 wafv2) : base(parentPath, underlyingObject)
     {
         ActionName = UnderlyingObject.ActionItem(FullPath)?.ActionName;
         if (ActionName == null)
@@ -14,7 +16,7 @@ public class RuleItem : AwsItem<Rule>
             var overrideAction = UnderlyingObject.OverrideActionItem(FullPath);
             ActionName = overrideAction?.ActionName == "none" ? "default" : overrideAction?.ActionName;
         }
-        StatementDescription = UnderlyingObject.Statement.Description();
+        StatementDescription = UnderlyingObject.Statement.ToNavigator(wafv2).Description;
     }
 
     public string StatementDescription { get; }

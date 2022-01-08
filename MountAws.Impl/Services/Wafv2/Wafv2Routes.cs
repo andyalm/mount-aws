@@ -50,18 +50,24 @@ public static class Wafv2RouteExtensions
                     return wafv2.GetWebAcl(scope, (webAclItem.Id, webAclItem.ItemName));
                 }).InstancePerLifetimeScope();
             });
-            webAcl.MapLiteral<DefaultActionHandler>("default-action", defaultAction =>
-            {
-                defaultAction.MapLiteral<CustomHeadersHandler>("custom-request-headers");
-                defaultAction.MapLiteral<CustomHeadersHandler>("custom-response-headers");
-            });
+            webAcl.MapAction<DefaultActionHandler>("default-action");
             webAcl.MapLiteral<RulesHandler>("rules", rules =>
             {
                 rules.Map<RuleHandler>(rule =>
                 {
-                    rule.MapLiteral<RuleActionHandler>("action");
+                    rule.MapAction<RuleActionHandler>("action");
+                    rule.MapLiteral<StatementHandler>("statement");
                 });
             });
+        });
+    }
+
+    public static void MapAction<TActionHandler>(this IRoutable route, string actionName) where TActionHandler : ActionPathHandler
+    {
+        route.MapLiteral<TActionHandler>(actionName, action =>
+        {
+            action.MapLiteral<CustomHeadersHandler>("custom-request-headers");
+            action.MapLiteral<CustomHeadersHandler>("custom-response-headers");
         });
     }
 }

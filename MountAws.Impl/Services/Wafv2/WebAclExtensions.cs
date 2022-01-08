@@ -89,20 +89,4 @@ public static class WebAclExtensions
                 block.CustomResponse.ResponseHeaders)
             : null;
     }
-
-    public static string Description(this Statement statement)
-    {
-        var statementProperties = statement.GetType().GetProperties()
-            .Where(s => s.CanRead && s.Name.EndsWith("Statement"));
-        foreach (var statementProperty in statementProperties)
-        {
-            var statementValue = statementProperty.GetValue(statement, null);
-            if (statementValue != null)
-            {
-                return statementProperty.Name;
-            }
-        }
-
-        return "Unknown";
-    }
 }

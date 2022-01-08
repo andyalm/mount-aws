@@ -8,6 +8,7 @@ namespace MountAws.Services.Wafv2;
 public class RulesHandler : PathHandler
 {
     private readonly Lazy<WebACL> _webAcl;
+    private readonly IAmazonWAFV2 _wafv2;
 
     public static IItem CreateItem(ItemPath parentPath, WebACL acl)
     {
@@ -15,9 +16,10 @@ public class RulesHandler : PathHandler
             $"Navigate the {acl.Rules.Count} rules associated with the web acl");
     }
     
-    public RulesHandler(ItemPath path, IPathHandlerContext context, Lazy<WebACL> webAcl) : base(path, context)
+    public RulesHandler(ItemPath path, IPathHandlerContext context, Lazy<WebACL> webAcl, IAmazonWAFV2 wafv2) : base(path, context)
     {
         _webAcl = webAcl;
+        _wafv2 = wafv2;
     }
 
     protected override IItem? GetItemImpl()
@@ -27,6 +29,6 @@ public class RulesHandler : PathHandler
 
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
-        return _webAcl.Value.Rules.Select(r => new RuleItem(Path, r));
+        return _webAcl.Value.Rules.Select(r => new RuleItem(Path, r, _wafv2));
     }
 }
