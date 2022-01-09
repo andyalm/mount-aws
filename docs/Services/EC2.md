@@ -4,6 +4,9 @@ The EC2 virtual filesystem is stuctured the following way:
 
 ```
 -- ec2
+   |-- auto-scaling-groups
+       |-- my-asg01
+           |-- i-09c32901ccd40a3a2
    |-- instances
        |-- i-09c32901ccd40a3a2
    |-- security-groups

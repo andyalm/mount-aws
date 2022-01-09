@@ -74,6 +74,7 @@ The following services are currently supported:
  * [ELBV2](docs/Services/ELBV2.md)
  * [Route53](docs/Services/Route53.md)
  * [S3](docs/Services/S3.md)
+ * [WAFv2](docs/Services/WAFv2.md)
 
 ## Supported utility commands
 
