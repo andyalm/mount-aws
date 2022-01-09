@@ -12,5 +12,6 @@ public class RegionItem : AwsItem<RegionEndpoint>
 
     public override string ItemName => UnderlyingObject.SystemName;
     public override string ItemType => CoreItemTypes.Region;
+    public override string? WebUrl => WebUrlBuilder.ForRegion(ItemName).CombineWith($"console/home?region={ItemName}");
     public override bool IsContainer => true;
 }

@@ -12,4 +12,5 @@ public class PolicyItem : AwsItem
     public override string ItemType => S3ItemTypes.BucketPolicy;
     protected override string TypeName => typeof(GenericContainerItem).FullName!;
     public override bool IsContainer => false;
+    public override string? WebUrl => WebUrlBuilder.S3().CombineWith($"s3/buckets/{ItemName}?tab=permissions");
 }

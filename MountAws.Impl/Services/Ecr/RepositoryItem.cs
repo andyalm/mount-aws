@@ -20,9 +20,16 @@ public class RepositoryItem : AwsItem
         ItemType = EcrItemTypes.Repository;
         RepositoryUri = repository.RepositoryUri;
         Repository = repository;
+        RepositoryId = repository.RegistryId;
     }
     public override string ItemName { get; }
     public override string ItemType { get; }
     public override bool IsContainer => true;
     public string? RepositoryUri { get; }
+    
+    public string? RepositoryId { get; }
+
+    public override string? WebUrl => Repository != null
+        ? UrlBuilder.CombineWith($"ecr/repositories/private/{RepositoryId!}/{RepositoryUri!}").ToString()
+        : null;
 }

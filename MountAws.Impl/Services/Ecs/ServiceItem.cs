@@ -1,5 +1,4 @@
 using System.Collections.Immutable;
-using System.Management.Automation;
 using Amazon.ECS.Model;
 using MountAnything;
 
@@ -16,5 +15,10 @@ public class ServiceItem : AwsItem<Service>
 
     public override string ItemName { get; }
     public override string ItemType => EcsItemTypes.Service;
+    public override string? WebUrl =>
+        UrlBuilder.CombineWith(
+            $"ecs/home#/clusters/{UnderlyingObject.ClusterName()}/services/{ItemName}");
     public override bool IsContainer => true;
+
+    
 }

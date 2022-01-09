@@ -16,4 +16,5 @@ public class BucketItem : AwsItem
     public override string ItemName { get; }
     public override string ItemType => S3ItemTypes.Bucket;
     public override bool IsContainer => true;
+    public override string? WebUrl => WebUrlBuilder.S3().CombineWith($"s3/buckets/{ItemName}");
 }

@@ -13,6 +13,8 @@ public class TargetGroupItem : AwsItem<TargetGroup>
     public override string ItemType => Elbv2ItemTypes.TargetGroup;
     public override bool IsContainer => true;
     public string TargetGroupArn => UnderlyingObject.TargetGroupArn;
+    public override string? WebUrl =>
+        UrlBuilder.CombineWith($"ec2/home#TargetGroup:targetGroupArn={TargetGroupArn}");
 }
 
 public class WeightedTargetGroupItem : TargetGroupItem

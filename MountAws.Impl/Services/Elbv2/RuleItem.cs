@@ -1,4 +1,3 @@
-using System.Management.Automation;
 using Amazon.ElasticLoadBalancingV2.Model;
 using MountAnything;
 using Action = Amazon.ElasticLoadBalancingV2.Model.Action;
@@ -10,6 +9,8 @@ public class RuleItem : AwsItem<Rule>
     public string RuleArn { get; }
     public IEnumerable<Action> Actions => UnderlyingObject.Actions;
     public IEnumerable<RuleCondition> Conditions => UnderlyingObject.Conditions;
+    
+    [ItemProperty]
     public string ConditionDescription { get; }
     public RuleItem(ItemPath parentPath, Rule rule) : base(parentPath, rule)
     {
@@ -20,15 +21,10 @@ public class RuleItem : AwsItem<Rule>
     public override string ItemName => UnderlyingObject.Priority;
     public override string ItemType => Elbv2ItemTypes.Rule;
     public override bool IsContainer => true;
+    
+    [ItemProperty]
     public string ActionDescription => ActionItem.Create(FullPath, Actions.Last()).Description;
 
-    protected override void CustomizePSObject(PSObject psObject)
-    {
-        base.CustomizePSObject(psObject);
-        psObject.Properties.Add(new PSNoteProperty(nameof(ActionDescription), ActionDescription));
-        psObject.Properties.Add(new PSNoteProperty(nameof(ConditionDescription), ConditionDescription));
-    }
-    
     private static string ToConditionDescription(RuleCondition condition)
     {
         var field = condition.Field;

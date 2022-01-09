@@ -35,4 +35,7 @@ public class InstanceItem : AwsItem<Instance>
         psObject.Properties.Add(new PSNoteProperty(nameof(Name), Name));
         base.CustomizePSObject(psObject);
     }
+
+    public override string? WebUrl =>
+        UrlBuilder.CombineWith($"ec2/v2/home?#InstanceDetails:instanceId={UnderlyingObject.InstanceId}");
 }

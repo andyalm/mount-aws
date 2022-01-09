@@ -34,4 +34,5 @@ public class TaskDefinitionItem : AwsItem
         psObject.Properties.Add(new PSNoteProperty("Revision", ItemName));
         psObject.Properties.Add(new PSNoteProperty("TaskDefinitionName", $"{Family}:{ItemName}"));
     }
+    public override string? WebUrl => UrlBuilder.CombineWith($"ecs/home#/taskDefinitions/{Family}/{ItemName}");
 }

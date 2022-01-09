@@ -9,7 +9,7 @@ public class ContainerInstanceItem : AwsItem<ContainerInstance>
 {
     public ContainerInstanceItem(ItemPath parentPath, ContainerInstance containerInstance, InstanceItem? ec2Instance) : base(parentPath, containerInstance)
     {
-        ItemName = containerInstance.ContainerInstanceArn.Split("/").Last();
+        ItemName = containerInstance.Id();
         if (ec2Instance != null)
         {
             Links = ImmutableDictionary.Create<string,IItem>().Add("Ec2Instance", ec2Instance);
@@ -18,6 +18,9 @@ public class ContainerInstanceItem : AwsItem<ContainerInstance>
 
     public override string ItemName { get; }
     public override string ItemType => EcsItemTypes.ContainerInstance;
+
+    public override string? WebUrl =>
+        UrlBuilder.CombineWith($"ecs/home#/clusters/{UnderlyingObject.ClusterName()}/containerInstances/{ItemName}");
     public override bool IsContainer => true;
 
     protected override IEnumerable<string> Aliases

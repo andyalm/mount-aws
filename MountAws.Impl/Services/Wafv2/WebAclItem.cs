@@ -1,5 +1,3 @@
-using System.Management.Automation;
-using Amazon.WAFV2;
 using Amazon.WAFV2.Model;
 using MountAnything;
 
@@ -15,4 +13,8 @@ public class WebAclItem : AwsItem<WebACLSummary>
     public override string ItemName { get; }
     public string Id => UnderlyingObject.Id;
     public override bool IsContainer => true;
+
+    public override string? WebUrl => UnderlyingObject.IsGlobal() ?
+        WebUrlBuilder.Regionless().CombineWith($"wafv2/homev2/web-acl/{UnderlyingObject.Name}/{UnderlyingObject.Id}/overview?region=global") :
+        WebUrlBuilder.Regionless().CombineWith($"wafv2/homev2/web-acl/{UnderlyingObject.Name}/{UnderlyingObject.Id}/overview?region={UnderlyingObject.RegionName()}");
 }

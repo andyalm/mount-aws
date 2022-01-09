@@ -1,4 +1,3 @@
-using System.Management.Automation;
 using Amazon.EC2.Model;
 using MountAnything;
 
@@ -13,4 +12,5 @@ public class SubnetItem : AwsItem<Subnet>
 
     public override string ItemName { get; }
     public override bool IsContainer => false;
+    public override string? WebUrl => UrlBuilder.CombineWith($"vpc/home#SubnetDetails:subnetId={UnderlyingObject.SubnetId}");
 }

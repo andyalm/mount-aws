@@ -18,4 +18,6 @@ public class AutoScalingGroupItem : AwsItem<AutoScalingGroup>
 
     [ItemProperty]
     public IEnumerable<string> InstanceTypes => UnderlyingObject.Instances.Select(i => i.InstanceType).Distinct();
+
+    public override string? WebUrl => UrlBuilder.CombineWith($"ec2autoscaling/home#/details/{ItemName}");
 }

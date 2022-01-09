@@ -1,4 +1,3 @@
-using System.Management.Automation;
 using Amazon.ECS.Model;
 using MountAnything;
 
@@ -10,5 +9,6 @@ public class ClusterItem : AwsItem<Cluster>
 
     public override string ItemName => UnderlyingObject.ClusterName;
     public override string ItemType => EcsItemTypes.Cluster;
+    public override string? WebUrl => UrlBuilder.CombineWith($"ecs/home#/clusters/{ItemName}");
     public override bool IsContainer => true;
 }

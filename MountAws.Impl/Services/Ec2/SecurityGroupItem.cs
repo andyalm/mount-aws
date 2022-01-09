@@ -29,4 +29,7 @@ public class SecurityGroupItem : AwsItem<SecurityGroup>
             yield return GroupName;
         }
     }
+
+    public override string? WebUrl =>
+        UrlBuilder.CombineWith($"ec2/v2/home#SecurityGroup:securityGroupId={UnderlyingObject.GroupId}");
 }

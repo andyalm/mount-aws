@@ -107,7 +107,7 @@ public static class S3ApiExtensions
 
         foreach (var commonPrefix in response.CommonPrefixes)
         {
-            yield return new ObjectItem(parentPath, commonPrefix);
+            yield return new ObjectItem(parentPath, commonPrefix, bucketName);
         }
 
         foreach (var s3Object in response.S3Objects)

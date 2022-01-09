@@ -16,5 +16,8 @@ public class TaskItem : AwsItem<Task>
 
     public override string ItemName { get; }
     public override string ItemType => EcsItemTypes.Task;
+
+    public override string? WebUrl =>
+        UrlBuilder.CombineWith($"ecs/home#/clusters/{UnderlyingObject.ClusterName()}/tasks/{ItemName}");
     public override bool IsContainer => false;
 }

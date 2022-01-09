@@ -12,4 +12,6 @@ public class TaskFamilyItem : AwsItem
 
     public override string ItemName { get; }
     public override bool IsContainer => true;
+    
+    public override string? WebUrl => UrlBuilder.CombineWith($"ecs/home#/taskDefinitions/{ItemName}");
 }

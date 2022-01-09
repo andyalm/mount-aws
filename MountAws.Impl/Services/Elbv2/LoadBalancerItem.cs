@@ -29,4 +29,6 @@ public class LoadBalancerItem : AwsItem<LoadBalancer>
         psObject.Properties.Add(new PSNoteProperty(nameof(SecurityGroupNames), SecurityGroupNames));
         base.CustomizePSObject(psObject);
     }
+
+    public override string? WebUrl => UrlBuilder.CombineWith($"ec2/v2/home?#LoadBalancers:search={ItemName}");
 }

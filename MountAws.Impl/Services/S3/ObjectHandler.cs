@@ -34,7 +34,7 @@ public class ObjectHandler : PathHandler, IContentReaderHandler,
             var children = _s3.ListChildItems(_currentBucket.Name, ParentPath, $"{_objectPath.Value}/", maxResults: 1);
             if (children.Any())
             {
-                return new ObjectItem(ParentPath, _objectPath.Value);
+                return new ObjectItem(ParentPath, _objectPath.Value, _currentBucket.Name);
             }
         }
 

@@ -1,4 +1,3 @@
-using System.Management.Automation;
 using Amazon.EC2.Model;
 using MountAnything;
 
@@ -13,4 +12,6 @@ public class VpcItem : AwsItem<Vpc>
 
     public override string ItemName { get; }
     public override bool IsContainer => true;
+
+    public override string? WebUrl => UrlBuilder.CombineWith($"vpc/home#VpcDetails:VpcId={UnderlyingObject.VpcId}");
 }
