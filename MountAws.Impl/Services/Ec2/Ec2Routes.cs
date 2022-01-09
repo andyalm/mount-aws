@@ -8,6 +8,13 @@ public class Ec2Routes : IServiceRoutes
     {
         route.MapLiteral<Ec2RootHandler>("ec2", ec2 =>
         {
+            ec2.MapLiteral<AutoScalingGroupsHandler>("auto-scaling-groups", autoScalingGroups =>
+            {
+                autoScalingGroups.Map<AutoScalingGroupHandler>(autoScalingGroup =>
+                {
+                    autoScalingGroup.Map<InstanceHandler>();
+                });
+            });
             ec2.MapLiteral<InstancesHandler>("instances", instances =>
             {
                 instances.Map<InstanceHandler>();

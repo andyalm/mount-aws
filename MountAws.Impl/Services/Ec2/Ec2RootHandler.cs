@@ -27,6 +27,7 @@ public class Ec2RootHandler : PathHandler
 
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
+        yield return AutoScalingGroupsHandler.CreateItem(Path);
         yield return InstancesHandler.CreateItem(Path);
         yield return SecurityGroupsHandler.CreateItem(Path);
         yield return VpcsHandler.CreateItem(Path);
