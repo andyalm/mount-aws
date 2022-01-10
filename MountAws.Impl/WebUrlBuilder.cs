@@ -16,7 +16,7 @@ public class WebUrlBuilder
     
     public static WebUrlBuilder ForRegion(string regionName)
     {
-        return new WebUrlBuilder("https://us-west-2.console.aws.amazon.com");
+        return new WebUrlBuilder($"https://{regionName}.console.aws.amazon.com");
     }
     
     private readonly string _value;
