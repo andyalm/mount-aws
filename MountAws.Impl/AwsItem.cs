@@ -30,7 +30,7 @@ public abstract class AwsItem : Item
         }
         else
         {
-            return WebUrlBuilder.ForRegion(FullPath.Parts[2]);
+            return WebUrlBuilder.ForRegion(FullPath.Parts[1]);
         }
     }
 }
@@ -62,7 +62,7 @@ public abstract class AwsItem<T> : Item<T> where T : class
         }
         else
         {
-            return WebUrlBuilder.ForRegion(FullPath.Parts[2]);
+            return WebUrlBuilder.ForRegion(FullPath.Parts[1]);
         }
     }
 }
