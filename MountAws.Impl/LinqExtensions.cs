@@ -38,4 +38,12 @@ internal static class LinqExtensions
             }
         }
     }
+    
+    public static string SnakeToPascalCase(this string word)
+    {
+        return string.Join("" , word.Split('_')
+            .Select(w => w.Trim())
+            .Where(w => w.Length > 0)
+            .Select(w => w[..1].ToUpper() + w[1..].ToLower()));
+    }
 }

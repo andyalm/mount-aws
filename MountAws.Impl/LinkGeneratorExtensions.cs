@@ -30,4 +30,14 @@ public static class LinkGeneratorExtensions
 
         return ecsServicePath.Combine("task-families", taskDefinition);
     }
+
+    public static ItemPath EcsCluster(this LinkGenerator linkGenerator, string clusterName)
+    {
+        return linkGenerator.EcsServicePath().Combine("clusters", clusterName);
+    }
+
+    public static ItemPath EcsService(this LinkGenerator linkGenerator, string clusterName, string serviceName)
+    {
+        return linkGenerator.EcsCluster(clusterName).Combine("services", serviceName);
+    }
 }
