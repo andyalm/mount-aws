@@ -6,9 +6,9 @@ namespace MountAws.Services.ServiceDiscovery;
 public class InstanceHandler : PathHandler
 {
     private readonly IAmazonServiceDiscovery _serviceDiscovery;
-    private readonly ServiceItem _serviceItem;
+    private readonly IItemAncestor<ServiceItem> _serviceItem;
 
-    public InstanceHandler(ItemPath path, IPathHandlerContext context, IAmazonServiceDiscovery serviceDiscovery, ServiceItem serviceItem) : base(path, context)
+    public InstanceHandler(ItemPath path, IPathHandlerContext context, IAmazonServiceDiscovery serviceDiscovery, IItemAncestor<ServiceItem> serviceItem) : base(path, context)
     {
         _serviceDiscovery = serviceDiscovery;
         _serviceItem = serviceItem;
@@ -18,7 +18,7 @@ public class InstanceHandler : PathHandler
     {
         var instance = _serviceDiscovery.GetInstance(ParentPath.Name, ItemName);
 
-        return new InstanceItem(ParentPath, instance, LinkGenerator, _serviceItem.NamespaceId, _serviceItem.ItemName);
+        return new InstanceItem(ParentPath, instance, LinkGenerator, _serviceItem.Item.NamespaceId, _serviceItem.Item.ItemName);
     }
 
     protected override IEnumerable<IItem> GetChildItemsImpl()

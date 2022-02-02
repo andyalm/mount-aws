@@ -16,7 +16,7 @@ public class HostedZoneItem : AwsItem<HostedZone>
     public string Name { get; }
     public override bool IsContainer => true;
 
-    protected override IEnumerable<string> Aliases
+    public override IEnumerable<string> Aliases
     {
         get
         {

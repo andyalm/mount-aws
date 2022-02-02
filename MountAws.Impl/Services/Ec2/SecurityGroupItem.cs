@@ -22,7 +22,7 @@ public class SecurityGroupItem : AwsItem<SecurityGroup>
         base.CustomizePSObject(psObject);
     }
 
-    protected override IEnumerable<string> Aliases
+    public override IEnumerable<string> Aliases
     {
         get
         {

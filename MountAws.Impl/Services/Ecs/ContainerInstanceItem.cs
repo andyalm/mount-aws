@@ -23,7 +23,7 @@ public class ContainerInstanceItem : AwsItem<ContainerInstance>
         UrlBuilder.CombineWith($"ecs/home#/clusters/{UnderlyingObject.ClusterName()}/containerInstances/{ItemName}");
     public override bool IsContainer => true;
 
-    protected override IEnumerable<string> Aliases
+    public override IEnumerable<string> Aliases
     {
         get
         {

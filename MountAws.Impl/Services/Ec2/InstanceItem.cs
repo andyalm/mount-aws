@@ -18,7 +18,7 @@ public class InstanceItem : AwsItem<Instance>
     public override string ItemType => Ec2ItemTypes.Instance;
     public override bool IsContainer => false;
 
-    protected override IEnumerable<string> Aliases
+    public override IEnumerable<string> Aliases
     {
         get
         {
