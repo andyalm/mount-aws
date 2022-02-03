@@ -27,13 +27,13 @@ public class InstancesHandler : PathHandler
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         return _ec2.QueryInstances()
-            .Select(i => new InstanceItem(Path, i));
+            .Select(i => new InstanceItem(Path, i, LinkGenerator));
     }
 
     public override IEnumerable<IItem> GetChildItems(string filter)
     {
         return _ec2.QueryInstances(filter)
-            .Select(instance => new InstanceItem(Path, instance));
+            .Select(instance => new InstanceItem(Path, instance, LinkGenerator));
     }
 
     protected override bool CacheChildren => false;

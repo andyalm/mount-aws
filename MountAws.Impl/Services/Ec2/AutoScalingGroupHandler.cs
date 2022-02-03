@@ -20,7 +20,7 @@ public class AutoScalingGroupHandler : PathHandler
     {
         var asg = _autoScaling.DescribeAutoScalingGroup(ItemName);
 
-        return new AutoScalingGroupItem(ParentPath, asg);
+        return new AutoScalingGroupItem(ParentPath, asg, LinkGenerator);
     }
 
     protected override IEnumerable<IItem> GetChildItemsImpl()
@@ -35,6 +35,6 @@ public class AutoScalingGroupHandler : PathHandler
         return _ec2.DescribeInstances(new DescribeInstancesRequest
         {
             InstanceIds = instanceIds.ToList()
-        }).Select(i => new InstanceItem(Path, i));
+        }).Select(i => new InstanceItem(Path, i, LinkGenerator));
     }
 }

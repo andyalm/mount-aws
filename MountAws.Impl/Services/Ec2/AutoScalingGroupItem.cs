@@ -1,13 +1,22 @@
 using Amazon.AutoScaling.Model;
 using MountAnything;
+using MountAws.Services.Elbv2;
 
 namespace MountAws.Services.Ec2;
 
 public class AutoScalingGroupItem : AwsItem<AutoScalingGroup>
 {
-    public AutoScalingGroupItem(ItemPath parentPath, AutoScalingGroup underlyingObject) : base(parentPath, underlyingObject)
+    public AutoScalingGroupItem(ItemPath parentPath, AutoScalingGroup underlyingObject, LinkGenerator linkGenerator) : base(parentPath, underlyingObject)
     {
         ItemName = underlyingObject.AutoScalingGroupName;
+        var targetGroupArn = underlyingObject.TargetGroupARNs.FirstOrDefault();
+        if (targetGroupArn != null)
+        {
+            LinkPaths = new Dictionary<string, ItemPath>
+            {
+                ["TargetGroup"] = linkGenerator.TargetGroup(targetGroupArn)
+            };
+        }
     }
 
     public override string ItemName { get; }

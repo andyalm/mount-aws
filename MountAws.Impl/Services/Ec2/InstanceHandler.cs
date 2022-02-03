@@ -26,7 +26,7 @@ public class InstanceHandler : PathHandler, IRemoveItemHandler
         WriteDebug($"Found {instances.Length} instances");
         if (instances.Length == 1)
         {
-            return new InstanceItem(ParentPath, instances.Single());
+            return new InstanceItem(ParentPath, instances.Single(), LinkGenerator);
         }
 
         return null;

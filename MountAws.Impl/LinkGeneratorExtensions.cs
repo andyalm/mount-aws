@@ -15,7 +15,12 @@ public static class LinkGeneratorExtensions
         var ec2ServicePath = linkGenerator.Ec2ServicePath();
         var parentPath = ec2ServicePath.Combine("instances");
 
-        return new InstanceItem(parentPath, instance);
+        return new InstanceItem(parentPath, instance, linkGenerator);
+    }
+
+    public static ItemPath AutoScalingGroup(this LinkGenerator linkGenerator, string asgName)
+    {
+        return linkGenerator.Ec2ServicePath().Combine("auto-scaling-groups", asgName);
     }
 
     private static ItemPath EcsServicePath(this LinkGenerator linkGenerator)

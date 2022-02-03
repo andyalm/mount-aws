@@ -6,11 +6,21 @@ namespace MountAws.Services.Ec2;
 
 public class InstanceItem : AwsItem<Instance>
 {
-    public InstanceItem(ItemPath parentPath, Instance instance) : base(parentPath, instance)
+    public InstanceItem(ItemPath parentPath, Instance instance, LinkGenerator linkGenerator) : base(parentPath, instance)
     {
         Name = UnderlyingObject.Tags
             .SingleOrDefault(t =>
                 t.Key.Equals("Name"))?.Value;
+        var asgName = UnderlyingObject.Tags
+            .SingleOrDefault(t =>
+                t.Key.Equals("aws:autoscaling:groupName"))?.Value;
+        if (!string.IsNullOrEmpty(asgName))
+        {
+            LinkPaths = new Dictionary<string, ItemPath>
+            {
+                ["AutoScalingGroup"] = linkGenerator.AutoScalingGroup(asgName)
+            };
+        }
     }
 
     public string? Name { get; }

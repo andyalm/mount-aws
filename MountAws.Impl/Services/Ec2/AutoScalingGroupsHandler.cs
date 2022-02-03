@@ -26,7 +26,7 @@ public class AutoScalingGroupsHandler : PathHandler
 
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
-        return _autoScaling.DescribeAutoScalingGroups().Select(g => new AutoScalingGroupItem(Path, g));
+        return _autoScaling.DescribeAutoScalingGroups().Select(g => new AutoScalingGroupItem(Path, g, LinkGenerator));
     }
 
     public override IEnumerable<IItem> GetChildItems(string filter)
@@ -37,6 +37,6 @@ public class AutoScalingGroupsHandler : PathHandler
             return base.GetChildItems(filter);
         }
         
-        return _autoScaling.DescribeAutoScalingGroups(filter).Select(g => new AutoScalingGroupItem(Path, g));
+        return _autoScaling.DescribeAutoScalingGroups(filter).Select(g => new AutoScalingGroupItem(Path, g, LinkGenerator));
     }
 }
