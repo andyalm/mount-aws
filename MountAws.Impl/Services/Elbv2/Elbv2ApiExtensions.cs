@@ -92,7 +92,21 @@ public static class Elbv2ApiExtensions
             TargetGroupArn = targetGroupArn
         }).GetAwaiter().GetResult().TargetHealthDescriptions;
     }
-    
+
+    public static IEnumerable<Certificate> DescribeListenerCertificates(this IAmazonElasticLoadBalancingV2 elbv2, string listenerArn)
+    {
+        return Paginate(nextToken =>
+        {
+            var response = elbv2.DescribeListenerCertificatesAsync(new DescribeListenerCertificatesRequest
+            {
+                ListenerArn = listenerArn,
+                Marker = nextToken
+            }).GetAwaiter().GetResult();
+
+            return (response.Certificates, response.NextMarker);
+        });
+    }
+
     public static TargetGroup GetTargetGroup(this IAmazonElasticLoadBalancingV2 elbv2, string targetGroupNameOrArn)
     {
         var request = new DescribeTargetGroupsRequest();

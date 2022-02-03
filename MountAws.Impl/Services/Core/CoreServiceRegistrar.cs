@@ -1,6 +1,8 @@
 using Amazon;
 using Amazon.Runtime;
 using Amazon.Runtime.CredentialManagement;
+using Amazon.SecurityToken;
+using Amazon.SecurityToken.Model;
 using Autofac;
 using MountAws.Api;
 
@@ -21,6 +23,15 @@ public class CoreServiceRegistrar : IServiceRegistrar
 
             return new AnonymousAWSCredentials();
         }).As<AWSCredentials>();
+        builder.Register(c =>
+        {
+            var sts = c.Resolve<IAmazonSecurityTokenService>();
+            var response = sts.GetCallerIdentityAsync(new GetCallerIdentityRequest()).GetAwaiter().GetResult();
+
+            return new CallerIdentity(response.Account, response.UserId, response.Arn);
+        }).As<CallerIdentity>();
+        builder.RegisterType<AmazonSecurityTokenServiceClient>().As<IAmazonSecurityTokenService>()
+            .UsingConstructor(typeof(AWSCredentials), typeof(RegionEndpoint));
         builder.Register<RegionEndpoint>(c => RegionEndpoint.GetBySystemName(c.Resolve<CurrentRegion>()));
     }
     

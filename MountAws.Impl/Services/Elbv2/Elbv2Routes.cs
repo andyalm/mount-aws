@@ -14,6 +14,10 @@ public class Elbv2Routes : IServiceRoutes
                 {
                     loadBalancer.Map<ListenerHandler>(listener =>
                     {
+                        listener.MapLiteral<CertificatesHandler>("certificates", certificates =>
+                        {
+                            certificates.Map<CertificateHandler>();
+                        });
                         listener.MapLiteral<DefaultActionsHandler>("default-actions", defaultActions =>
                         {
                             defaultActions.Map<DefaultActionHandler>(defaultAction =>

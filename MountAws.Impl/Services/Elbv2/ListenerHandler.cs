@@ -36,7 +36,14 @@ public class ListenerHandler : PathHandler
 
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
-        yield return DefaultActionsHandler.CreateItem(Path);
-        yield return RulesHandler.CreateItem(Path);
+        if (GetItem() is ListenerItem listener)
+        {
+            if (listener.UnderlyingObject.Certificates.Any())
+            {
+                yield return CertificatesHandler.CreateItem(Path);
+            }
+            yield return DefaultActionsHandler.CreateItem(Path);
+            yield return RulesHandler.CreateItem(Path);
+        }
     }
 }

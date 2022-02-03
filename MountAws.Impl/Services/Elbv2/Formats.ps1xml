@@ -65,6 +65,52 @@
       </TableControl>
     </View>
     <View>
+      <Name>Elbv2CertificateItem</Name>
+      <ViewSelectedBy>
+        <TypeName>MountAws.Services.Elbv2.CertificateItem</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+          </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>Id</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>DomainName</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>NotBefore</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>NotAfter</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Status</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>RenewalEligibility</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <View>
       <Name>MountAwsAction</Name>
       <ViewSelectedBy>
         <TypeName>MountAws.Services.Elbv2.ActionItem</TypeName>
