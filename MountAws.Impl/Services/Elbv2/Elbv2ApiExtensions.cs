@@ -109,7 +109,7 @@ public static class Elbv2ApiExtensions
 
     public static string TargetGroupName(this TargetGroupTuple targetGroupTuple)
     {
-        return targetGroupTuple.TargetGroupArn.Split("/")[^2];
+        return Elbv2.Elbv2ArnDecoder.TargetGroupName(targetGroupTuple.TargetGroupArn);
     }
 
     public static string? TargetGroupArn(this Action action)

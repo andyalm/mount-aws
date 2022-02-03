@@ -25,7 +25,7 @@ public class RuleActionHandler : PathHandler
     {
         if (GetItem() is ActionItem item)
         {
-            return item.GetChildren(_elbv2);
+            return item.GetChildren(_elbv2, LinkGenerator);
         }
         
         return Enumerable.Empty<Item>();

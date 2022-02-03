@@ -24,9 +24,9 @@ public class WeightedForwardActionItem : ActionItem
     public TargetGroupTuple[] WeightedTargetGroups { get; }
     public string[] WeightDescriptions { get; }
 
-    public override IEnumerable<IItem> GetChildren(IAmazonElasticLoadBalancingV2 elbv2)
+    public override IEnumerable<IItem> GetChildren(IAmazonElasticLoadBalancingV2 elbv2, LinkGenerator linkGenerator)
     {
         return WeightedTargetGroups.Select(t =>
-            new WeightedTargetGroupItem(FullPath, elbv2.GetTargetGroup(t.TargetGroupArn), t.Weight));
+            new WeightedTargetGroupItem(FullPath, elbv2.GetTargetGroup(t.TargetGroupArn), t.Weight, linkGenerator));
     }
 }

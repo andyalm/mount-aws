@@ -27,20 +27,22 @@ public static class ServiceDiscoveryApiExtensions
         }).GetAwaiter().GetResult().Namespace;
     }
 
-    public static IEnumerable<ServiceSummary> ListServices(this IAmazonServiceDiscovery serviceDiscovery, string namespaceId)
+    public static IEnumerable<ServiceSummary> ListServices(this IAmazonServiceDiscovery serviceDiscovery, string? namespaceId = null)
     {
+        var filters = new List<ServiceFilter>();
+        if (namespaceId != null)
+        {
+            filters.Add(new ServiceFilter
+            {
+                Name = ServiceFilterName.NAMESPACE_ID,
+                Values = new List<string>{ namespaceId }
+            });
+        }
         return Paginate(nextToken =>
         {
             var response = serviceDiscovery.ListServicesAsync(new ListServicesRequest
             {
-                Filters = new List<ServiceFilter>
-                {
-                    new()
-                    {
-                        Name = ServiceFilterName.NAMESPACE_ID,
-                        Values = new List<string> { namespaceId }
-                    }
-                }
+                Filters = filters
             }).GetAwaiter().GetResult();
 
             return (response.Services, response.NextToken);

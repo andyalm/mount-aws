@@ -18,7 +18,7 @@ public class TargetGroupHandler : PathHandler, IRemoveItemHandler
         try
         {
             var targetGroup = _elbv2.GetTargetGroup(ItemName);
-            return new TargetGroupItem(ParentPath, targetGroup);
+            return new TargetGroupItem(ParentPath, targetGroup, LinkGenerator);
         }
         catch (TargetGroupNotFoundException)
         {

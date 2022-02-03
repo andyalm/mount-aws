@@ -44,7 +44,7 @@ public abstract class ActionItem : AwsItem<Action>
         psObject.Properties.Add(new PSNoteProperty("Description", Description));
     }
 
-    public virtual IEnumerable<IItem> GetChildren(IAmazonElasticLoadBalancingV2 elbv2)
+    public virtual IEnumerable<IItem> GetChildren(IAmazonElasticLoadBalancingV2 elbv2, LinkGenerator linkGenerator)
     {
         return Enumerable.Empty<IItem>();
     }

@@ -18,11 +18,11 @@ public class ForwardActionItem : ActionItem
     public string TargetGroupArn { get; }
     public string TargetGroupName { get; }
 
-    public override IEnumerable<IItem> GetChildren(IAmazonElasticLoadBalancingV2 elbv2)
+    public override IEnumerable<IItem> GetChildren(IAmazonElasticLoadBalancingV2 elbv2, LinkGenerator linkGenerator)
     {
         return new[]
         {
-            new TargetGroupItem(FullPath, elbv2.GetTargetGroup(TargetGroupArn))
+            new TargetGroupItem(FullPath, elbv2.GetTargetGroup(TargetGroupArn), linkGenerator)
         };
     }
 }

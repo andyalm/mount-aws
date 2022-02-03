@@ -27,7 +27,7 @@ public class TargetGroupsHandler : PathHandler
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         return _elbv2.DescribeTargetGroups()
-            .Select(t => new TargetGroupItem(Path, t))
+            .Select(t => new TargetGroupItem(Path, t, LinkGenerator))
             .OrderBy(t => t.ItemName);
     }
 }

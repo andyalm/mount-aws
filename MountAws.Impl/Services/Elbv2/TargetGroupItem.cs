@@ -7,7 +7,17 @@ namespace MountAws.Services.Elbv2;
 public class TargetGroupItem : AwsItem<TargetGroup>
 {
 
-    public TargetGroupItem(ItemPath parentPath, TargetGroup targetGroup) : base(parentPath, targetGroup) {}
+    public TargetGroupItem(ItemPath parentPath, TargetGroup targetGroup, LinkGenerator linkGenerator) : base(parentPath, targetGroup)
+    {
+        var loadBalancerArn = targetGroup.LoadBalancerArns.FirstOrDefault();
+        if (loadBalancerArn != null)
+        {
+            LinkPaths = new Dictionary<string, ItemPath>
+            {
+                ["LoadBalancer"] = linkGenerator.LoadBalancer(loadBalancerArn)
+            };
+        }
+    }
 
     public override string ItemName => UnderlyingObject.TargetGroupName;
     public override string ItemType => Elbv2ItemTypes.TargetGroup;
@@ -21,7 +31,7 @@ public class WeightedTargetGroupItem : TargetGroupItem
 {
     public int Weight { get; }
     
-    public WeightedTargetGroupItem(ItemPath parentPath, TargetGroup targetGroup, int weight) : base(parentPath, targetGroup)
+    public WeightedTargetGroupItem(ItemPath parentPath, TargetGroup targetGroup, int weight, LinkGenerator linkGenerator) : base(parentPath, targetGroup, linkGenerator)
     {
         Weight = weight;
     }
