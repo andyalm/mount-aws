@@ -43,6 +43,6 @@ public class HostedZoneHandler : PathHandler
             throw new HostedZoneNotFoundException($"A hosted zone with name '{hostedZoneName}' does not exist");
         }
 
-        return hostedZone.Name;
+        return hostedZone.Id;
     }
 }
