@@ -79,10 +79,6 @@
           </TableColumnHeader>
           <TableColumnHeader>
           </TableColumnHeader>
-          <TableColumnHeader>
-          </TableColumnHeader>
-          <TableColumnHeader>
-          </TableColumnHeader>
         </TableHeaders>
         <TableRowEntries>
           <TableRowEntry>
@@ -94,13 +90,7 @@
                 <PropertyName>DomainName</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>NotBefore</PropertyName>
-              </TableColumnItem>
-              <TableColumnItem>
                 <PropertyName>NotAfter</PropertyName>
-              </TableColumnItem>
-              <TableColumnItem>
-                <PropertyName>Status</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>RenewalEligibility</PropertyName>
