@@ -23,6 +23,7 @@
     <PackageReference Include="AWSSDK.EC2" Version="3.7.*" />
     <PackageReference Include="AWSSDK.Core" Version="3.7.*" />
     <PackageReference Include="AWSSDK.CertificateManager" Version="3.7.*" />
+    <PackageReference Include="AWSSDK.Cloudfront" Version="3.7.*" />
   </ItemGroup>
 
   <ItemGroup>

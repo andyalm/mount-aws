@@ -68,6 +68,7 @@ $ gc my-file.json
 
 The following services are currently supported:
 
+ * [Cloudfront](docs/Services/Cloudfront.md)
  * [EC2](docs/Services/EC2.md)
  * [ECR](docs/Services/ECR.md)
  * [ECS](docs/Services/ECS.md)

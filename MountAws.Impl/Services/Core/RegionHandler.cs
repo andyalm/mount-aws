@@ -1,5 +1,6 @@
 using Amazon;
 using MountAnything;
+using MountAws.Services.Cloudfront;
 using MountAws.Services.Core;
 using MountAws.Services.Ec2;
 using MountAws.Services.Ecr;
@@ -32,6 +33,7 @@ public class RegionHandler : PathHandler
 
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
+        yield return CloudfrontRootHandler.CreateItem(Path);
         yield return Ec2RootHandler.CreateItem(Path);
         yield return EcrRootHandler.CreateItem(Path);
         yield return ECSRootHandler.CreateItem(Path);
