@@ -23,7 +23,14 @@ public class InstanceItem : AwsItem<Instance>
         }
     }
 
+    [ItemProperty]
     public string? Name { get; }
+
+    [ItemProperty]
+    public string State => UnderlyingObject.State.Name;
+
+    [ItemProperty] 
+    public int StateCode => UnderlyingObject.State.Code;
     public override string ItemName => UnderlyingObject.InstanceId;
     public override string ItemType => Ec2ItemTypes.Instance;
     public override bool IsContainer => false;
@@ -38,12 +45,6 @@ public class InstanceItem : AwsItem<Instance>
                 yield return privateIpAddress;
             }
         }
-    }
-
-    protected override void CustomizePSObject(PSObject psObject)
-    {
-        psObject.Properties.Add(new PSNoteProperty(nameof(Name), Name));
-        base.CustomizePSObject(psObject);
     }
 
     public override string? WebUrl =>
