@@ -18,7 +18,8 @@ public class InstanceItem : AwsItem<Instance>
         {
             LinkPaths = new Dictionary<string, ItemPath>
             {
-                ["AutoScalingGroup"] = linkGenerator.AutoScalingGroup(asgName)
+                ["AutoScalingGroup"] = linkGenerator.AutoScalingGroup(asgName),
+                ["Image"] = linkGenerator.Ec2Image(instance.ImageId)
             };
         }
     }

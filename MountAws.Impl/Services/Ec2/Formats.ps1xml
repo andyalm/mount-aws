@@ -37,6 +37,47 @@
       </TableControl>
     </View>
     <View>
+      <Name>ImageItem</Name>
+      <ViewSelectedBy>
+        <TypeName>MountAws.Services.Ec2.ImageItem</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+          </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>ImageId</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Name</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Architecture</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>PlatformDetails</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>CreationDate</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <View>
       <Name>InstanceItem</Name>
       <ViewSelectedBy>
         <TypeName>MountAws.Services.Ec2.InstanceItem</TypeName>

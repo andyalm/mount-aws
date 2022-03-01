@@ -7,6 +7,8 @@ The EC2 virtual filesystem is stuctured the following way:
    |-- auto-scaling-groups
        |-- my-asg01
            |-- i-09c32901ccd40a3a2
+   |-- images
+       |-- ami-0f61955e91eb3a612        
    |-- instances
        |-- i-09c32901ccd40a3a2
    |-- security-groups

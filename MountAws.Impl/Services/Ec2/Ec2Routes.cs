@@ -15,6 +15,10 @@ public class Ec2Routes : IServiceRoutes
                     autoScalingGroup.Map<InstanceHandler>();
                 });
             });
+            ec2.MapLiteral<ImagesHandler>("images", images =>
+            {
+                images.Map<ImageHandler>();
+            });
             ec2.MapLiteral<InstancesHandler>("instances", instances =>
             {
                 instances.Map<InstanceHandler>();

@@ -84,6 +84,33 @@ public static class Ec2ApiExtensions
 
         return request;
     }
+    
+    private static DescribeImagesRequest ParseImagesFilter(string filterString)
+    {
+        var request = new DescribeImagesRequest();
+        foreach (var filter in filterString.Split(","))
+        {
+            if (filter.StartsWith("ami-") && filter.Contains("*"))
+            {
+                request.Filters.Add(new Filter("image-id", new List<string>{filter}));
+            }
+            else if (filter.StartsWith("ami-"))
+            {
+                request.ImageIds.Add(filter);
+            }
+            else if (filter.Contains('='))
+            {
+                var parts = filter.Split("=");
+                request.Filters.Add(new Filter(parts[0], new List<string>{parts[1]}));
+            }
+            else
+            {
+                request.Filters.Add(new Filter("name", new List<string>{filter}));
+            }
+        }
+
+        return request;
+    }
 
     private static void AddInstanceIdFilter(DescribeInstancesRequest request, string filter)
     {
@@ -179,6 +206,41 @@ public static class Ec2ApiExtensions
         {
             throw new SubnetNotFoundException(subnetId);
         }
+    }
+
+    public static IEnumerable<Image> DescribeImages(this IAmazonEC2 ec2)
+    {
+        return ec2.DescribeImagesAsync(new DescribeImagesRequest
+        {
+            ExecutableUsers = new List<string> { "self" }
+        }).GetAwaiter().GetResult().Images;
+    }
+
+    public static IEnumerable<Image> QueryImages(this IAmazonEC2 ec2, string filter)
+    {
+        var request = ParseImagesFilter(filter);
+
+        return ec2.DescribeImagesAsync(request).GetAwaiter().GetResult().Images;
+    }
+
+    public static Image DescribeImage(this IAmazonEC2 ec2, string nameOrId)
+    {
+        var request = new DescribeImagesRequest();
+        if (nameOrId.StartsWith("ami-"))
+        {
+            request.ImageIds.Add(nameOrId);
+        }
+        else
+        {
+            request.Filters.Add(new Filter("name", new List<string> { nameOrId }));
+        }
+        var image = ec2.DescribeImagesAsync(request).GetAwaiter().GetResult().Images.SingleOrDefault();
+        if (image == null)
+        {
+            throw new ImageNotFoundException($"EC2 image with name or id '{nameOrId}' could not be found");
+        }
+
+        return image;
     }
 
     private static readonly Regex _ipHostName =
