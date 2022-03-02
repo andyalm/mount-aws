@@ -23,5 +23,6 @@ public class IamRootHandler : PathHandler
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         yield return PoliciesHandler.CreateItem(Path);
+        yield return RolesHandler.CreateItem(Path);
     }
 }

@@ -19,6 +19,16 @@ public class Routes : IServiceRoutes
                     });
                 });
             });
+            iam.MapLiteral<RolesHandler>("roles", policies =>
+            {
+                policies.MapRegex<RoleHandler>(@"(?<RolePathAndName>[a-z0-9+=,.@\-/]+)", policy =>
+                {
+                    policy.RegisterServices((match, builder) =>
+                    {
+                        builder.RegisterInstance(IamItemPath.Parse(match.Values["RolePathAndName"]));
+                    });
+                });
+            });
         });
     }
 }

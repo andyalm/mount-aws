@@ -28,12 +28,24 @@ public static class ApiExtensions
     {
         var policies = iam.ListPolicies(pathPrefix, scope).ToArray();
         var directories = policies
-            .PolicyDirectories(pathPrefix);
+            .Directories(pathPrefix);
         var childPolicies = policies.ChildPolicies(pathPrefix);
 
         return directories.OrderBy(d => d)
             .Select(directory => new PolicyItem(parentPath, directory))
             .Concat(childPolicies.OrderBy(p => p.PolicyName).Select(p => new PolicyItem(parentPath, p)));
+    }
+    
+    public static IEnumerable<RoleItem> ListChildRoleItems(this IAmazonIdentityManagementService iam,
+        ItemPath parentPath, string? pathPrefix = null)
+    {
+        var roles = iam.ListRoles(pathPrefix).ToArray();
+        var directories = roles.Directories(pathPrefix);
+        var childRoles = roles.ChildRoles(pathPrefix);
+
+        return directories.OrderBy(d => d)
+            .Select(directory => new RoleItem(parentPath, directory))
+            .Concat(childRoles.OrderBy(r => r.RoleName).Select(p => new RoleItem(parentPath, p)));
     }
 
     public static ManagedPolicy GetPolicy(this IAmazonIdentityManagementService iam, CallerIdentity callerIdentity, string pathAndName)
@@ -54,6 +66,35 @@ public static class ApiExtensions
         {
             return null;
         }
+    }
+
+    public static Role? GetRoleOrDefault(this IAmazonIdentityManagementService iam, string roleName)
+    {
+        try
+        {
+            return iam.GetRoleAsync(new GetRoleRequest
+            {
+                RoleName = roleName
+            }).GetAwaiter().GetResult().Role;
+        }
+        catch (NoSuchEntityException)
+        {
+            return null;
+        }
+    }
+
+    public static IEnumerable<Role> ListRoles(this IAmazonIdentityManagementService iam, string? pathPrefix = null)
+    {
+        return Paginate(nextToken =>
+        {
+            var response = iam.ListRolesAsync(new ListRolesRequest
+            {
+                Marker = nextToken,
+                PathPrefix = pathPrefix.ToApiCompliantPrefix()
+            }).GetAwaiter().GetResult();
+
+            return (response.Roles, response.Marker);
+        });
     }
 
     private static string? ToApiCompliantPrefix(this string? pathPrefix)

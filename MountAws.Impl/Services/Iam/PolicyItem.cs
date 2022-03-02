@@ -9,7 +9,7 @@ public class PolicyItem : AwsItem
     public PolicyItem(ItemPath parentPath, ManagedPolicy underlyingObject) : base(parentPath, new PSObject(underlyingObject))
     {
         ItemName = underlyingObject.PolicyName;
-        ItemType = "Policy";
+        ItemType = IamItemTypes.Policy;
     }
     
     public PolicyItem(ItemPath parentPath, string path) : base(parentPath, new PSObject(new
@@ -18,7 +18,7 @@ public class PolicyItem : AwsItem
     }))
     {
         ItemName = path.Split("/").Last();
-        ItemType = "Directory";
+        ItemType = IamItemTypes.Directory;
     }
 
     public override string ItemName { get; }
