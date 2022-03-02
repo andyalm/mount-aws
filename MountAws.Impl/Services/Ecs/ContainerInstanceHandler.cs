@@ -65,8 +65,9 @@ public class ContainerInstanceHandler : PathHandler
         {
             return null;
         }
+        var ec2Image = _ec2.DescribeImageOrDefault(ec2Instance.ImageId);
         
-        return LinkGenerator.Ec2Instance(ec2Instance);
+        return LinkGenerator.Ec2Instance(ec2Instance, ec2Image);
     }
 
     protected override IEnumerable<IItem> GetChildItemsImpl()

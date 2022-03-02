@@ -62,13 +62,20 @@ public class ContainerInstancesHandler : PathHandler
 
         var ec2InstancesById = _ec2.GetInstancesByIds(ec2InstanceIds).ToDictionary(i => i.InstanceId);
 
+        var ec2ImagesById = _ec2.DescribeImages(ec2InstancesById.Values.Select(i => i.ImageId).Distinct())
+            .ToDictionary(i => i.ImageId);
+
         return containerInstances.Select(containerInstance =>
         {
             var ec2InstanceId = containerInstance.Ec2InstanceId;
-            var ec2Item = !string.IsNullOrEmpty(ec2InstanceId) && ec2InstancesById.TryGetValue(ec2InstanceId!, out var ec2Instance)
-                ? LinkGenerator.Ec2Instance(ec2Instance)
-                : null;
-
+            InstanceItem? ec2Item = null;
+            if (!string.IsNullOrEmpty(ec2InstanceId) &&
+                ec2InstancesById.TryGetValue(ec2InstanceId!, out var ec2Instance))
+            {
+                var ec2Image = ec2ImagesById.GetValueOrDefault(ec2Instance.ImageId);
+                ec2Item = LinkGenerator.Ec2Instance(ec2Instance, ec2Image);
+            }
+            
             return new ContainerInstanceItem(Path, containerInstance, ec2Item);
         });
     }

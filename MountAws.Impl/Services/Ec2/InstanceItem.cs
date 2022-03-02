@@ -6,7 +6,7 @@ namespace MountAws.Services.Ec2;
 
 public class InstanceItem : AwsItem<Instance>
 {
-    public InstanceItem(ItemPath parentPath, Instance instance, LinkGenerator linkGenerator) : base(parentPath, instance)
+    public InstanceItem(ItemPath parentPath, Instance instance, Image? image, LinkGenerator linkGenerator) : base(parentPath, instance)
     {
         Name = UnderlyingObject.Tags
             .SingleOrDefault(t =>
@@ -14,14 +14,23 @@ public class InstanceItem : AwsItem<Instance>
         var asgName = UnderlyingObject.Tags
             .SingleOrDefault(t =>
                 t.Key.Equals("aws:autoscaling:groupName"))?.Value;
+        LinkPaths = new Dictionary<string, ItemPath>();
+        Links = new Dictionary<string, IItem>();
         if (!string.IsNullOrEmpty(asgName))
         {
-            LinkPaths = new Dictionary<string, ItemPath>
-            {
-                ["AutoScalingGroup"] = linkGenerator.AutoScalingGroup(asgName),
-                ["Image"] = linkGenerator.Ec2Image(instance.ImageId)
-            };
+            LinkPaths["AutoScalingGroup"] = linkGenerator.AutoScalingGroup(asgName);
         }
+
+        if (image == null)
+        {
+            LinkPaths["Image"] = linkGenerator.Ec2Image(instance.ImageId);
+        }
+        else
+        {
+            Links["Image"] = linkGenerator.Ec2Image(image);
+            ImageName = image.Name;
+        }
+
     }
 
     [ItemProperty]
@@ -32,6 +41,9 @@ public class InstanceItem : AwsItem<Instance>
 
     [ItemProperty] 
     public int StateCode => UnderlyingObject.State.Code;
+    
+    [ItemProperty]
+    public string? ImageName { get; }
     public override string ItemName => UnderlyingObject.InstanceId;
     public override string ItemType => Ec2ItemTypes.Instance;
     public override bool IsContainer => false;

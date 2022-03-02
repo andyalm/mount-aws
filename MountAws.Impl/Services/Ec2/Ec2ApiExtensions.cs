@@ -216,14 +216,22 @@ public static class Ec2ApiExtensions
         }).GetAwaiter().GetResult().Images;
     }
 
+    public static IEnumerable<Image> DescribeImages(this IAmazonEC2 ec2, IEnumerable<string> imageIds)
+    {
+        return ec2.DescribeImagesAsync(new DescribeImagesRequest
+        {
+            ImageIds = imageIds.ToList()
+        }).GetAwaiter().GetResult().Images;
+    }
+
     public static IEnumerable<Image> QueryImages(this IAmazonEC2 ec2, string filter)
     {
         var request = ParseImagesFilter(filter);
 
         return ec2.DescribeImagesAsync(request).GetAwaiter().GetResult().Images;
     }
-
-    public static Image DescribeImage(this IAmazonEC2 ec2, string nameOrId)
+    
+    public static Image? DescribeImageOrDefault(this IAmazonEC2 ec2, string nameOrId)
     {
         var request = new DescribeImagesRequest();
         if (nameOrId.StartsWith("ami-"))
@@ -234,7 +242,12 @@ public static class Ec2ApiExtensions
         {
             request.Filters.Add(new Filter("name", new List<string> { nameOrId }));
         }
-        var image = ec2.DescribeImagesAsync(request).GetAwaiter().GetResult().Images.SingleOrDefault();
+        return ec2.DescribeImagesAsync(request).GetAwaiter().GetResult().Images.SingleOrDefault();
+    }
+
+    public static Image DescribeImage(this IAmazonEC2 ec2, string nameOrId)
+    {
+        var image = ec2.DescribeImageOrDefault(nameOrId);
         if (image == null)
         {
             throw new ImageNotFoundException($"EC2 image with name or id '{nameOrId}' could not be found");

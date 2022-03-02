@@ -9,12 +9,12 @@ public static class LinkGeneratorExtensions
     {
         return linkGenerator.ConstructPath(2, "ec2");
     }
-    public static InstanceItem Ec2Instance(this LinkGenerator linkGenerator, Instance instance)
+    public static InstanceItem Ec2Instance(this LinkGenerator linkGenerator, Instance instance, Image? image)
     {
         var ec2ServicePath = linkGenerator.Ec2ServicePath();
         var parentPath = ec2ServicePath.Combine("instances");
 
-        return new InstanceItem(parentPath, instance, linkGenerator);
+        return new InstanceItem(parentPath, instance, image, linkGenerator);
     }
 
     public static ItemPath AutoScalingGroup(this LinkGenerator linkGenerator, string asgName)
@@ -25,5 +25,13 @@ public static class LinkGeneratorExtensions
     public static ItemPath Ec2Image(this LinkGenerator linkGenerator, string imageId)
     {
         return linkGenerator.Ec2ServicePath().Combine("images", imageId);
+    }
+    
+    public static ImageItem Ec2Image(this LinkGenerator linkGenerator, Image image)
+    {
+        var ec2ServicePath = linkGenerator.Ec2ServicePath();
+        var parentPath = ec2ServicePath.Combine("images");
+        
+        return new ImageItem(parentPath, image);
     }
 }

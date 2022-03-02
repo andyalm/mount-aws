@@ -32,9 +32,12 @@ public class AutoScalingGroupHandler : PathHandler
         }
 
         var instanceIds = asg.UnderlyingObject.Instances.Select(i => i.InstanceId).ToList();
-        return _ec2.DescribeInstances(new DescribeInstancesRequest
+        var instances = _ec2.DescribeInstances(new DescribeInstancesRequest
         {
             InstanceIds = instanceIds.ToList()
-        }).Select(i => new InstanceItem(Path, i, LinkGenerator));
+        }).ToList();
+        var images = _ec2.DescribeImages(instances.Select(i => i.ImageId).Distinct()).ToDictionary(i => i.ImageId);
+
+        return instances.Select(i => new InstanceItem(Path, i, images.GetValueOrDefault(i.ImageId), LinkGenerator));
     }
 }

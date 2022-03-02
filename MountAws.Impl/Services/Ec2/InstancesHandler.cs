@@ -26,14 +26,18 @@ public class InstancesHandler : PathHandler
 
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
-        return _ec2.QueryInstances()
-            .Select(i => new InstanceItem(Path, i, LinkGenerator));
+        var instances = _ec2.QueryInstances().ToArray();
+        var images = _ec2.DescribeImages(instances.Select(i => i.ImageId).Distinct()).ToDictionary(i => i.ImageId);    
+        
+        return instances.Select(i => new InstanceItem(Path, i, images.GetValueOrDefault(i.ImageId), LinkGenerator));
     }
 
     public override IEnumerable<IItem> GetChildItems(string filter)
     {
-        return _ec2.QueryInstances(filter)
-            .Select(instance => new InstanceItem(Path, instance, LinkGenerator));
+        var instances = _ec2.QueryInstances(filter);
+        var images = _ec2.DescribeImages(instances.Select(i => i.ImageId).Distinct()).ToDictionary(i => i.ImageId);    
+    
+        return instances.Select(instance => new InstanceItem(Path, instance, images.GetValueOrDefault(instance.ImageId), LinkGenerator));
     }
 
     protected override bool CacheChildren => false;
