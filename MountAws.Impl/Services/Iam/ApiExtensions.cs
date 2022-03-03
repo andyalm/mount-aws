@@ -151,7 +151,7 @@ public static class ApiExtensions
 
         return attachedPolicies.Select(policy => iam.GetPolicy(policy.PolicyArn))
             .Select(policy => (Policy: policy, Version: iam.GetPolicyVersion(policy.Arn, policy.DefaultVersionId)))
-            .Select(p => new RolePolicyAttachment(roleName, p.Policy.PolicyName, p.Version));
+            .Select(p => new RolePolicyAttachment(roleName, p.Policy.PolicyName, p.Policy.Arn, p.Version));
     }
 
 

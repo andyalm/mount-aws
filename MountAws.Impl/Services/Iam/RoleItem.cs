@@ -17,6 +17,8 @@ public class RoleItem : AwsItem
             UnderlyingObject.Properties.Remove(nameof(Role.AssumeRolePolicyDocument));
             UnderlyingObject.Properties.Add(new PSNoteProperty(nameof(Role.AssumeRolePolicyDocument), WebUtility.UrlDecode(underlyingObject.AssumeRolePolicyDocument)));
         }
+
+        WebUrl = WebUrlBuilder.Regionless().CombineWith($"iamv2/home?#/roles/details/{underlyingObject.RoleName}").ToString();
     }
     
     public RoleItem(ItemPath parentPath, string path) : base(parentPath, new PSObject(new
@@ -31,7 +33,8 @@ public class RoleItem : AwsItem
     public override string ItemName { get; }
     public override bool IsContainer => true;
     public override string ItemType { get; }
-    
+    public override string? WebUrl { get; }
+
     [ItemProperty]
     public DateTime? LastUsedDate { get; }
 }

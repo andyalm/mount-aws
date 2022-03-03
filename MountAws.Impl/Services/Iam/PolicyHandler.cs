@@ -1,10 +1,13 @@
+using System.Management.Automation.Provider;
+using System.Net;
 using Amazon.IdentityManagement;
 using MountAnything;
+using MountAnything.Content;
 using MountAws.Services.Core;
 
 namespace MountAws.Services.Iam;
 
-public class PolicyHandler : PathHandler, IGetChildItemParameters<ChildPolicyParameters>
+public class PolicyHandler : PathHandler, IGetChildItemParameters<ChildPolicyParameters>, IContentReaderHandler
 {
     private readonly IAmazonIdentityManagementService _iam;
     private readonly IamItemPath _policyPath;
@@ -51,4 +54,15 @@ public class PolicyHandler : PathHandler, IGetChildItemParameters<ChildPolicyPar
     protected override bool CacheChildren => GetChildItemParameters.Scope == null;
 
     public ChildPolicyParameters GetChildItemParameters { get; set; } = new();
+    public IContentReader GetContentReader()
+    {
+        if (GetItem() is PolicyItem { Arn: not null, DefaultVersionId: not null } policyItem)
+        {
+            var policyDocument = _iam.GetPolicyVersion(policyItem.Arn, policyItem.DefaultVersionId).Document;
+
+            return new StringContentReader(WebUtility.UrlDecode(policyDocument));
+        }
+
+        throw new InvalidOperationException("This item does not support reading content");
+    }
 }
