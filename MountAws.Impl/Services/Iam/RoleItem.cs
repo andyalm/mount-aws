@@ -11,6 +11,7 @@ public class RoleItem : AwsItem
     {
         ItemName = underlyingObject.RoleName;
         ItemType = IamItemTypes.Role;
+        LastUsedDate = underlyingObject.RoleLastUsed?.LastUsedDate;
         if (underlyingObject.AssumeRolePolicyDocument.StartsWith("%"))
         {
             UnderlyingObject.Properties.Remove(nameof(Role.AssumeRolePolicyDocument));
@@ -30,4 +31,7 @@ public class RoleItem : AwsItem
     public override string ItemName { get; }
     public override bool IsContainer => true;
     public override string ItemType { get; }
+    
+    [ItemProperty]
+    public DateTime? LastUsedDate { get; }
 }

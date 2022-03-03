@@ -19,13 +19,17 @@ public class Routes : IServiceRoutes
                     });
                 });
             });
-            iam.MapLiteral<RolesHandler>("roles", policies =>
+            iam.MapLiteral<RolesHandler>("roles", roles =>
             {
-                policies.MapRegex<RoleHandler>(@"(?<RolePathAndName>[a-z0-9+=,.@\-/]+)", policy =>
+                roles.MapRegex<RoleHandler>(@"(?<RolePathAndName>[a-z0-9+=,.@\-/]+)", role =>
                 {
-                    policy.RegisterServices((match, builder) =>
+                    role.RegisterServices((match, builder) =>
                     {
                         builder.RegisterInstance(IamItemPath.Parse(match.Values["RolePathAndName"]));
+                    });
+                    role.MapLiteral<RolePoliciesHandler>("policies", rolePolicies =>
+                    {
+                        rolePolicies.Map<RolePolicyHandler>();
                     });
                 });
             });

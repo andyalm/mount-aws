@@ -1,4 +1,5 @@
 using Amazon.IdentityManagement;
+using Amazon.IdentityManagement.Model;
 using MountAnything;
 using MountAws.Services.Core;
 
@@ -38,7 +39,7 @@ public class RoleHandler : PathHandler
 
     private IEnumerable<IItem> GetRoleChildren()
     {
-        yield break;
+        yield return RolePoliciesHandler.CreateItem(Path);
     }
 
     private IEnumerable<IItem> GetChildRolesWithinDirectory()
