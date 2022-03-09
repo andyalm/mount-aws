@@ -12,6 +12,7 @@ public class CoreServiceRegistrar : IServiceRegistrar
 {
     public void Register(ContainerBuilder builder)
     {
+        builder.RegisterType<ModelCache>().SingleInstance();
         builder.RegisterInstance(new CurrentRegion("us-east-1"));
         builder.Register(c =>
         {
@@ -25,10 +26,15 @@ public class CoreServiceRegistrar : IServiceRegistrar
         }).As<AWSCredentials>();
         builder.Register(c =>
         {
-            var sts = c.Resolve<IAmazonSecurityTokenService>();
-            var response = sts.GetCallerIdentityAsync(new GetCallerIdentityRequest()).GetAwaiter().GetResult();
+            var cache = c.Resolve<ModelCache>();
+            var currentProfile = c.Resolve<CurrentProfile>();
+            return cache.GetOrFetch(currentProfile.Value, () =>
+            {
+                var sts = c.Resolve<IAmazonSecurityTokenService>();
+                var response = sts.GetCallerIdentityAsync(new GetCallerIdentityRequest()).GetAwaiter().GetResult();
 
-            return new CallerIdentity(response.Account, response.UserId, response.Arn);
+                return new CallerIdentity(response.Account, response.UserId, response.Arn);
+            });
         }).As<CallerIdentity>();
         builder.RegisterType<AmazonSecurityTokenServiceClient>().As<IAmazonSecurityTokenService>()
             .UsingConstructor(typeof(AWSCredentials), typeof(RegionEndpoint));
