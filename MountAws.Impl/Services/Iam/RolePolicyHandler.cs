@@ -33,6 +33,6 @@ public class RolePolicyHandler : PathHandler, IContentReaderHandler
             throw new InvalidOperationException("Item does not exist");
         }
 
-        return new StringContentReader(item.Document);
+        return new StringContentReader(item.RawDocument);
     }
 }

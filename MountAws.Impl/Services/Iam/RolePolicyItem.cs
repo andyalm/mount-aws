@@ -10,7 +10,8 @@ public class RolePolicyItem : AwsItem
     public RolePolicyItem(ItemPath parentPath, GetRolePolicyResponse rolePolicy) : base(parentPath, new PSObject())
     {
         ItemName = rolePolicy.PolicyName;
-        Document = WebUtility.UrlDecode(rolePolicy.PolicyDocument);
+        RawDocument = WebUtility.UrlDecode(rolePolicy.PolicyDocument);
+        Document = RawDocument.FromJsonToPSObject();
         ItemType = IamItemTypes.EmbeddedPolicy;
         WebUrl = WebUrlBuilder.Regionless()
             .CombineWith($"iam/home#/roles/{rolePolicy.RoleName}$jsonEditor?policyName={rolePolicy.PolicyName}");
@@ -21,7 +22,8 @@ public class RolePolicyItem : AwsItem
         ItemName = policyVersion.PolicyName;
         VersionId = policyVersion.PolicyVersion.VersionId;
         PolicyArn = policyVersion.PolicyArn;
-        Document = WebUtility.UrlDecode(policyVersion.PolicyVersion.Document);
+        RawDocument = WebUtility.UrlDecode(policyVersion.PolicyVersion.Document);
+        Document = RawDocument.FromJsonToPSObject();
         ItemType = IamItemTypes.PolicyAttachment;
         WebUrl = WebUrlBuilder.Regionless()
             .CombineWith($"iam/home#/policies/{policyVersion.PolicyArn}");
@@ -33,7 +35,10 @@ public class RolePolicyItem : AwsItem
     public string? VersionId { get; }
     
     [ItemProperty]
-    public string Document { get; }
+    public PSObject Document { get; }
+    
+    [ItemProperty]
+    public string RawDocument { get; }
     
     [ItemProperty]
     public string? PolicyArn { get; }

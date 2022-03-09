@@ -1,3 +1,5 @@
+using System.Management.Automation;
+using System.Security.Cryptography;
 using Amazon.IdentityManagement;
 using MountAnything;
 using MountAws.Services.Core;
