@@ -31,6 +31,10 @@ public class Routes : IServiceRoutes
                     {
                         rolePolicies.Map<RolePolicyHandler>();
                     });
+                    role.MapLiteral<RoleStatementsHandler>("statements", statements =>
+                    {
+                        statements.Map<RoleStatementHandler>();
+                    });
                 });
             });
         });

@@ -40,6 +40,7 @@ public class RoleHandler : PathHandler
     private IEnumerable<IItem> GetRoleChildren()
     {
         yield return RolePoliciesHandler.CreateItem(Path);
+        yield return RoleStatementsHandler.CreateItem(Path);
     }
 
     private IEnumerable<IItem> GetChildRolesWithinDirectory()

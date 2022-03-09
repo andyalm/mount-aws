@@ -1,3 +1,5 @@
+using System.Management.Automation;
+using System.Net;
 using Amazon.IdentityManagement.Model;
 using MountAnything;
 
@@ -52,6 +54,20 @@ public static class ModelExtensions
     private static ItemPath ItemPath(this Role role)
     {
         return role.Path.ToItemPath();
+    }
+
+    public static IEnumerable<PSObject> Statements(this GetRolePolicyResponse rolePolicy)
+    {
+        return WebUtility.UrlDecode(rolePolicy.PolicyDocument)
+            .FromJsonToPSObject()
+            .Property<IEnumerable<PSObject>>("Statement")!;
+    }
+    
+    public static IEnumerable<PSObject> Statements(this RolePolicyAttachment rolePolicyAttachment)
+    {
+        return WebUtility.UrlDecode(rolePolicyAttachment.PolicyVersion.Document)
+            .FromJsonToPSObject()
+            .Property<IEnumerable<PSObject>>("Statement")!;
     }
 
     private static ItemPath ToItemPath(this string path)
