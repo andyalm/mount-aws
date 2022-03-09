@@ -23,7 +23,7 @@ $FormatFiles = Get-ChildItem $Directory -Recurse |
 New-ModuleManifest -Path $(Join-Path $Directory MountAws.psd1) `
     -RootModule 'MountAws.Host.dll' `
     -NestedModules Commands.psm1 `
-    -ModuleVersion $ModuleVersion `
+    -ModuleVersion "$ModuleVersion.0" `
     -Guid 'ae6c3726-860c-4506-8acc-eed7930ead7f' `
     -Author 'Andy Alm' `
     -Copyright '(c) 2021 Andy Alm. All rights reserved.' `
