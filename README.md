@@ -73,6 +73,7 @@ The following services are currently supported:
  * [ECR](docs/Services/ECR.md)
  * [ECS](docs/Services/ECS.md)
  * [ELBV2](docs/Services/ELBV2.md)
+ * [IAM](docs/Services/IAM.md)
  * [Route53](docs/Services/Route53.md)
  * [S3](docs/Services/S3.md)
  * [Service Discovery (aka Cloud Map)](docs/Services/ServiceDiscovery.md)
