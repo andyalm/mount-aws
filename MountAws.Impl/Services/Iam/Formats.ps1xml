@@ -63,9 +63,40 @@
       </TableControl>
     </View>
     <View>
-      <Name>IamRolePolicyItem</Name>
+      <Name>IamUserItem</Name>
       <ViewSelectedBy>
-        <TypeName>MountAws.Services.Iam.RolePolicyItem</TypeName>
+        <TypeName>MountAws.Services.Iam.UserItem</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+          </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>Name</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>ItemType</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>PasswordLastUsed</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <View>
+      <Name>IamEntityPolicyItem</Name>
+      <ViewSelectedBy>
+        <TypeName>MountAws.Services.Iam.EntityPolicyItem</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>
@@ -94,9 +125,9 @@
       </TableControl>
     </View>
     <View>
-      <Name>IamRoleStatementItem</Name>
+      <Name>IamStatementItem</Name>
       <ViewSelectedBy>
-        <TypeName>MountAws.Services.Iam.RoleStatementItem</TypeName>
+        <TypeName>MountAws.Services.Iam.StatementItem</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>

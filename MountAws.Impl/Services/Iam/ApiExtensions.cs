@@ -47,6 +47,32 @@ public static class ApiExtensions
             .Select(directory => new RoleItem(parentPath, directory))
             .Concat(childRoles.OrderBy(r => r.RoleName).Select(p => new RoleItem(parentPath, p)));
     }
+    
+    public static IEnumerable<UserItem> ListChildUserItems(this IAmazonIdentityManagementService iam,
+        ItemPath parentPath, string? pathPrefix = null)
+    {
+        var users = iam.ListUsers(pathPrefix).ToArray();
+        var directories = users.Directories(pathPrefix);
+        var childUsers = users.ChildUsers(pathPrefix);
+
+        return directories.OrderBy(d => d)
+            .Select(directory => new UserItem(parentPath, directory))
+            .Concat(childUsers.OrderBy(u => u.UserName).Select(u => new UserItem(parentPath, u)));
+    }
+
+    public static IEnumerable<User> ListUsers(this IAmazonIdentityManagementService iam, string? pathPrefix = null)
+    {
+        return Paginate(nextToken =>
+        {
+            var response = iam.ListUsersAsync(new ListUsersRequest
+            {
+                PathPrefix = pathPrefix.ToApiCompliantPrefix(),
+                Marker = nextToken
+            }).GetAwaiter().GetResult();
+
+            return (response.Users, response.Marker);
+        });
+    }
 
     public static ManagedPolicy GetPolicy(this IAmazonIdentityManagementService iam, CallerIdentity callerIdentity, string pathAndName)
     {
@@ -99,6 +125,21 @@ public static class ApiExtensions
             return null;
         }
     }
+    
+    public static User? GetUserOrDefault(this IAmazonIdentityManagementService iam, string userName)
+    {
+        try
+        {
+            return iam.GetUserAsync(new GetUserRequest
+            {
+                UserName = userName
+            }).GetAwaiter().GetResult().User;
+        }
+        catch (NoSuchEntityException)
+        {
+            return null;
+        }
+    }
 
     public static IEnumerable<Role> ListRoles(this IAmazonIdentityManagementService iam, string? pathPrefix = null)
     {
@@ -134,8 +175,29 @@ public static class ApiExtensions
             }).GetAwaiter().GetResult()
         );
     }
+    
+    public static IEnumerable<GetUserPolicyResponse> ListUserPolicies(this IAmazonIdentityManagementService iam, string userName)
+    {
+        var rolePolicyNames = Paginate(nextToken =>
+        {
+            var response = iam.ListUserPoliciesAsync(new ListUserPoliciesRequest
+            {
+                UserName = userName,
+                Marker = nextToken
+            }).GetAwaiter().GetResult();
 
-    public static IEnumerable<RolePolicyAttachment> ListAttachedRolePolicies(this IAmazonIdentityManagementService iam,
+            return (response.PolicyNames, response.Marker);
+        }).ToArray();
+
+        return rolePolicyNames.Select(policyName => iam.GetUserPolicyAsync(new GetUserPolicyRequest
+            {
+                UserName = userName,
+                PolicyName = policyName
+            }).GetAwaiter().GetResult()
+        );
+    }
+
+    public static IEnumerable<EntityPolicyAttachment> ListAttachedRolePolicies(this IAmazonIdentityManagementService iam,
         string roleName)
     {
         var attachedPolicies = Paginate(nextToken =>
@@ -151,9 +213,27 @@ public static class ApiExtensions
 
         return attachedPolicies.Select(policy => iam.GetPolicy(policy.PolicyArn))
             .Select(policy => (Policy: policy, Version: iam.GetPolicyVersion(policy.Arn, policy.DefaultVersionId)))
-            .Select(p => new RolePolicyAttachment(roleName, p.Policy.PolicyName, p.Policy.Arn, p.Version));
+            .Select(p => new EntityPolicyAttachment(roleName, p.Policy.PolicyName, p.Policy.Arn, p.Version));
     }
+    
+    public static IEnumerable<EntityPolicyAttachment> ListAttachedUserPolicies(this IAmazonIdentityManagementService iam,
+        string userName)
+    {
+        var attachedPolicies = Paginate(nextToken =>
+        {
+            var response = iam.ListAttachedUserPoliciesAsync(new ListAttachedUserPoliciesRequest
+            {
+                UserName = userName,
+                Marker = nextToken
+            }).GetAwaiter().GetResult();
 
+            return (response.AttachedPolicies, response.Marker);
+        });
+
+        return attachedPolicies.Select(policy => iam.GetPolicy(policy.PolicyArn))
+            .Select(policy => (Policy: policy, Version: iam.GetPolicyVersion(policy.Arn, policy.DefaultVersionId)))
+            .Select(p => new EntityPolicyAttachment(userName, p.Policy.PolicyName, p.Policy.Arn, p.Version));
+    }
 
     private static string? ToApiCompliantPrefix(this string? pathPrefix)
     {

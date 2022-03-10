@@ -3,13 +3,13 @@ using MountAnything;
 
 namespace MountAws.Services.Iam;
 
-public class RoleStatementHandler : PathHandler
+public class UserStatementHandler : PathHandler
 {
-    private readonly RoleStatementsHandler _parentHandler;
+    private readonly UserStatementsHandler _parentHandler;
     
-    public RoleStatementHandler(ItemPath path, IPathHandlerContext context, IAmazonIdentityManagementService iam, IItemAncestor<RoleItem> role) : base(path, context)
+    public UserStatementHandler(ItemPath path, IPathHandlerContext context, IAmazonIdentityManagementService iam, IItemAncestor<UserItem> user) : base(path, context)
     {
-        _parentHandler = new RoleStatementsHandler(path.Parent, context, iam, role);
+        _parentHandler = new UserStatementsHandler(path.Parent, context, iam, user);
     }
 
     protected override IItem? GetItemImpl()

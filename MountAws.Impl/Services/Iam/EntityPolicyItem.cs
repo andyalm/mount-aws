@@ -5,9 +5,19 @@ using MountAnything;
 
 namespace MountAws.Services.Iam;
 
-public class RolePolicyItem : AwsItem
+public class EntityPolicyItem : AwsItem
 {
-    public RolePolicyItem(ItemPath parentPath, GetRolePolicyResponse rolePolicy) : base(parentPath, new PSObject())
+    public EntityPolicyItem(ItemPath parentPath, GetUserPolicyResponse rolePolicy) : base(parentPath, new PSObject())
+    {
+        ItemName = rolePolicy.PolicyName;
+        RawDocument = WebUtility.UrlDecode(rolePolicy.PolicyDocument);
+        Document = RawDocument.FromJsonToPSObject();
+        ItemType = IamItemTypes.EmbeddedPolicy;
+        WebUrl = WebUrlBuilder.Regionless()
+            .CombineWith($"iam/home#/users/{rolePolicy.UserName}$jsonEditor?policyName={rolePolicy.PolicyName}");
+    }
+    
+    public EntityPolicyItem(ItemPath parentPath, GetRolePolicyResponse rolePolicy) : base(parentPath, new PSObject())
     {
         ItemName = rolePolicy.PolicyName;
         RawDocument = WebUtility.UrlDecode(rolePolicy.PolicyDocument);
@@ -17,7 +27,7 @@ public class RolePolicyItem : AwsItem
             .CombineWith($"iam/home#/roles/{rolePolicy.RoleName}$jsonEditor?policyName={rolePolicy.PolicyName}");
     }
 
-    public RolePolicyItem(ItemPath parentPath, RolePolicyAttachment policyVersion) : base(parentPath, new PSObject())
+    public EntityPolicyItem(ItemPath parentPath, EntityPolicyAttachment policyVersion) : base(parentPath, new PSObject())
     {
         ItemName = policyVersion.PolicyName;
         VersionId = policyVersion.PolicyVersion.VersionId;

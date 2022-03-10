@@ -24,5 +24,6 @@ public class IamRootHandler : PathHandler
     {
         yield return PoliciesHandler.CreateItem(Path);
         yield return RolesHandler.CreateItem(Path);
+        yield return UsersHandler.CreateItem(Path);
     }
 }

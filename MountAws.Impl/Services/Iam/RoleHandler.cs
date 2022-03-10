@@ -1,7 +1,5 @@
 using Amazon.IdentityManagement;
-using Amazon.IdentityManagement.Model;
 using MountAnything;
-using MountAws.Services.Core;
 
 namespace MountAws.Services.Iam;
 
