@@ -3,9 +3,9 @@ using MountAnything;
 
 namespace MountAws.Services.Iam;
 
-public class RoleStatementItem : AwsItem
+public class StatementItem : AwsItem
 {
-    public RoleStatementItem(ItemPath parentPath, PSObject statement, int index) : base(parentPath, statement)
+    public StatementItem(ItemPath parentPath, PSObject statement, int index) : base(parentPath, statement)
     {
         var sid = statement.Property<string>("Sid");
         

@@ -17,6 +17,11 @@ public static class ModelExtensions
         return roles.Directories(pathPrefix, r => r.Path);
     }
     
+    public static IEnumerable<string> Directories(this IEnumerable<User> users, string? pathPrefix)
+    {
+        return users.Directories(pathPrefix, r => r.Path);
+    }
+    
     private static IEnumerable<string> Directories<T>(this IEnumerable<T> objects, string? pathPrefix, Func<T,string> getPath)
     {
         pathPrefix ??= string.Empty;
@@ -34,6 +39,11 @@ public static class ModelExtensions
     public static IEnumerable<Role> ChildRoles(this IEnumerable<Role> roles, string? pathPrefix)
     {
         return roles.Children(pathPrefix, r => r.Path);
+    }
+    
+    public static IEnumerable<User> ChildUsers(this IEnumerable<User> users, string? pathPrefix)
+    {
+        return users.Children(pathPrefix, r => r.Path);
     }
     
     public static IEnumerable<TModel> Children<TModel>(this IEnumerable<TModel> models, string? pathPrefix, Func<TModel, string> getPath)
@@ -56,6 +66,13 @@ public static class ModelExtensions
         return role.Path.ToItemPath();
     }
 
+    public static IEnumerable<PSObject> Statements(this GetUserPolicyResponse userPolicy)
+    {
+        return WebUtility.UrlDecode(userPolicy.PolicyDocument)
+            .FromJsonToPSObject()
+            .Property<IEnumerable<PSObject>>("Statement")!;
+    }
+    
     public static IEnumerable<PSObject> Statements(this GetRolePolicyResponse rolePolicy)
     {
         return WebUtility.UrlDecode(rolePolicy.PolicyDocument)
@@ -63,7 +80,7 @@ public static class ModelExtensions
             .Property<IEnumerable<PSObject>>("Statement")!;
     }
     
-    public static IEnumerable<PSObject> Statements(this RolePolicyAttachment rolePolicyAttachment)
+    public static IEnumerable<PSObject> Statements(this EntityPolicyAttachment rolePolicyAttachment)
     {
         return WebUtility.UrlDecode(rolePolicyAttachment.PolicyVersion.Document)
             .FromJsonToPSObject()

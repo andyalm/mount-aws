@@ -5,13 +5,13 @@ using MountAnything.Content;
 
 namespace MountAws.Services.Iam;
 
-public class RolePolicyHandler : PathHandler, IContentReaderHandler
+public class UserPolicyHandler : PathHandler, IContentReaderHandler
 {
-    private readonly RolePoliciesHandler _parentHandler;
+    private readonly UserPoliciesHandler _parentHandler;
 
-        public RolePolicyHandler(ItemPath path, IPathHandlerContext context, IAmazonIdentityManagementService iam, IItemAncestor<RoleItem> role) : base(path, context)
+    public UserPolicyHandler(ItemPath path, IPathHandlerContext context, IAmazonIdentityManagementService iam, IItemAncestor<UserItem> user) : base(path, context)
     {
-        _parentHandler = new RolePoliciesHandler(path.Parent, context, iam, role);
+        _parentHandler = new UserPoliciesHandler(path.Parent, context, iam, user);
     }
 
     protected override IItem? GetItemImpl()

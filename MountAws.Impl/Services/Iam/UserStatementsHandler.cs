@@ -4,21 +4,21 @@ using MountAws.Services.Core;
 
 namespace MountAws.Services.Iam;
 
-public class RoleStatementsHandler : PathHandler
+public class UserStatementsHandler : PathHandler
 {
     private readonly IAmazonIdentityManagementService _iam;
-    private readonly IItemAncestor<RoleItem> _role;
+    private readonly IItemAncestor<UserItem> _user;
 
     public static IItem CreateItem(ItemPath parentPath)
     {
         return new GenericContainerItem(parentPath, "statements",
-            "Lists all of the statements from all of the policies associated with the current role");
+            "Lists all of the statements from all of the policies associated with the current user");
     }
     
-    public RoleStatementsHandler(ItemPath path, IPathHandlerContext context, IAmazonIdentityManagementService iam, IItemAncestor<RoleItem> role) : base(path, context)
+    public UserStatementsHandler(ItemPath path, IPathHandlerContext context, IAmazonIdentityManagementService iam, IItemAncestor<UserItem> user) : base(path, context)
     {
         _iam = iam;
-        _role = role;
+        _user = user;
     }
 
     protected override IItem? GetItemImpl()
@@ -28,9 +28,9 @@ public class RoleStatementsHandler : PathHandler
 
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
-        return _iam.ListRolePolicies(_role.Item.ItemName)
+        return _iam.ListUserPolicies(_user.Item.ItemName)
             .SelectMany(p => p.Statements())
-            .Concat(_iam.ListAttachedRolePolicies(_role.Item.ItemName)
+            .Concat(_iam.ListAttachedUserPolicies(_user.Item.ItemName)
                 .SelectMany(p => p.Statements()))
             .Select((s, index) => new StatementItem(Path, s, index));
     }

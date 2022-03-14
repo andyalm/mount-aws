@@ -1,26 +1,24 @@
-using System.Management.Automation;
-using System.Security.Cryptography;
 using Amazon.IdentityManagement;
 using MountAnything;
 using MountAws.Services.Core;
 
 namespace MountAws.Services.Iam;
 
-public class RolePoliciesHandler : PathHandler
+public class UserPoliciesHandler : PathHandler
 {
     private readonly IAmazonIdentityManagementService _iam;
-    private readonly IItemAncestor<RoleItem> _role;
+    private readonly IItemAncestor<UserItem> _user;
 
     public static IItem CreateItem(ItemPath parentPath)
     {
         return new GenericContainerItem(parentPath, "policies",
-            "Lists the policies embedded and attached to the parent role");
+            "Lists the policies embedded and attached to the parent user");
     }
     
-    public RolePoliciesHandler(ItemPath path, IPathHandlerContext context, IAmazonIdentityManagementService iam, IItemAncestor<RoleItem> role) : base(path, context)
+    public UserPoliciesHandler(ItemPath path, IPathHandlerContext context, IAmazonIdentityManagementService iam, IItemAncestor<UserItem> user) : base(path, context)
     {
         _iam = iam;
-        _role = role;
+        _user = user;
     }
 
     protected override IItem? GetItemImpl()
@@ -30,9 +28,9 @@ public class RolePoliciesHandler : PathHandler
 
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
-        return _iam.ListRolePolicies(_role.Item.ItemName)
+        return _iam.ListUserPolicies(_user.Item.ItemName)
             .Select(p => new EntityPolicyItem(Path, p))
-            .Concat(_iam.ListAttachedRolePolicies(_role.Item.ItemName)
+            .Concat(_iam.ListAttachedUserPolicies(_user.Item.ItemName)
                 .Select(p => new EntityPolicyItem(Path, p)));
     }
 }

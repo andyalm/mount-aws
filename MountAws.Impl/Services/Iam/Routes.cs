@@ -37,6 +37,24 @@ public class Routes : IServiceRoutes
                     });
                 });
             });
+            iam.MapLiteral<UsersHandler>("users", users =>
+            {
+                users.MapRegex<UserHandler>(@"(?<UserPathAndName>[a-z0-9+=,.@\-/]+)", user =>
+                {
+                    user.RegisterServices((match, builder) =>
+                    {
+                        builder.RegisterInstance(IamItemPath.Parse(match.Values["UserPathAndName"]));
+                    });
+                    user.MapLiteral<UserPoliciesHandler>("policies", rolePolicies =>
+                    {
+                        rolePolicies.Map<UserPolicyHandler>();
+                    });
+                    user.MapLiteral<UserStatementsHandler>("statements", statements =>
+                    {
+                        statements.Map<UserStatementHandler>();
+                    });
+                });
+            });
         });
     }
 }
