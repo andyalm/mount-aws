@@ -16,7 +16,7 @@ public static class LinkGeneratorExtensions
         var ecsServicePath = linkGenerator.EcsServicePath();
         var taskDefinition = taskDefinitionArn.Split("/").Last().Replace(":", "/");
 
-        return ecsServicePath.Combine("task-families", taskDefinition);
+        return ecsServicePath.Combine("task-definitions", taskDefinition);
     }
 
     public static ItemPath EcsCluster(this LinkGenerator linkGenerator, string clusterName)
