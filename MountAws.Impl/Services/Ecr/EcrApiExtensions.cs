@@ -28,7 +28,7 @@ public static class EcrApiExtensions
         });
     }
 
-    public static IEnumerable<ImageIdentifier> ListTaggedImages(this IAmazonECR ecr, string repositoryName, string? nextToken = null)
+    public static IEnumerable<ImageIdentifier> ListTaggedImages(this IAmazonECR ecr, string repositoryName)
     {
         return Paginate(nextToken =>
         {
@@ -78,5 +78,17 @@ public static class EcrApiExtensions
                     return new RepositoryItem(parentPath, r);
                 }
             }).DistinctBy(r => r.ItemName);
+    }
+
+    public static DescribeImageScanFindingsResponse DescribeImageScanFindings(this IAmazonECR ecr, string repositoryName, string imageTag)
+    {
+        return ecr.DescribeImageScanFindingsAsync(new DescribeImageScanFindingsRequest
+            {
+                RepositoryName = repositoryName,
+                ImageId = new ImageIdentifier
+                {
+                    ImageTag = imageTag
+                },
+            }).GetAwaiter().GetResult();
     }
 }

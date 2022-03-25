@@ -23,6 +23,8 @@ public class ImageTagHandler : PathHandler
 
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
-        yield break;
+        var findings = _ecr.DescribeImageScanFindings(_repositoryPath.Value, ItemName);
+
+        yield return new ImageScanItem(Path, findings);
     }
 }

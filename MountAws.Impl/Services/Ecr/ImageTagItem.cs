@@ -16,7 +16,7 @@ public class ImageTagItem : AwsItem<ImageIdentifier>
     public override string ItemName => UnderlyingObject.ImageTag;
     public override string ItemType => EcrItemTypes.ImageTag;
     public string RepositoryUri => $"{_repository.RepositoryUri}:{ItemName}";
-    public override bool IsContainer => false;
+    public override bool IsContainer => true;
 
     protected override void CustomizePSObject(PSObject psObject)
     {

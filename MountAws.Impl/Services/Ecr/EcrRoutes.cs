@@ -17,7 +17,13 @@ public class EcrRoutes : IServiceRoutes
                 });
                 repository.MapLiteral<ImageTagsHandler>("image-tags", imageTags =>
                 {
-                    imageTags.Map<ImageTagHandler>();
+                    imageTags.Map<ImageTagHandler>(imageTag =>
+                    {
+                        imageTag.MapLiteral<ImageScanHandler>("image-scan", imageScan =>
+                        {
+                            imageScan.Map<ImageScanFindingHandler>();
+                        });
+                    });
                 });
             });
         });
