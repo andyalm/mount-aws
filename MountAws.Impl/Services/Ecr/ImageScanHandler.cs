@@ -44,6 +44,6 @@ public class ImageScanHandler : PathHandler
             scan.UnderlyingObject.ImageScanFindings?.EnhancedFindings.Select(f =>
                 new ImageScanFindingItem(Path, f)) ?? Enumerable.Empty<ImageScanFindingItem>();
 
-        return standardFindings.Concat(enhancedFindings);
+        return standardFindings.Concat(enhancedFindings).OrderBy(f => f.Severity);
     }
 }

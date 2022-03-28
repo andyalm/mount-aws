@@ -12,6 +12,11 @@ internal static class LinqExtensions
         }
     }
 
+    public static T[] ToArrayOrEmpty<T>(this T? item) where T : class
+    {
+        return item == null ? Array.Empty<T>() : new[] { item };
+    }
+
     public static IEnumerable<TValue> MultiGet<TKey, TValue>(this IDictionary<TKey, TValue> dictionary,
         IEnumerable<TKey> keys)
     {

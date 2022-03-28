@@ -124,7 +124,7 @@
                 <PropertyName>Severity</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>FindingType</PropertyName>
+                <PropertyName>VulnerablePackages</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>Description</PropertyName>
