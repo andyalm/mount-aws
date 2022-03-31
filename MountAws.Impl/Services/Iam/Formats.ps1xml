@@ -137,6 +137,8 @@
           </TableColumnHeader>
           <TableColumnHeader>
           </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
         </TableHeaders>
         <TableRowEntries>
           <TableRowEntry>
@@ -149,6 +151,9 @@
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>Action</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Resource</PropertyName>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>
