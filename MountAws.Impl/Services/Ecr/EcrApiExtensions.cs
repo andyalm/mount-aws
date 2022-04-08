@@ -82,13 +82,39 @@ public static class EcrApiExtensions
 
     public static DescribeImageScanFindingsResponse DescribeImageScanFindings(this IAmazonECR ecr, string repositoryName, string imageTag)
     {
-        return ecr.DescribeImageScanFindingsAsync(new DescribeImageScanFindingsRequest
+        DescribeImageScanFindingsResponse? response = null;
+        while(true)
+        {
+            var pageResponse = ecr.DescribeImageScanFindingsAsync(new DescribeImageScanFindingsRequest
             {
                 RepositoryName = repositoryName,
                 ImageId = new ImageIdentifier
                 {
                     ImageTag = imageTag
                 },
+                NextToken = response?.NextToken
             }).GetAwaiter().GetResult();
+            if (response == null)
+            {
+                response = pageResponse;
+            }
+            else
+            {
+                response.ImageScanStatus = pageResponse.ImageScanStatus;
+                response.ImageScanFindings.Findings.AddRange(pageResponse.ImageScanFindings.Findings);
+                response.ImageScanFindings.EnhancedFindings.AddRange(pageResponse.ImageScanFindings.EnhancedFindings);
+                response.ImageScanFindings.ImageScanCompletedAt = pageResponse.ImageScanFindings.ImageScanCompletedAt;
+                response.ImageScanFindings.VulnerabilitySourceUpdatedAt = pageResponse.ImageScanFindings.VulnerabilitySourceUpdatedAt;
+                response.ImageScanFindings.MergeSeverityCounts(pageResponse.ImageScanFindings);
+            }
+
+            response.NextToken = pageResponse.NextToken;
+            if (response.NextToken == null)
+            {
+                break;
+            }
+        }
+
+        return response;
     }
 }
