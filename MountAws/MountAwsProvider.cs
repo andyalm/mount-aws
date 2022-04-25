@@ -1,10 +1,10 @@
+using MountAnything;
 using MountAnything.Routing;
-using MountAws.Host.Abstractions;
 using MountAws.Services.Core;
 
 namespace MountAws;
 
-public class MountAwsRouterFactory : IRouterFactory
+public class MountAwsProvider : IMountAnythingProvider
 {
     public Router CreateRouter()
     {
@@ -32,5 +32,13 @@ public class MountAwsRouterFactory : IRouterFactory
         });
 
         return router;
+    }
+
+    public IEnumerable<DefaultDrive> GetDefaultDrives()
+    {
+        yield return new DefaultDrive("aws")
+        {
+            Description = "Allows you to navigate aws services as a virtual filesystem"
+        };
     }
 }
