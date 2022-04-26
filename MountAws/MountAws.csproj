@@ -1,6 +1,4 @@
 <Project Sdk="Microsoft.NET.Sdk">
-  <Import Project="..\..\mount-anything\src\MountAnything.Hosting.Build\build\MountAnything.Hosting.Build.props" />
-  
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
@@ -15,15 +13,17 @@
     <PackageVersion Condition="$(GithubReleaseTag)!=''">$(GithubReleaseTag)</PackageVersion>
     <PackageVersion Condition="$(PackageVersion)==''">0.0.1</PackageVersion>
     <PublishDir>..\bin\MountAws\</PublishDir>
-    <HostingAbstractionsProjectLocation>$(MSBuildProjectDirectory)\..\..\mount-anything\src\MountAnything.Hosting.Abstractions\MountAnything.Hosting.Abstractions.csproj</HostingAbstractionsProjectLocation>
-  </PropertyGroup>
+    </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="AWSSDK.AutoScaling" Version="3.7.*" />
     <PackageReference Include="AWSSDK.ServiceDiscovery" Version="3.7.*" />
     <PackageReference Include="AWSSDK.WAFV2" Version="3.7.*" />
     <PackageReference Include="Microsoft.PowerShell.Commands.Utility" Version="7.2.0" />
-    <!--PackageReference Include="MountAnything" Version="0.4.0" /-->
+    <PackageReference Include="MountAnything" Version="0.5.1" />
+    <PackageReference Include="MountAnything.Hosting.Build" Version="0.5.1">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="System.Management.Automation" Version="7.2.0" />
     <PackageReference Include="AWSSDK.ECR" Version="3.7.*" />
     <PackageReference Include="AWSSDK.ECS" Version="3.7.*" />
@@ -54,12 +54,4 @@
       Switch-Region;
     </AliasesToExport>
   </PropertyGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\mount-anything\src\MountAnything.Hosting.Abstractions\MountAnything.Hosting.Abstractions.csproj" />
-    <ProjectReference Include="..\..\mount-anything\src\MountAnything.Hosting.Build\MountAnything.Hosting.Build.csproj" PrivateAssets="all" />
-    <ProjectReference Include="..\..\mount-anything\src\MountAnything\MountAnything.csproj" />
-  </ItemGroup>
-
-  <Import Project="..\..\mount-anything\src\MountAnything.Hosting.Build\build\MountAnything.Hosting.Build.targets" />
 </Project>
