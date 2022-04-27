@@ -10,14 +10,14 @@
     <Copyright>(c) 2021 Andy Alm. All rights reserved.</Copyright>
     <Description>An experimental powershell provider that allows you to browse various aws services as a filesystem</Description>
     <PackageReleaseNotes>$(GithubReleaseNotes)</PackageReleaseNotes>
-    <PackageVersion Condition="$(GithubReleaseTag)!=''">$(GithubReleaseTag)</PackageVersion>
+    <PackageVersion Condition="$(GithubReleaseTag)!=''">$(GithubReleaseTag.Substring(1))</PackageVersion>
     <PackageVersion Condition="$(PackageVersion)==''">0.0.1</PackageVersion>
     <PublishDir>..\bin\MountAws\</PublishDir>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MountAnything" Version="0.5.2" />
-    <PackageReference Include="MountAnything.Hosting.Build" Version="0.5.2">
+    <PackageReference Include="MountAnything" Version="0.5.3" />
+    <PackageReference Include="MountAnything.Hosting.Build" Version="0.5.3">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.PowerShell.Commands.Utility" Version="7.2.0" />
