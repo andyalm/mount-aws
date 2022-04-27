@@ -13,18 +13,18 @@
     <PackageVersion Condition="$(GithubReleaseTag)!=''">$(GithubReleaseTag)</PackageVersion>
     <PackageVersion Condition="$(PackageVersion)==''">0.0.1</PackageVersion>
     <PublishDir>..\bin\MountAws\</PublishDir>
-    </PropertyGroup>
+  </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="MountAnything" Version="0.5.2" />
+    <PackageReference Include="MountAnything.Hosting.Build" Version="0.5.2">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.PowerShell.Commands.Utility" Version="7.2.0" />
+    <PackageReference Include="System.Management.Automation" Version="7.2.0" />
     <PackageReference Include="AWSSDK.AutoScaling" Version="3.7.*" />
     <PackageReference Include="AWSSDK.ServiceDiscovery" Version="3.7.*" />
     <PackageReference Include="AWSSDK.WAFV2" Version="3.7.*" />
-    <PackageReference Include="Microsoft.PowerShell.Commands.Utility" Version="7.2.0" />
-    <PackageReference Include="MountAnything" Version="0.5.1" />
-    <PackageReference Include="MountAnything.Hosting.Build" Version="0.5.1">
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="System.Management.Automation" Version="7.2.0" />
     <PackageReference Include="AWSSDK.ECR" Version="3.7.*" />
     <PackageReference Include="AWSSDK.ECS" Version="3.7.*" />
     <PackageReference Include="AWSSDK.ElasticLoadBalancingV2" Version="3.7.*" />
