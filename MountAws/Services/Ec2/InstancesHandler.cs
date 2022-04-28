@@ -34,7 +34,7 @@ public class InstancesHandler : PathHandler
 
     public override IEnumerable<IItem> GetChildItems(string filter)
     {
-        var instances = _ec2.QueryInstances(filter);
+        var instances = _ec2.QueryInstances(filter).ToArray();
         var images = _ec2.DescribeImages(instances.Select(i => i.ImageId).Distinct()).ToDictionary(i => i.ImageId);    
     
         return instances.Select(instance => new InstanceItem(Path, instance, images.GetValueOrDefault(instance.ImageId), LinkGenerator));
