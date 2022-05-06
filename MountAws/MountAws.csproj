@@ -1,0 +1,57 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <RootNamespace>MountAws</RootNamespace>
+    <PowershellProviderName>MountAws</PowershellProviderName>
+    <ProjectGuid>ae6c3726-860c-4506-8acc-eed7930ead7f</ProjectGuid>
+    <Authors>Andy Alm</Authors>
+    <Copyright>(c) 2021 Andy Alm. All rights reserved.</Copyright>
+    <Description>An experimental powershell provider that allows you to browse various aws services as a filesystem</Description>
+    <PackageReleaseNotes>$(GithubReleaseNotes)</PackageReleaseNotes>
+    <PackageVersion Condition="$(GithubReleaseTag)!=''">$(GithubReleaseTag.Substring(1))</PackageVersion>
+    <PackageVersion Condition="$(PackageVersion)==''">0.0.1</PackageVersion>
+    <PublishDir>..\bin\MountAws\</PublishDir>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MountAnything" Version="0.5.3" />
+    <PackageReference Include="MountAnything.Hosting.Build" Version="0.5.3">
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.PowerShell.Commands.Utility" Version="7.2.0" />
+    <PackageReference Include="System.Management.Automation" Version="7.2.0" />
+    <PackageReference Include="AWSSDK.AutoScaling" Version="3.7.*" />
+    <PackageReference Include="AWSSDK.ServiceDiscovery" Version="3.7.*" />
+    <PackageReference Include="AWSSDK.WAFV2" Version="3.7.*" />
+    <PackageReference Include="AWSSDK.ECR" Version="3.7.*" />
+    <PackageReference Include="AWSSDK.ECS" Version="3.7.*" />
+    <PackageReference Include="AWSSDK.ElasticLoadBalancingV2" Version="3.7.*" />
+    <PackageReference Include="AWSSDK.Route53" Version="3.7.*" />
+    <PackageReference Include="AWSSDK.S3" Version="3.7.*" />
+    <PackageReference Include="AWSSDK.SecurityToken" Version="3.7.*" />
+    <PackageReference Include="AWSSDK.EC2" Version="3.7.*" />
+    <PackageReference Include="AWSSDK.Core" Version="3.7.*" />
+    <PackageReference Include="AWSSDK.CertificateManager" Version="3.7.*" />
+    <PackageReference Include="AWSSDK.Cloudfront" Version="3.7.*" />
+    <PackageReference Include="AWSSDK.IdentityManagement" Version="3.7.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <NestedModule Include="Commands.psm1" />
+    <PSFormat Include="Services\**\Formats.ps1xml" />
+  </ItemGroup>
+  
+  <PropertyGroup>
+    <FunctionsToExport>
+      Switch-MountAwsProfile;
+      Switch-MountAwsRegion;
+    </FunctionsToExport>
+    <AliasesToExport>
+      Switch-AwsProfile;
+      Switch-AwsRegion;
+      Switch-Region;
+    </AliasesToExport>
+  </PropertyGroup>
+</Project>

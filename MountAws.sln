@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MountAws.Impl", "MountAws.Impl\MountAws.Impl.csproj", "{D7A86A8F-DF9E-4638-A079-37621C144505}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MountAws", "MountAws\MountAws.csproj", "{D7A86A8F-DF9E-4638-A079-37621C144505}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionFiles", "SolutionFiles", "{E9039289-EAD2-4A1C-861A-6F8A49907639}"
 	ProjectSection(SolutionItems) = preProject
@@ -11,12 +11,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionFiles", "SolutionFi
 		README.md = README.md
 		publish.ps1 = publish.ps1
 	EndProjectSection
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MountAws.Host", "MountAws.Host\MountAws.Host.csproj", "{3BEE8F29-9DB0-49B8-BB28-B82FE366700E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MountAws.Host.Abstractions", "MountAws.Host.Abstractions\MountAws.Host.Abstractions.csproj", "{9BCEC310-6E87-4B0A-9CFE-D10DDCC53DAE}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Host", "Host", "{8D07A2BB-29F3-43B9-A960-71F332275584}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,17 +25,7 @@ Global
 		{D7A86A8F-DF9E-4638-A079-37621C144505}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D7A86A8F-DF9E-4638-A079-37621C144505}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D7A86A8F-DF9E-4638-A079-37621C144505}.Release|Any CPU.Build.0 = Release|Any CPU
-		{3BEE8F29-9DB0-49B8-BB28-B82FE366700E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{3BEE8F29-9DB0-49B8-BB28-B82FE366700E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{3BEE8F29-9DB0-49B8-BB28-B82FE366700E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{3BEE8F29-9DB0-49B8-BB28-B82FE366700E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9BCEC310-6E87-4B0A-9CFE-D10DDCC53DAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9BCEC310-6E87-4B0A-9CFE-D10DDCC53DAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9BCEC310-6E87-4B0A-9CFE-D10DDCC53DAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9BCEC310-6E87-4B0A-9CFE-D10DDCC53DAE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{9BCEC310-6E87-4B0A-9CFE-D10DDCC53DAE} = {8D07A2BB-29F3-43B9-A960-71F332275584}
-		{3BEE8F29-9DB0-49B8-BB28-B82FE366700E} = {8D07A2BB-29F3-43B9-A960-71F332275584}
 	EndGlobalSection
 EndGlobal

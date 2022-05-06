@@ -1,8 +1,18 @@
+#!/usr/bin/env pwsh -NoExit -Interactive -NoLogo -NoProfile
+
 param(
     [switch]
     $Debug
 )
+$ErrorActionPreference='Stop'
 $env:NO_MOUNT_AWS='1'
 $DebugPreference=$Debug ? 'Continue' : 'SilentlyContinue'
 dotnet build
-pwsh -Interactive -NoProfile -NoExit -c "Set-Variable -Scope Global -Name DebugPreference -Value $DebugPreference;New-Alias ls Get-ChildItem;New-Alias cat Get-Content;Import-Module $PWD/MountAws.Host/bin/Debug/net6.0/MountAws.psd1 && cd aws:"
+if(-not (Get-Alias ls -ErrorAction SilentlyContinue)) {
+    New-Alias ls Get-ChildItem
+}
+if(-not (Get-Alias cat -ErrorAction SilentlyContinue)) {
+    New-Alias cat Get-Content
+}
+Import-Module $PWD/MountAws/bin/Debug/net6.0/Module/MountAws.psd1
+cd aws:
