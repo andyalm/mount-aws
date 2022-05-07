@@ -9,6 +9,9 @@
     <Authors>Andy Alm</Authors>
     <Copyright>(c) 2021 Andy Alm. All rights reserved.</Copyright>
     <Description>An experimental powershell provider that allows you to browse various aws services as a filesystem</Description>
+    <PackageLicenseUrl>https://github.com/andyalm/mount-aws/blob/main/LICENSE</PackageLicenseUrl>
+    <PackageIconUrl>https://github.com/andyalm/mount-aws/blob/main/mount-aws.png</PackageIconUrl>
+    <PackageProjectUrl>https://github.com/andyalm/mount-aws</PackageProjectUrl>
     <PackageReleaseNotes>$(GithubReleaseNotes)</PackageReleaseNotes>
     <PackageVersion Condition="$(GithubReleaseTag)!=''">$(GithubReleaseTag.Substring(1))</PackageVersion>
     <PackageVersion Condition="$(PackageVersion)==''">0.0.1</PackageVersion>
@@ -16,8 +19,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MountAnything" Version="0.5.3" />
-    <PackageReference Include="MountAnything.Hosting.Build" Version="0.5.3">
+    <PackageReference Include="MountAnything" Version="0.5.6" />
+    <PackageReference Include="MountAnything.Hosting.Build" Version="0.5.6">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.PowerShell.Commands.Utility" Version="7.2.0" />
