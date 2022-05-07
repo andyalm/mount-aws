@@ -46,12 +46,12 @@ public static class ApiExtensions
             .ToDictionary(t => t.AttributeName, t => t.Value);
     }
 
-    public static IEnumerable<PSObject> Scan(this IAmazonDynamoDB dynamo, string tableName)
+    public static IEnumerable<PSObject> Scan(this IAmazonDynamoDB dynamo, string tableName, int? limit)
     {
-        var response = dynamo.ScanAsync(new ScanRequest()
+        var response = dynamo.ScanAsync(new ScanRequest
         {
             TableName = tableName,
-            Limit = 20
+            Limit = limit ?? 20
         }).GetAwaiter().GetResult();
 
         return response.Items.ToPSObjects();
