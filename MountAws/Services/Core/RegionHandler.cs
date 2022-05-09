@@ -40,6 +40,7 @@ public class RegionHandler : PathHandler
         yield return Ec2RootHandler.CreateItem(Path);
         yield return EcrRootHandler.CreateItem(Path);
         yield return ECSRootHandler.CreateItem(Path);
+        yield return Services.Elasticache.RootHandler.CreateItem(Path);
         yield return Elbv2RootHandler.CreateItem(Path);
         yield return IamRootHandler.CreateItem(Path);
         yield return Route53RootHandler.CreateItem(Path);

@@ -73,6 +73,7 @@ The following services are currently supported:
  * [EC2](docs/Services/EC2.md)
  * [ECR](docs/Services/ECR.md)
  * [ECS](docs/Services/ECS.md)
+ * [Elasticache](docs/Services/Elasticache.md)
  * [ELBV2](docs/Services/ELBV2.md)
  * [IAM](docs/Services/IAM.md)
  * [Route53](docs/Services/Route53.md)
