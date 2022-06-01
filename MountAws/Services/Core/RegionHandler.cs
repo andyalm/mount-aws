@@ -36,6 +36,7 @@ public class RegionHandler : PathHandler
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         yield return CloudfrontRootHandler.CreateItem(Path);
+        yield return Services.Cloudwatch.RootHandler.CreateItem(Path);
         yield return DynamoDbRootHandler.CreateItem(Path);
         yield return Ec2RootHandler.CreateItem(Path);
         yield return EcrRootHandler.CreateItem(Path);

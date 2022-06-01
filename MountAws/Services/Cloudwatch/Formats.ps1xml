@@ -1,0 +1,35 @@
+<Configuration>
+  <ViewDefinitions>
+    <View>
+      <Name>CloudwatchLogGroupItem</Name>
+      <ViewSelectedBy>
+        <TypeName>MountAws.Services.Cloudwatch.LogGroupItem</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+          </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>Name</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>ItemType</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>StoredBytes</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+  </ViewDefinitions>
+</Configuration>

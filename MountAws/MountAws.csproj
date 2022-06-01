@@ -38,6 +38,8 @@
     <PackageReference Include="AWSSDK.Core" Version="3.7.*" />
     <PackageReference Include="AWSSDK.CertificateManager" Version="3.7.*" />
     <PackageReference Include="AWSSDK.Cloudfront" Version="3.7.*" />
+    <PackageReference Include="AWSSDK.CloudWatch" Version="3.7.*" />
+    <PackageReference Include="AWSSDK.CloudWatchLogs" Version="3.7.*" />
     <PackageReference Include="AWSSDK.IdentityManagement" Version="3.7.*" />
     <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.*" />
     <PackageReference Include="AWSSDK.ElastiCache" Version="3.7.*" />
