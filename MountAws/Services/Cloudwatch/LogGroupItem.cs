@@ -8,20 +8,22 @@ public class LogGroupItem : AwsItem
 {
     public LogGroupItem(ItemPath parentPath, ItemPath logGroupPath) : base(parentPath, new PSObject(new
     {
-        Path = logGroupPath.ToString()
+        Path = logGroupPath
     }))
     {
         ItemName = logGroupPath.Name;
         ItemType = CloudwatchItemTypes.Directory;
     }
 
-    public LogGroupItem(ItemPath parentPath, LogGroup logGroup) : base(parentPath, new PSObject(logGroup))
+    public LogGroupItem(ItemPath parentPath, LogGroup logGroup, string itemName) : base(parentPath, new PSObject(logGroup))
     {
-        ItemName = logGroup.LogGroupName.Split("/").Last();
+        ItemName = itemName;
         ItemType = CloudwatchItemTypes.LogGroup;
+        LogGroupName = logGroup.LogGroupName;
     }
 
     public override string ItemName { get; }
+    public string? LogGroupName { get; }
     public override string ItemType { get; }
     public override bool IsContainer => true;
 }

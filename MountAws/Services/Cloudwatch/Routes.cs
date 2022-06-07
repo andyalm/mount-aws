@@ -17,6 +17,17 @@ public class Routes : IServiceRoutes
                     {
                         builder.RegisterInstance(LogGroupName.Parse(match.Values["LogGroupName"]));
                     });
+                    logGroup.MapLiteral<LogStreamsHandler>("streams", streams =>
+                    {
+                        streams.MapRegex<LogStreamHandler>(@"(?<LogStreamPath>[a-z0-9_+=,.@\-\$\[\]/]+)", stream =>
+                        {
+                            stream.RegisterServices((match, builder) =>
+                            {
+                                builder.RegisterInstance(LogStreamPath.Parse(match.Values["LogStreamPath"]));
+                            });
+                            stream.MapRegex<OutputLogEventHandler>(@"\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)");
+                        });
+                    });
                 });
             });
         });

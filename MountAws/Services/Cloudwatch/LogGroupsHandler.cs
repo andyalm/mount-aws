@@ -1,6 +1,3 @@
-using Amazon.CloudWatch;
-using Amazon.CloudWatchLogs;
-using Amazon.CloudWatchLogs.Model;
 using MountAnything;
 using MountAws.Services.Core;
 
@@ -8,7 +5,7 @@ namespace MountAws.Services.Cloudwatch;
 
 public class LogGroupsHandler : PathHandler
 {
-    private readonly LogGroupHierarchicalFetcher _fetcher;
+    private readonly LogGroupNavigator _navigator;
 
     public static IItem CreateItem(ItemPath parentPath)
     {
@@ -16,9 +13,9 @@ public class LogGroupsHandler : PathHandler
             "Navigate cloudwatch logs");
     }
     
-    public LogGroupsHandler(ItemPath path, IPathHandlerContext context, LogGroupHierarchicalFetcher fetcher) : base(path, context)
+    public LogGroupsHandler(ItemPath path, IPathHandlerContext context, LogGroupNavigator navigator) : base(path, context)
     {
-        _fetcher = fetcher;
+        _navigator = navigator;
     }
 
     protected override IItem? GetItemImpl()
@@ -28,7 +25,7 @@ public class LogGroupsHandler : PathHandler
 
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
-        var discoveredChildItems = _fetcher.ListChildItems(ParentPath);
+        var discoveredChildItems = _navigator.ListChildItems(Path);
         bool foundAws = false;
         foreach (var logGroupItem in discoveredChildItems)
         {

@@ -2,7 +2,7 @@ using MountAnything;
 
 namespace MountAws;
 
-public abstract class HierarchicalItemFetcher<TModel,TItem> where TItem : IItem
+public abstract class ItemNavigator<TModel,TItem> where TItem : IItem
 {
     protected abstract TItem CreateDirectoryItem(ItemPath parentPath, ItemPath directoryPath);
     protected abstract TItem CreateItem(ItemPath parentPath, TModel model);
@@ -15,17 +15,19 @@ public abstract class HierarchicalItemFetcher<TModel,TItem> where TItem : IItem
         var directories = Directories(allModels, pathPrefix);
         var childRoles = Children(allModels, pathPrefix);
 
+        
         return directories.OrderBy(d => d.ToString())
-            .Select(directory => CreateDirectoryItem(parentPath, directory))
+            .Select(directory => CreateDirectoryItem(parentPath, pathPrefix.SafeCombine(directory)))
             .Concat(childRoles.Select(m => CreateItem(parentPath, m)).OrderBy(i => i.ItemName));
     }
     
-    private IEnumerable<ItemPath> Directories(IEnumerable<TModel> objects, ItemPath? pathPrefix)
+    private IEnumerable<string> Directories(IEnumerable<TModel> models, ItemPath? pathPrefix)
     {
-        return (from obj in objects
-            let modelPath = GetPath(obj).Parent
-            where !modelPath.IsRoot && modelPath.Parent.ToString().Equals(pathPrefix?.ToString() ?? string.Empty, StringComparison.OrdinalIgnoreCase)
-            select modelPath).Distinct(new ItemPathEqualityComparer());
+        string? childName = null;
+        return (from obj in models
+            let modelPath = GetPath(obj)
+            where !modelPath.IsRoot && modelPath.Parent.IsAncestorOf(pathPrefix ?? ItemPath.Root, out childName)
+            select childName).Cast<string>().Distinct();
     }
     
     private IEnumerable<TModel> Children(IEnumerable<TModel> models, ItemPath? pathPrefix)

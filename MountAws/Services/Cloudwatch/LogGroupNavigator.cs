@@ -4,15 +4,13 @@ using MountAnything;
 
 namespace MountAws.Services.Cloudwatch;
 
-public class LogGroupHierarchicalFetcher : HierarchicalItemFetcher<LogGroup,LogGroupItem>
+public class LogGroupNavigator : ItemNavigator<LogGroup,LogGroupItem>
 {
     private readonly IAmazonCloudWatchLogs _logs;
-    private readonly IPathHandlerContext _context;
 
-    public LogGroupHierarchicalFetcher(IAmazonCloudWatchLogs logs, IPathHandlerContext context)
+    public LogGroupNavigator(IAmazonCloudWatchLogs logs)
     {
         _logs = logs;
-        _context = context;
     }
 
     protected override LogGroupItem CreateDirectoryItem(ItemPath parentPath, ItemPath directoryPath)
@@ -22,7 +20,7 @@ public class LogGroupHierarchicalFetcher : HierarchicalItemFetcher<LogGroup,LogG
 
     protected override LogGroupItem CreateItem(ItemPath parentPath, LogGroup model)
     {
-        return new LogGroupItem(parentPath, model);
+        return new LogGroupItem(parentPath, model, model.LogGroupName.Split("/").Last());
     }
 
     protected override ItemPath GetPath(LogGroup model)
