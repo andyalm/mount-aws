@@ -1,4 +1,5 @@
 using Amazon.ECS;
+using Amazon.ECS.Model;
 using MountAnything;
 using MountAws.Api.AwsSdk.Ecs;
 
@@ -15,15 +16,20 @@ public class TaskDefinitionHandler : PathHandler
 
     protected override IItem? GetItemImpl()
     {
-        var family = ParentPath.Name;
-        var taskDefinitionName = $"{family}:{ItemName}";
-        var taskDefinition = _ecs.DescribeTaskDefinition(taskDefinitionName);
+        var (taskDefinition, tags) = GetTaskDefinition();
 
-        return new TaskDefinitionItem(ParentPath, taskDefinition.TaskDefinition, taskDefinition.Tags);
+        return new TaskDefinitionItem(ParentPath, taskDefinition, tags);
     }
 
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         yield break;
+    }
+
+    private (TaskDefinition TaskDefinition, Tag[] Tags) GetTaskDefinition()
+    {
+        var family = ParentPath.Name;
+        var taskDefinitionName = $"{family}:{ItemName}";
+        return _ecs.DescribeTaskDefinition(taskDefinitionName);
     }
 }

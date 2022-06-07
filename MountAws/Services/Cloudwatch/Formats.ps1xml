@@ -44,12 +44,17 @@
           </TableColumnHeader>
           <TableColumnHeader>
           </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
         </TableHeaders>
         <TableRowEntries>
           <TableRowEntry>
             <TableColumnItems>
               <TableColumnItem>
                 <PropertyName>Name</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>StoredBytes</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>FirstEventTimestamp</PropertyName>
