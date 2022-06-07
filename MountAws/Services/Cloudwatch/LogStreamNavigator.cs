@@ -24,7 +24,7 @@ public class LogStreamNavigator : ItemNavigator<LogStream, LogStreamItem>
 
     protected override LogStreamItem CreateItem(ItemPath parentPath, LogStream model)
     {
-        return new LogStreamItem(parentPath, model);
+        return new LogStreamItem(parentPath, model, _logGroupName);
     }
 
     protected override ItemPath GetPath(LogStream model)

@@ -61,7 +61,7 @@ public static class ApiExtensions
             }).GetAwaiter().GetResult();
 
             return (response.LogStreams, response.NextToken);
-        }, maxPages:2);
+        }, maxPages:10);
     }
     
     public static LogStream? DescribeLogStreamOrDefault(this IAmazonCloudWatchLogs logs, string logGroupName, ItemPath pathPrefix)
@@ -90,11 +90,16 @@ public static class ApiExtensions
 
     public static IEnumerable<OutputLogEvent> GetLogEvents(this IAmazonCloudWatchLogs logs, string logGroupName, string logStreamName)
     {
-        return logs.GetLogEventsAsync(new GetLogEventsRequest
+        return Paginate(nextToken =>
         {
-            LogGroupName = logGroupName,
-            LogStreamName = logStreamName
-        }).GetAwaiter().GetResult().Events;
+            var response = logs.GetLogEventsAsync(new GetLogEventsRequest
+            {
+                LogGroupName = logGroupName,
+                LogStreamName = logStreamName
+            }).GetAwaiter().GetResult();
+
+            return (response.Events, nextToken == response.NextForwardToken ? null : response.NextForwardToken);
+        }, maxPages: 10);
     }
     
     public static OutputLogEvent? GetLogEvent(this IAmazonCloudWatchLogs logs, string logGroupName, string logStreamName, DateTime messageDate)

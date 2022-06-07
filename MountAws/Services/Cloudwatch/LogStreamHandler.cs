@@ -28,7 +28,7 @@ public class LogStreamHandler : PathHandler
     {
         var stream = _logs.DescribeLogStreamOrDefault(_logGroup.Item.LogGroupName!, _logStreamPath.Path);
 
-        return stream != null ? new LogStreamItem(ParentPath, stream) : new LogStreamItem(ParentPath, _logStreamPath.Path);
+        return stream != null ? new LogStreamItem(ParentPath, stream, _logGroup.Item.LogGroupName!) : new LogStreamItem(ParentPath, _logStreamPath.Path);
     }
 
     protected override IEnumerable<IItem> GetChildItemsImpl()

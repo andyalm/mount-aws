@@ -20,10 +20,13 @@ public class LogGroupItem : AwsItem
         ItemName = itemName;
         ItemType = CloudwatchItemTypes.LogGroup;
         LogGroupName = logGroup.LogGroupName;
+        WebUrl = UrlBuilder.CombineWith(
+            $"cloudwatch/home?#logsV2:log-groups/log-group/{logGroup.LogGroupName.Replace("/", "$252F")}");
     }
 
     public override string ItemName { get; }
     public string? LogGroupName { get; }
     public override string ItemType { get; }
     public override bool IsContainer => true;
+    public override string? WebUrl { get; }
 }
