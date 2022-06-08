@@ -6,7 +6,7 @@ namespace MountAws.Services.Iam;
 
 public class UsersHandler : PathHandler
 {
-    private readonly IAmazonIdentityManagementService _iam;
+    private readonly UserNavigator _navigator;
 
     public static IItem CreateItem(ItemPath parentPath)
     {
@@ -14,9 +14,9 @@ public class UsersHandler : PathHandler
             "Navigate iam users as a virtual filesystem");
     }
     
-    public UsersHandler(ItemPath path, IPathHandlerContext context, IAmazonIdentityManagementService iam) : base(path, context)
+    public UsersHandler(ItemPath path, IPathHandlerContext context, UserNavigator navigator) : base(path, context)
     {
-        _iam = iam;
+        _navigator = navigator;
     }
 
     protected override IItem? GetItemImpl()
@@ -26,6 +26,6 @@ public class UsersHandler : PathHandler
 
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
-        return _iam.ListChildUserItems(Path);
+        return _navigator.ListChildItems(Path);
     }
 }

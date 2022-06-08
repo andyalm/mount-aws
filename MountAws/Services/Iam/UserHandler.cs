@@ -6,11 +6,13 @@ namespace MountAws.Services.Iam;
 public class UserHandler : PathHandler
 {
     private readonly IAmazonIdentityManagementService _iam;
+    private readonly UserNavigator _navigator;
     private readonly IamItemPath _userPath;
 
-    public UserHandler(ItemPath path, IPathHandlerContext context, IAmazonIdentityManagementService iam, IamItemPath userPath) : base(path, context)
+    public UserHandler(ItemPath path, IPathHandlerContext context, IAmazonIdentityManagementService iam, UserNavigator navigator, IamItemPath userPath) : base(path, context)
     {
         _iam = iam;
+        _navigator = navigator;
         _userPath = userPath;
     }
 
@@ -43,6 +45,6 @@ public class UserHandler : PathHandler
 
     private IEnumerable<IItem> GetChildUsersWithinDirectory()
     {
-        return _iam.ListChildUserItems(Path, _userPath.ToString());
+        return _navigator.ListChildItems(Path, _userPath.Path);
     }
 }

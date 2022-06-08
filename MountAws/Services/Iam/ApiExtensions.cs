@@ -22,44 +22,6 @@ public static class ApiExtensions
             return (response.Policies, response.Marker);
         });
     }
-
-    public static IEnumerable<PolicyItem> ListChildPolicyItems(this IAmazonIdentityManagementService iam,
-        ItemPath parentPath, string? pathPrefix = null, PolicyScope? scope = null)
-    {
-        var policies = iam.ListPolicies(pathPrefix, scope).ToArray();
-        var directories = policies
-            .Directories(pathPrefix);
-        var childPolicies = policies.ChildPolicies(pathPrefix);
-
-        return directories.OrderBy(d => d)
-            .Select(directory => new PolicyItem(parentPath, directory))
-            .Concat(childPolicies.OrderBy(p => p.PolicyName).Select(p => new PolicyItem(parentPath, p)));
-    }
-    
-    public static IEnumerable<RoleItem> ListChildRoleItems(this IAmazonIdentityManagementService iam,
-        ItemPath parentPath, string? pathPrefix = null)
-    {
-        var roles = iam.ListRoles(pathPrefix).ToArray();
-        var directories = roles.Directories(pathPrefix);
-        var childRoles = roles.ChildRoles(pathPrefix);
-
-        return directories.OrderBy(d => d)
-            .Select(directory => new RoleItem(parentPath, directory))
-            .Concat(childRoles.OrderBy(r => r.RoleName).Select(p => new RoleItem(parentPath, p)));
-    }
-    
-    public static IEnumerable<UserItem> ListChildUserItems(this IAmazonIdentityManagementService iam,
-        ItemPath parentPath, string? pathPrefix = null)
-    {
-        var users = iam.ListUsers(pathPrefix).ToArray();
-        var directories = users.Directories(pathPrefix);
-        var childUsers = users.ChildUsers(pathPrefix);
-
-        return directories.OrderBy(d => d)
-            .Select(directory => new UserItem(parentPath, directory))
-            .Concat(childUsers.OrderBy(u => u.UserName).Select(u => new UserItem(parentPath, u)));
-    }
-
     public static IEnumerable<User> ListUsers(this IAmazonIdentityManagementService iam, string? pathPrefix = null)
     {
         return Paginate(nextToken =>

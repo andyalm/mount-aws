@@ -6,11 +6,13 @@ namespace MountAws.Services.Iam;
 public class RoleHandler : PathHandler
 {
     private readonly IAmazonIdentityManagementService _iam;
+    private readonly RoleNavigator _navigator;
     private readonly IamItemPath _rolePath;
 
-    public RoleHandler(ItemPath path, IPathHandlerContext context, IAmazonIdentityManagementService iam, IamItemPath rolePath) : base(path, context)
+    public RoleHandler(ItemPath path, IPathHandlerContext context, IAmazonIdentityManagementService iam, RoleNavigator navigator, IamItemPath rolePath) : base(path, context)
     {
         _iam = iam;
+        _navigator = navigator;
         _rolePath = rolePath;
     }
 
@@ -43,6 +45,6 @@ public class RoleHandler : PathHandler
 
     private IEnumerable<IItem> GetChildRolesWithinDirectory()
     {
-        return _iam.ListChildRoleItems(Path, _rolePath.ToString());
+        return _navigator.ListChildItems(Path, _rolePath.Path);
     }
 }

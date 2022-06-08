@@ -6,7 +6,7 @@ namespace MountAws.Services.Iam;
 
 public class RolesHandler : PathHandler
 {
-    private readonly IAmazonIdentityManagementService _iam;
+    private readonly RoleNavigator _navigator;
 
     public static IItem CreateItem(ItemPath parentPath)
     {
@@ -14,9 +14,9 @@ public class RolesHandler : PathHandler
             "Navigate iam roles as a virtual filesystem");
     }
     
-    public RolesHandler(ItemPath path, IPathHandlerContext context, IAmazonIdentityManagementService iam) : base(path, context)
+    public RolesHandler(ItemPath path, IPathHandlerContext context, RoleNavigator navigator) : base(path, context)
     {
-        _iam = iam;
+        _navigator = navigator;
     }
 
     protected override IItem? GetItemImpl()
@@ -26,6 +26,6 @@ public class RolesHandler : PathHandler
 
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
-        return _iam.ListChildRoleItems(Path);
+        return _navigator.ListChildItems(Path);
     }
 }
