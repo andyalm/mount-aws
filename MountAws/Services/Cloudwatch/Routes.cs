@@ -30,6 +30,16 @@ public class Routes : IServiceRoutes
                     });
                 });
             });
+            cloudwatch.MapLiteral<MetricsHandler>("metrics", metrics =>
+            {
+                metrics.MapRegex<MetricHandler>(@"(?<MetricName>[a-z0-9_+=,.@\-/]+)", metric =>
+                {
+                    metric.RegisterServices((match, builder) =>
+                    {
+                        builder.RegisterInstance(MetricName.Parse(match.Values[nameof(MetricName)]));
+                    });
+                });
+            });
         });
     }
 }

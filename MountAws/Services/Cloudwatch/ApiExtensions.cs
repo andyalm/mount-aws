@@ -1,8 +1,11 @@
+using Amazon.CloudWatch;
+using Amazon.CloudWatch.Model;
 using Amazon.CloudWatchLogs;
 using Amazon.CloudWatchLogs.Model;
 using MountAnything;
 
 using static MountAws.PagingHelper;
+using ResourceNotFoundException = Amazon.CloudWatchLogs.Model.ResourceNotFoundException;
 
 namespace MountAws.Services.Cloudwatch;
 
@@ -111,5 +114,27 @@ public static class ApiExtensions
             StartTime = messageDate,
             Limit = 1
         }).GetAwaiter().GetResult().Events.FirstOrDefault();
+    }
+
+    public static IEnumerable<Metric> ListMetrics(this IAmazonCloudWatch cloudWatch, ItemPath? namespacePath = null)
+    {
+        return Paginate(nextToken =>
+        {
+            var response = cloudWatch.ListMetricsAsync(new ListMetricsRequest
+            {
+                Namespace = namespacePath?.ToString(),
+                NextToken = nextToken
+            }).GetAwaiter().GetResult();
+
+            return (response.Metrics, response.NextToken);
+        }, maxPages:10);
+    }
+
+    public static Metric? GetMetricOrDefault(this IAmazonCloudWatch cloudwatch, string metricName)
+    {
+        return cloudwatch.ListMetricsAsync(new ListMetricsRequest
+        {
+            MetricName = metricName
+        }).GetAwaiter().GetResult().Metrics.FirstOrDefault();
     }
 }

@@ -23,5 +23,6 @@ public class RootHandler : PathHandler
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         yield return LogGroupsHandler.CreateItem(Path);
+        yield return MetricsHandler.CreateItem(Path);
     }
 }

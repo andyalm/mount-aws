@@ -94,5 +94,36 @@
         </TableRowEntries>
       </TableControl>
     </View>
+    <View>
+      <Name>CloudwatchMetricItem</Name>
+      <ViewSelectedBy>
+        <TypeName>MountAws.Services.Cloudwatch.MetricItem</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+          </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>Name</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>ItemType</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Dimensions</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
   </ViewDefinitions>
 </Configuration>
