@@ -6,4 +6,5 @@ public static class CloudwatchItemTypes
     public const string LogGroup = nameof(LogGroup);
     public const string LogStream = nameof(LogStream);
     public const string Metric = nameof(Metric);
+    public const string MetricDimension = nameof(MetricDimension);
 }

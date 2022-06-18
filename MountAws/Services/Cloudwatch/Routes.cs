@@ -38,6 +38,10 @@ public class Routes : IServiceRoutes
                     {
                         builder.RegisterInstance(MetricName.Parse(match.Values[nameof(MetricName)]));
                     });
+                    metric.MapRegex<MetricTimeframeHandler>($"({string.Join("|",MetricTimeframe.All.Select(t => t.Name))})", timeframe =>
+                    {
+                        timeframe.MapRegex<MetricAggregationHandler>($"({string.Join("|", MetricAggregation.All.Select(a => a.Name))})");
+                    });
                 });
             });
         });

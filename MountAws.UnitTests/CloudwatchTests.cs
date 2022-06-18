@@ -1,4 +1,5 @@
 using System;
+using Autofac;
 using FluentAssertions;
 using MountAnything;
 using MountAnything.Routing;
@@ -32,5 +33,25 @@ public class CloudwatchTests
     {
         var resolver = _router.GetResolver(new ItemPath(path));
         resolver.HandlerType.Should().Be(expectedHandlerType);
+    }
+    
+    [Theory]
+    [InlineData("myprofile/us-east-1/cloudwatch/metrics", typeof(MetricsHandler))]
+    [InlineData("myprofile/us-east-1/cloudwatch/metrics/AWS", typeof(MetricHandler), "AWS")]
+    [InlineData("myprofile/us-east-1/cloudwatch/metrics/AWS/ELB", typeof(MetricHandler), "AWS/ELB")]
+    [InlineData("myprofile/us-east-1/cloudwatch/metrics/AWS/ELB/HTTPCode_Backend_4XX", typeof(MetricHandler), "AWS/ELB/HTTPCode_Backend_4XX")]
+    public void NestedMetricsRouteMatchesMetricHandler(string path, Type expectedHandlerType, string? expectedMetricPath = null)
+    {
+        var resolver = _router.GetResolver(new ItemPath(path));
+        resolver.HandlerType.Should().Be(expectedHandlerType);
+
+        if (expectedMetricPath != null)
+        {
+            var builder = new ContainerBuilder();
+            resolver.ServiceRegistrations.Invoke(builder);
+            var container = builder.Build();
+            var metricName = container.Resolve<MetricName>();
+            metricName.NamespaceAndName.FullName.Should().Be(expectedMetricPath);
+        }
     }
 }

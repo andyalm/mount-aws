@@ -4,7 +4,7 @@ using MountAnything;
 
 namespace MountAws.Services.Cloudwatch;
 
-public class MetricNavigator : ItemNavigator<Metric, MetricItem>
+public class MetricNavigator : ItemNavigator<IGrouping<(string Namespace, string MetricName),Metric>, MetricItem>
 {
     private readonly IAmazonCloudWatch _cloudwatch;
 
@@ -18,25 +18,25 @@ public class MetricNavigator : ItemNavigator<Metric, MetricItem>
         return new MetricItem(parentPath, directoryPath);
     }
 
-    protected override MetricItem CreateItem(ItemPath parentPath, Metric model)
+    protected override MetricItem CreateItem(ItemPath parentPath, IGrouping<(string Namespace, string MetricName),Metric> model)
     {
         return new MetricItem(parentPath, model);
     }
 
-    protected override ItemPath GetPath(Metric model)
+    protected override ItemPath GetPath(IGrouping<(string Namespace, string MetricName),Metric> model)
     {
-        return new ItemPath(model.Namespace).Combine(model.MetricName);
+        return new ItemPath(model.Key.Namespace).Combine(model.Key.MetricName);
     }
 
-    protected override IEnumerable<Metric> ListItems(ItemPath? pathPrefix)
+    protected override IEnumerable<IGrouping<(string Namespace, string MetricName),Metric>> ListItems(ItemPath? pathPrefix)
     {
         var metrics = _cloudwatch.ListMetrics(pathPrefix).ToArray();
         //pathPrefix could be a partial namespace, which the CW api doesn't support filtering by, so if we get no results back, query with no namespace
         if (!metrics.Any())
         {
-            return _cloudwatch.ListMetrics();
+            metrics = _cloudwatch.ListMetrics().ToArray();
         }
 
-        return metrics;
+        return metrics.GroupBy(m => (m.Namespace,m.MetricName));
     }
 }

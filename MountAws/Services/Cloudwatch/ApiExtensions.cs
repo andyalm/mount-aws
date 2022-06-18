@@ -116,7 +116,7 @@ public static class ApiExtensions
         }).GetAwaiter().GetResult().Events.FirstOrDefault();
     }
 
-    public static IEnumerable<Metric> ListMetrics(this IAmazonCloudWatch cloudWatch, ItemPath? namespacePath = null)
+    public static IEnumerable<Metric> ListMetrics(this IAmazonCloudWatch cloudWatch, ItemPath? namespacePath = null, string? metricName = null)
     {
         return Paginate(nextToken =>
         {
@@ -130,11 +130,37 @@ public static class ApiExtensions
         }, maxPages:10);
     }
 
-    public static Metric? GetMetricOrDefault(this IAmazonCloudWatch cloudwatch, string metricName)
+    public static IGrouping<(string Namespace, string MetricName),Metric>? GetMetricOrDefault(this IAmazonCloudWatch cloudwatch, string @namespace, string metricName)
     {
         return cloudwatch.ListMetricsAsync(new ListMetricsRequest
         {
+            Namespace = @namespace,
             MetricName = metricName
-        }).GetAwaiter().GetResult().Metrics.FirstOrDefault();
+        }).GetAwaiter().GetResult().Metrics.GroupBy(m => (m.Namespace,m.MetricName)).FirstOrDefault();
+    }
+
+    public static IEnumerable<Datapoint> GetMetricStatistics(this IAmazonCloudWatch cloudwatch, string @namespace, string metricName,
+        IEnumerable<Dimension> dimensions, MetricTimeframe timeframe, MetricAggregation aggregation)
+    {
+        var (startDate, endDate) = timeframe.GetStartEndDatesUtc();
+        var request = new GetMetricStatisticsRequest
+        {
+            Namespace = @namespace,
+            MetricName = metricName,
+            Dimensions = dimensions.ToList(),
+            Period = timeframe.Period,
+            StartTimeUtc = startDate,
+            EndTimeUtc = endDate
+        };
+        if(aggregation.IsExtended)
+        {
+            request.ExtendedStatistics.Add(aggregation.Name);
+        }
+        else
+        {
+            request.Statistics.Add(aggregation.Name);
+        }
+
+        return cloudwatch.GetMetricStatisticsAsync(request).GetAwaiter().GetResult().Datapoints;
     }
 }
