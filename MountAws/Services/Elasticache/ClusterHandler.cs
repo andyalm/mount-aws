@@ -31,7 +31,7 @@ public class ClusterHandler : PathHandler
     {
         try
         {
-            var cacheCluster = _elastiCache.DescribeCacheCluster(ItemName, includeNodeInfo:true);
+            var cacheCluster = _elastiCache.DescribeCacheCluster(ItemName);
 
             return cacheCluster.CacheNodes.Select(cacheNode => new CacheNodeItem(Path, cacheNode));
         }

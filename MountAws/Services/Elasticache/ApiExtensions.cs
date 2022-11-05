@@ -14,19 +14,20 @@ public static class ApiExtensions
             var response = elastiCache.DescribeCacheClustersAsync(new DescribeCacheClustersRequest
             {
                 Marker = nextToken,
-                ShowCacheClustersNotInReplicationGroups = !replicationGroups
+                ShowCacheClustersNotInReplicationGroups = !replicationGroups,
+                ShowCacheNodeInfo = true
             }).GetAwaiter().GetResult();
 
             return (response.CacheClusters, response.Marker);
         });
     }
 
-    public static CacheCluster DescribeCacheCluster(this IAmazonElastiCache elastiCache, string id, bool includeNodeInfo = false)
+    public static CacheCluster DescribeCacheCluster(this IAmazonElastiCache elastiCache, string id)
     {
         return elastiCache.DescribeCacheClustersAsync(new DescribeCacheClustersRequest
         {
             CacheClusterId = id,
-            ShowCacheNodeInfo = includeNodeInfo
+            ShowCacheNodeInfo = true
         }).GetAwaiter().GetResult().CacheClusters.Single();
     }
 
