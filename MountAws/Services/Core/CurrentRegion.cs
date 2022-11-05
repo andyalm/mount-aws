@@ -2,4 +2,9 @@ using MountAnything;
 
 namespace MountAws.Services.Core;
 
-public record CurrentRegion(string Value) : TypedString(Value);
+public class CurrentRegion : TypedString
+{
+    public CurrentRegion(string value) : base(value)
+    {
+    }
+}
