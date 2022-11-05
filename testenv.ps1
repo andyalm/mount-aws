@@ -14,5 +14,5 @@ if(-not (Get-Alias ls -ErrorAction SilentlyContinue)) {
 if(-not (Get-Alias cat -ErrorAction SilentlyContinue)) {
     New-Alias cat Get-Content
 }
-Import-Module $PWD/MountAws/bin/Debug/net6.0/Module/MountAws.psd1
+Import-Module $([IO.Path]::Combine($PWD,'MountAws','bin','Debug','net6.0','Module','MountAws.psd1'))
 cd aws:

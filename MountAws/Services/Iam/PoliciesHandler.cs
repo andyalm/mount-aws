@@ -6,7 +6,7 @@ namespace MountAws.Services.Iam;
 
 public class PoliciesHandler : PathHandler, IGetChildItemParameters<ChildPolicyParameters>
 {
-    private readonly IAmazonIdentityManagementService _iam;
+    private readonly Lazy<PolicyNavigator> _navigator;
 
     public static IItem CreateItem(ItemPath parentPath)
     {
@@ -16,7 +16,7 @@ public class PoliciesHandler : PathHandler, IGetChildItemParameters<ChildPolicyP
     
     public PoliciesHandler(ItemPath path, IPathHandlerContext context, IAmazonIdentityManagementService iam) : base(path, context)
     {
-        _iam = iam;
+        _navigator = new Lazy<PolicyNavigator>(() => new PolicyNavigator(iam, GetChildItemParameters.Scope));
     }
 
     protected override IItem? GetItemImpl()
@@ -26,7 +26,7 @@ public class PoliciesHandler : PathHandler, IGetChildItemParameters<ChildPolicyP
 
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
-        return _iam.ListChildPolicyItems(Path, scope: GetChildItemParameters.Scope);
+        return _navigator.Value.ListChildItems(Path);
     }
 
     public ChildPolicyParameters GetChildItemParameters { get; set; } = new();

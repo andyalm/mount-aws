@@ -10,6 +10,7 @@ namespace MountAws.Services.Iam;
 public class PolicyHandler : PathHandler, IGetChildItemParameters<ChildPolicyParameters>, IContentReaderHandler
 {
     private readonly IAmazonIdentityManagementService _iam;
+    private readonly Lazy<PolicyNavigator> _navigator;
     private readonly IamItemPath _policyPath;
     private readonly CallerIdentity _callerIdentity;
 
@@ -18,6 +19,7 @@ public class PolicyHandler : PathHandler, IGetChildItemParameters<ChildPolicyPar
         _iam = iam;
         _policyPath = policyPath;
         _callerIdentity = callerIdentity;
+        _navigator = new Lazy<PolicyNavigator>(() => new PolicyNavigator(iam, GetChildItemParameters.Scope));
     }
 
     protected override IItem? GetItemImpl()
@@ -48,7 +50,7 @@ public class PolicyHandler : PathHandler, IGetChildItemParameters<ChildPolicyPar
 
     private IEnumerable<IItem> GetChildPoliciesWithinDirectory()
     {
-        return _iam.ListChildPolicyItems(Path, _policyPath.ToString(), GetChildItemParameters.Scope);
+        return _navigator.Value.ListChildItems(Path, _policyPath.Path);
     }
 
     protected override bool CacheChildren => GetChildItemParameters.Scope == null;

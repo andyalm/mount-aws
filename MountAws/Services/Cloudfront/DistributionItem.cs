@@ -18,7 +18,7 @@ public class DistributionItem : AwsItem<DistributionSummary>
     }
 
     public override string ItemName { get; }
-    public override bool IsContainer => true;
+    public override bool IsContainer => false;
     public string DomainName => UnderlyingObject.DomainName;
 
     public override string? WebUrl =>

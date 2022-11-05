@@ -2,4 +2,9 @@ using MountAnything;
 
 namespace MountAws.Services.Ecr;
 
-public record RepositoryPath(string Value) : TypedString(Value);
+public class RepositoryPath : TypedString
+{
+    public RepositoryPath(string value) : base(value)
+    {
+    }
+}

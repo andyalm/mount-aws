@@ -1,20 +1,20 @@
-using Amazon.IdentityManagement;
+using Amazon.CloudWatch;
 using MountAnything;
 using MountAws.Services.Core;
 
-namespace MountAws.Services.Iam;
+namespace MountAws.Services.Cloudwatch;
 
-public class UsersHandler : PathHandler
+public class MetricsHandler : PathHandler
 {
-    private readonly UserNavigator _navigator;
+    private readonly MetricNavigator _navigator;
 
     public static IItem CreateItem(ItemPath parentPath)
     {
-        return new GenericContainerItem(parentPath, "users",
-            "Navigate iam users as a virtual filesystem");
+        return new GenericContainerItem(parentPath, "metrics",
+            "Navigate cloudwatch metrics");
     }
     
-    public UsersHandler(ItemPath path, IPathHandlerContext context, UserNavigator navigator) : base(path, context)
+    public MetricsHandler(ItemPath path, IPathHandlerContext context, MetricNavigator navigator) : base(path, context)
     {
         _navigator = navigator;
     }
