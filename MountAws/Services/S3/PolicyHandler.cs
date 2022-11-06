@@ -1,4 +1,5 @@
 using System.Management.Automation.Provider;
+using System.Text;
 using Amazon.S3;
 using MountAnything;
 using MountAnything.Content;
@@ -26,11 +27,11 @@ public class PolicyHandler : PathHandler, IContentReaderHandler
         yield break;
     }
 
-    public IContentReader GetContentReader()
+    public Stream GetContent()
     {
         var policy = GetRawPolicy();
 
-        return new StringContentReader(policy);
+        return new MemoryStream(Encoding.UTF8.GetBytes(policy));
     }
 
     private string GetRawPolicy()

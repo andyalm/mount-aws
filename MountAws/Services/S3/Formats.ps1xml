@@ -32,6 +32,8 @@
           </TableColumnHeader>
           <TableColumnHeader>
           </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
         </TableHeaders>
         <TableRowEntries>
           <TableRowEntry>
@@ -41,6 +43,9 @@
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>ItemType</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Size</PropertyName>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>

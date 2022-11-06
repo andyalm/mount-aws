@@ -25,6 +25,7 @@ public class ObjectHandler : PathHandler, IContentReaderHandler,
     {
         try
         {
+            WriteDebug($"s3.GetObject({_currentBucket.Name}, {_objectPath.Value})");
             var response = _s3.GetObject(_currentBucket.Name, _objectPath.Value);
 
             return new ObjectItem(ParentPath, response);
@@ -46,17 +47,22 @@ public class ObjectHandler : PathHandler, IContentReaderHandler,
         return _s3.ListChildItems(_currentBucket.Name, Path, $"{_objectPath.Value}/");
     }
 
-    public IContentReader GetContentReader()
+    public Stream GetContent()
     {
-        return new ObjectContentReader(_s3, _currentBucket.Name, _objectPath.Value);
-    }
-    
-    public IContentWriter GetContentWriter()
-    {
-        return new ObjectContentWriter(_s3, _currentBucket.Name, _objectPath.Value);
+        return _s3.GetObjectStream(_currentBucket.Name, _objectPath.Value);
     }
 
-    public void NewItem(string itemTypeName, object? newItemValue)
+    public Stream GetWriterStream()
+    {
+        return new MemoryStream();
+    }
+
+    public void WriterFinished(Stream stream)
+    {
+        _s3.PutObject(_currentBucket.Name, _objectPath.Value, stream);
+    }
+
+    public void NewItem(string? itemTypeName, object? newItemValue)
     {
         _s3.PutObject(_currentBucket.Name, _objectPath.Value, newItemValue?.ToString());
     }

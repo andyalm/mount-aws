@@ -1,4 +1,5 @@
 using System.Management.Automation.Provider;
+using System.Text;
 using Amazon.IdentityManagement;
 using MountAnything;
 using MountAnything.Content;
@@ -25,7 +26,7 @@ public class UserPolicyHandler : PathHandler, IContentReaderHandler
         yield break;
     }
 
-    public IContentReader GetContentReader()
+    public Stream GetContent()
     {
         var item = GetItem() as EntityPolicyItem;
         if (item == null)
@@ -33,6 +34,6 @@ public class UserPolicyHandler : PathHandler, IContentReaderHandler
             throw new InvalidOperationException("Item does not exist");
         }
 
-        return new StringContentReader(item.RawDocument);
+        return new MemoryStream(Encoding.UTF8.GetBytes(item.RawDocument));
     }
 }

@@ -1,5 +1,6 @@
 using System.Management.Automation.Provider;
 using System.Net;
+using System.Text;
 using Amazon.IdentityManagement;
 using MountAnything;
 using MountAnything.Content;
@@ -56,13 +57,13 @@ public class PolicyHandler : PathHandler, IGetChildItemParameters<ChildPolicyPar
     protected override bool CacheChildren => GetChildItemParameters.Scope == null;
 
     public ChildPolicyParameters GetChildItemParameters { get; set; } = new();
-    public IContentReader GetContentReader()
+    public Stream GetContent()
     {
         if (GetItem() is PolicyItem { Arn: not null, DefaultVersionId: not null } policyItem)
         {
             var policyDocument = _iam.GetPolicyVersion(policyItem.Arn, policyItem.DefaultVersionId).Document;
 
-            return new StringContentReader(WebUtility.UrlDecode(policyDocument));
+            return new MemoryStream(Encoding.UTF8.GetBytes(WebUtility.UrlDecode(policyDocument)));
         }
 
         throw new InvalidOperationException("This item does not support reading content");

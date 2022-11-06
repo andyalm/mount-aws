@@ -32,7 +32,7 @@ public static class S3ApiExtensions
                 Key = key
             }).GetAwaiter().GetResult();
         }
-        catch (AmazonS3Exception ex) when(ex.StatusCode == HttpStatusCode.OK || ex.StatusCode == HttpStatusCode.Forbidden)
+        catch (AmazonS3Exception ex) when(ex.StatusCode == HttpStatusCode.OK || ex.StatusCode == HttpStatusCode.Forbidden || ex.StatusCode == HttpStatusCode.NotFound)
         {
             throw new ObjectNotFoundException(bucketName, key);
         }
@@ -45,6 +45,16 @@ public static class S3ApiExtensions
             BucketName = bucketName,
             Key = key,
             ContentBody = content
+        }).GetAwaiter().GetResult();
+    }
+    
+    public static void PutObject(this IAmazonS3 s3, string bucketName, string key, Stream contentStream)
+    {
+        s3.PutObjectAsync(new PutObjectRequest
+        {
+            BucketName = bucketName,
+            Key = key,
+            InputStream = contentStream
         }).GetAwaiter().GetResult();
     }
 
