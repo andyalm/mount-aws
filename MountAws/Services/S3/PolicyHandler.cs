@@ -27,11 +27,11 @@ public class PolicyHandler : PathHandler, IContentReaderHandler
         yield break;
     }
 
-    public Stream GetContent()
+    public IStreamContentReader GetContentReader()
     {
         var policy = GetRawPolicy();
 
-        return new MemoryStream(Encoding.UTF8.GetBytes(policy));
+        return new StreamContentReader(new MemoryStream(Encoding.UTF8.GetBytes(policy)));
     }
 
     private string GetRawPolicy()

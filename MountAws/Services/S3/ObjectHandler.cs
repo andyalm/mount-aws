@@ -47,19 +47,17 @@ public class ObjectHandler : PathHandler, IContentReaderHandler,
         return _s3.ListChildItems(_currentBucket.Name, Path, $"{_objectPath.Value}/");
     }
 
-    public Stream GetContent()
+    public IStreamContentReader GetContentReader()
     {
-        return _s3.GetObjectStream(_currentBucket.Name, _objectPath.Value);
+        var stream = _s3.GetObjectStream(_currentBucket.Name, _objectPath.Value);
+        
+        return new StreamContentReader(stream);
     }
 
-    public Stream GetWriterStream()
+    public IStreamContentWriter GetContentWriter()
     {
-        return new MemoryStream();
-    }
-
-    public void WriterFinished(Stream stream)
-    {
-        _s3.PutObject(_currentBucket.Name, _objectPath.Value, stream);
+        return new StreamContentWriter(stream =>
+            _s3.PutObject(_currentBucket.Name, _objectPath.Value, stream));
     }
 
     public void NewItem(string? itemTypeName, object? newItemValue)

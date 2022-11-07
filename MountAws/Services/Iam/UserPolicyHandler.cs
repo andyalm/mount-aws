@@ -26,7 +26,7 @@ public class UserPolicyHandler : PathHandler, IContentReaderHandler
         yield break;
     }
 
-    public Stream GetContent()
+    public IStreamContentReader GetContentReader()
     {
         var item = GetItem() as EntityPolicyItem;
         if (item == null)
@@ -34,6 +34,6 @@ public class UserPolicyHandler : PathHandler, IContentReaderHandler
             throw new InvalidOperationException("Item does not exist");
         }
 
-        return new MemoryStream(Encoding.UTF8.GetBytes(item.RawDocument));
+        return new StreamContentReader(new MemoryStream(Encoding.UTF8.GetBytes(item.RawDocument)));
     }
 }
