@@ -7,6 +7,8 @@ namespace MountAws.Services.Ecs;
 
 public class ContainerInstanceItem : AwsItem<ContainerInstance>
 {
+    public InstanceItem? Ec2Instance { get; }
+    
     public ContainerInstanceItem(ItemPath parentPath, ContainerInstance containerInstance, InstanceItem? ec2Instance) : base(parentPath, containerInstance)
     {
         ItemName = containerInstance.Id();
@@ -14,6 +16,8 @@ public class ContainerInstanceItem : AwsItem<ContainerInstance>
         {
             Links = ImmutableDictionary.Create<string,IItem>().Add("Ec2Instance", ec2Instance);
         }
+
+        Ec2Instance = ec2Instance;
     }
 
     public override string ItemName { get; }

@@ -13,6 +13,7 @@ public class TaskDefinitionItem : AwsItem
         Family = parts[0];
         ItemName = parts[1];
         UnderlyingObject.Properties.Add(new PSNoteProperty("Tags", tags));
+        IsPartial = false;
     }
     
     public TaskDefinitionItem(ItemPath parentPath, string taskDefinitionArn) : base(parentPath, new PSObject())
@@ -21,11 +22,13 @@ public class TaskDefinitionItem : AwsItem
         var parts = taskFamilyAndRevision.Split(":");
         Family = parts[0];
         ItemName = parts[1];
+        IsPartial = true;
     }
-
+    
     public string Family { get; }
     public override string ItemName { get; }
     public override bool IsContainer => false;
+    public override bool IsPartial { get; }
 
     protected override void CustomizePSObject(PSObject psObject)
     {
