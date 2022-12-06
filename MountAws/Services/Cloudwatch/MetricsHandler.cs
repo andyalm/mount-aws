@@ -26,6 +26,6 @@ public class MetricsHandler : PathHandler
 
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
-        return _navigator.ListChildItems(Path);
+        yield return new MetricItem(Path, new ItemPath("AWS"));
     }
 }

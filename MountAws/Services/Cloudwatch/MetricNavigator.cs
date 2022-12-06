@@ -30,13 +30,42 @@ public class MetricNavigator : ItemNavigator<IGrouping<(string Namespace, string
 
     protected override IEnumerable<IGrouping<(string Namespace, string MetricName),Metric>> ListItems(ItemPath? pathPrefix)
     {
-        var metrics = _cloudwatch.ListMetrics(pathPrefix).ToArray();
-        //pathPrefix could be a partial namespace, which the CW api doesn't support filtering by, so if we get no results back, query with no namespace
-        if (!metrics.Any())
+        Metric[] metrics;
+        if (pathPrefix?.FullName == "AWS")
         {
-            metrics = _cloudwatch.ListMetrics().ToArray();
+            // this is a bit hacky, but there is no API to query for namespaces, so we use a hardcoded list for now
+            // furthermor, the way this navigator class works, is it expects a concrete model to be returned and then it creates the hierarchy from the children
+            // this, we create synthetic metrics that will just be used to find the namespaces
+            metrics = SupportedNamespaces.Select(ns => new Metric
+            {
+                Namespace = $"AWS/{ns}",
+                MetricName = "Unknown",
+            }).ToArray();
+        }
+        else
+        {
+            metrics = _cloudwatch.ListMetrics(pathPrefix).ToArray();
         }
 
         return metrics.GroupBy(m => (m.Namespace,m.MetricName));
     }
+    
+    private static readonly string[] SupportedNamespaces =
+    {
+        "AmazonMQ",
+        "ApiGateway",
+        "ApplicationELB",
+        "AutoScaling",
+        "DynamoDB",
+        "EBS",
+        "EC2",
+        "ECS",
+        "EFS",
+        "ELB",
+        "ElastiCache",
+        "NetworkELB",
+        "RDS",
+        "S3",
+        "WAFV2"
+    };
 }
