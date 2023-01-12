@@ -1,5 +1,6 @@
 using Amazon.WAFV2;
 using Autofac;
+using Microsoft.Extensions.DependencyInjection;
 using MountAnything;
 using MountAnything.Routing;
 
@@ -13,18 +14,18 @@ public class Wafv2Routes : IServiceRoutes
         {
             wafv2.MapLiteral<WebAclsHandler>("cloudfront-web-acls", cloudfrontWebAcls =>
             {
-                cloudfrontWebAcls.RegisterServices((match, builder) =>
+                cloudfrontWebAcls.ConfigureServices((services) =>
                 {
-                    builder.Register(_ => Scope.CLOUDFRONT);
+                    services.AddTransient(_ => Scope.CLOUDFRONT);
                 });
                 
                 cloudfrontWebAcls.MapWebAcl();
             });
             wafv2.MapLiteral<WebAclsHandler>("regional-web-acls", regionalWebAcls =>
             {
-                regionalWebAcls.RegisterServices((match, builder) =>
+                regionalWebAcls.ConfigureServices((services) =>
                 {
-                    builder.Register(_ => Scope.REGIONAL);
+                    services.AddTransient(_ => Scope.REGIONAL);
                 });
                 
                 regionalWebAcls.MapWebAcl();
@@ -39,16 +40,16 @@ public static class Wafv2RouteExtensions
     {
         route.Map<WebAclHandler>(webAcl =>
         {
-            webAcl.RegisterServices((match, builder) =>
+            webAcl.ConfigureServices(services =>
             {
-                builder.Register(c =>
+                services.AddScoped(c =>
                 {
-                    var webAclItem = c.Resolve<IItemAncestor<WebAclItem>>().Item;
-                    var wafv2 = c.Resolve<IAmazonWAFV2>();
-                    var scope = c.Resolve<Scope>();
+                    var webAclItem = c.GetRequiredService<IItemAncestor<WebAclItem>>().Item;
+                    var wafv2 = c.GetRequiredService<IAmazonWAFV2>();
+                    var scope = c.GetRequiredService<Scope>();
 
                     return wafv2.GetWebAcl(scope, (webAclItem.Id, webAclItem.ItemName));
-                }).InstancePerLifetimeScope();
+                });
             });
             webAcl.MapAction<DefaultActionHandler>("default-action");
             webAcl.MapLiteral<RulesHandler>("rules", rules =>
@@ -58,15 +59,15 @@ public static class Wafv2RouteExtensions
                     rule.MapAction<RuleActionHandler>("action");
                     rule.MapLiteral<StatementHandler>("statement", statement =>
                     {
-                        statement.RegisterServices((match, builder) =>
+                        statement.ConfigureServices((services, match) =>
                         {
                             if (match.Values.TryGetValue("StatementPath", out var statementPath))
                             {
-                                builder.RegisterInstance(new StatementPath(statementPath));
+                                services.AddSingleton(new StatementPath(statementPath));
                             }
                             else
                             {
-                                builder.RegisterInstance(new StatementPath(ItemPath.Root));
+                                services.AddSingleton(new StatementPath(ItemPath.Root));
                             }
                         });
                         statement.MapRegex<StatementHandler>("(?<StatementPath>[a-z0-9-_/]+)");

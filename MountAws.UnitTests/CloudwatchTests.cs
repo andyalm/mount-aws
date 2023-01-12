@@ -1,6 +1,7 @@
 using System;
 using Autofac;
 using FluentAssertions;
+using Microsoft.Extensions.DependencyInjection;
 using MountAnything;
 using MountAnything.Routing;
 using MountAws.Services.Cloudwatch;
@@ -47,10 +48,10 @@ public class CloudwatchTests
 
         if (expectedMetricPath != null)
         {
-            var builder = new ContainerBuilder();
-            resolver.ServiceRegistrations.Invoke(builder);
-            var container = builder.Build();
-            var metricName = container.Resolve<MetricName>();
+            var services = new ServiceCollection();
+            resolver.ServiceRegistrations.Invoke(services);
+            var container = services.BuildServiceProvider();
+            var metricName = container.GetRequiredService<MetricName>();
             metricName.NamespaceAndName.FullName.Should().Be(expectedMetricPath);
         }
     }

@@ -1,4 +1,3 @@
-using Autofac;
 using MountAnything.Routing;
 
 namespace MountAws.Services.Ecs;
@@ -11,12 +10,8 @@ public class EcsRoutes : IServiceRoutes
         {
             ecs.MapLiteral<ClustersHandler>("clusters", clusters =>
             {
-                clusters.Map<ClusterHandler>("CurrentCluster", cluster =>
+                clusters.Map<ClusterHandler, CurrentCluster>(cluster =>
                 {
-                    cluster.RegisterServices((match, builder) =>
-                    {
-                        builder.RegisterInstance(new CurrentCluster(match.Values["CurrentCluster"]));
-                    });
                     cluster.MapLiteral<ContainerInstancesHandler>("container-instances", containerInstances =>
                     {
                         containerInstances.Map<ContainerInstanceHandler>(containerInstance =>

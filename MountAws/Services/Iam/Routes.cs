@@ -1,4 +1,5 @@
 using Autofac;
+using Microsoft.Extensions.DependencyInjection;
 using MountAnything.Routing;
 
 namespace MountAws.Services.Iam;
@@ -13,9 +14,9 @@ public class Routes : IServiceRoutes
             {
                 policies.MapRegex<PolicyHandler>(@"(?<PolicyPathAndName>[a-z0-9+=,.@\-/]+)", policy =>
                 {
-                    policy.RegisterServices((match, builder) =>
+                    policy.ConfigureServices((services, match) =>
                     {
-                        builder.RegisterInstance(IamItemPath.Parse(match.Values["PolicyPathAndName"]));
+                        services.AddSingleton(IamItemPath.Parse(match.Values["PolicyPathAndName"]));
                     });
                 });
             });
@@ -23,9 +24,9 @@ public class Routes : IServiceRoutes
             {
                 roles.MapRegex<RoleHandler>(@"(?<RolePathAndName>[a-z0-9+=,.@\-/]+)", role =>
                 {
-                    role.RegisterServices((match, builder) =>
+                    role.ConfigureServices((services, match) =>
                     {
-                        builder.RegisterInstance(IamItemPath.Parse(match.Values["RolePathAndName"]));
+                        services.AddSingleton(IamItemPath.Parse(match.Values["RolePathAndName"]));
                     });
                     role.MapLiteral<RolePoliciesHandler>("policies", rolePolicies =>
                     {
@@ -41,9 +42,9 @@ public class Routes : IServiceRoutes
             {
                 users.MapRegex<UserHandler>(@"(?<UserPathAndName>[a-z0-9+=,.@\-/]+)", user =>
                 {
-                    user.RegisterServices((match, builder) =>
+                    user.ConfigureServices((services, match) =>
                     {
-                        builder.RegisterInstance(IamItemPath.Parse(match.Values["UserPathAndName"]));
+                        services.AddSingleton(IamItemPath.Parse(match.Values["UserPathAndName"]));
                     });
                     user.MapLiteral<UserPoliciesHandler>("policies", rolePolicies =>
                     {

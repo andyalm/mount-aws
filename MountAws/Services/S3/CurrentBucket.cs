@@ -1,16 +1,10 @@
+using MountAnything;
+
 namespace MountAws.Services.S3;
 
-public class CurrentBucket
+public class CurrentBucket : TypedString
 {
-    public string Name { get; }
+    public string Name => Value;
 
-    public CurrentBucket(string name)
-    {
-        Name = name;
-    }
-
-    public override string ToString()
-    {
-        return Name;
-    }
+    public CurrentBucket(string name) : base(name) {}
 }

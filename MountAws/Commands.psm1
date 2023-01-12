@@ -39,7 +39,7 @@ function Switch-MountAwsPathSegment {
         throw "This command must be called from a MountAws location"
     }
 
-    $PathSeparator = $CurrentLocation.ProviderPath[0]
+    $PathSeparator = [IO.Path]::DirectorySeparatorChar
     $PathParts = $CurrentLocation.Path.Split($PathSeparator)
     $CurrentValue = $PathParts[$SegmentIndex + 1]
     if(-not $CurrentValue) {

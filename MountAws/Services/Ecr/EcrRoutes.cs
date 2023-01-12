@@ -1,4 +1,5 @@
 using Autofac;
+using Microsoft.Extensions.DependencyInjection;
 using MountAnything.Routing;
 
 namespace MountAws.Services.Ecr;
@@ -11,9 +12,9 @@ public class EcrRoutes : IServiceRoutes
         {
             ecr.MapRegex<RepositoryHandler>(@"(?<RepositoryPath>.+)", repository =>
             {
-                repository.RegisterServices((match, builder) =>
+                repository.ConfigureServices((services, match) =>
                 {
-                    builder.RegisterInstance(new RepositoryPath(match.Values["RepositoryPath"]));
+                    services.AddSingleton(new RepositoryPath(match.Values["RepositoryPath"]));
                 });
                 repository.MapLiteral<ImageTagsHandler>("image-tags", imageTags =>
                 {

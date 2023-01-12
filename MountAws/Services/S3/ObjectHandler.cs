@@ -1,5 +1,6 @@
 using System.Management.Automation.Provider;
 using Amazon.S3;
+using Amazon.S3.Model;
 using MountAnything;
 using MountAnything.Content;
 
@@ -60,9 +61,11 @@ public class ObjectHandler : PathHandler, IContentReaderHandler,
             _s3.PutObject(_currentBucket.Name, _objectPath.Value, stream));
     }
 
-    public void NewItem(string? itemTypeName, object? newItemValue)
+    public IItem NewItem(string? itemTypeName, object? newItemValue)
     {
         _s3.PutObject(_currentBucket.Name, _objectPath.Value, newItemValue?.ToString());
+
+        return GetItem(Freshness.Guaranteed)!;
     }
 
     public void RemoveItem()

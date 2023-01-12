@@ -1,4 +1,5 @@
 using Autofac;
+using Microsoft.Extensions.DependencyInjection;
 using MountAnything.Routing;
 
 namespace MountAws.Services.S3;
@@ -11,20 +12,16 @@ public class Routes : IServiceRoutes
         {
             s3.MapLiteral<BucketsHandler>("buckets", buckets =>
             {
-                buckets.Map<BucketHandler>("S3Bucket", bucket =>
+                buckets.Map<BucketHandler, CurrentBucket>(bucket =>
                 {
-                    bucket.RegisterServices((match, builder) =>
-                    {
-                        builder.RegisterInstance(new CurrentBucket(match.Values["S3Bucket"]));
-                    });
                     bucket.MapLiteral<PolicyHandler>("policy");
                     bucket.MapLiteral<ObjectsHandler>("objects", objects =>
                     {
                         objects.MapRegex<ObjectHandler>(@"(?<ObjectPath>.+)", @object =>
                         {
-                            @object.RegisterServices((match, builder) =>
+                            @object.ConfigureServices((services, match) =>
                             {
-                                builder.RegisterInstance(new ObjectPath(match.Values["ObjectPath"]));
+                                services.AddSingleton(new ObjectPath(match.Values["ObjectPath"]));
                             });
                         });
                     });

@@ -1,3 +1,4 @@
+using System.Management.Automation;
 using MountAnything;
 using MountAnything.Routing;
 using MountAws.Services.Core;
@@ -9,7 +10,7 @@ public class MountAwsProvider : IMountAnythingProvider
     public Router CreateRouter()
     {
         var router = Router.Create<ProfilesHandler>();
-        router.RegisterServices(builder =>
+        router.ConfigureContainer(builder =>
         {
             typeof(CoreServiceRegistrar).Assembly
                 .GetTypes()
@@ -34,11 +35,11 @@ public class MountAwsProvider : IMountAnythingProvider
         return router;
     }
 
-    public IEnumerable<DefaultDrive> GetDefaultDrives()
+    public IEnumerable<PSDriveInfo> GetDefaultDrives(ProviderInfo providerInfo)
     {
-        yield return new DefaultDrive("aws")
-        {
-            Description = "Allows you to navigate aws services as a virtual filesystem"
-        };
+        yield return new PSDriveInfo("aws", providerInfo,
+            root: "",
+            description: "Allows you to navigate aws services as a virtual filesystem",
+            credential: null);
     }
 }
