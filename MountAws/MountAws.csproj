@@ -19,8 +19,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MountAnything" Version="0.7.0-beta15" />
-    <PackageReference Include="MountAnything.Hosting.Build" Version="0.7.0-beta15">
+    <PackageReference Include="MountAnything" Version="0.7.0" />
+    <PackageReference Include="MountAnything.Hosting.Build" Version="0.7.0">
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.PowerShell.Commands.Utility" Version="7.2.0" />

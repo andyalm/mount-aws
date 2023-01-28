@@ -147,6 +147,8 @@
           </TableColumnHeader>
           <TableColumnHeader>
           </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
         </TableHeaders>
         <TableRowEntries>
           <TableRowEntry>
@@ -156,6 +158,9 @@
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>Ec2InstanceId</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>PrivateIpAddress</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>RunningTasksCount</PropertyName>

@@ -36,6 +36,18 @@ public class ContainerInstanceItem : AwsItem<ContainerInstance>
             {
                 yield return ec2InstanceId;
             }
+
+            var privateIpAddress = Ec2Instance?.UnderlyingObject.PrivateIpAddress;
+            if (privateIpAddress != null)
+            {
+                yield return privateIpAddress;
+            }
         }
     }
+    
+    [ItemProperty]
+    public string? PrivateIpAddress => Ec2Instance?.UnderlyingObject.PrivateIpAddress;
+
+    [ItemProperty] 
+    public string? InstanceType => Ec2Instance?.UnderlyingObject.InstanceType.Value;
 }
