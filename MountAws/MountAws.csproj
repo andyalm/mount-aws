@@ -31,6 +31,7 @@
     <PackageReference Include="AWSSDK.ECR" Version="3.7.*" />
     <PackageReference Include="AWSSDK.ECS" Version="3.7.*" />
     <PackageReference Include="AWSSDK.ElasticLoadBalancingV2" Version="3.7.*" />
+    <PackageReference Include="AWSSDK.RDS" Version="3.7.*" />
     <PackageReference Include="AWSSDK.Route53" Version="3.7.*" />
     <PackageReference Include="AWSSDK.S3" Version="3.7.*" />
     <PackageReference Include="AWSSDK.SecurityToken" Version="3.7.*" />
