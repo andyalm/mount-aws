@@ -8,6 +8,13 @@ public class Routes : IServiceRoutes
     {
         regionRoute.MapLiteral<RootHandler>("rds", rds =>
         {
+            rds.MapLiteral<ClustersHandler>("clusters", clusters =>
+            {
+                clusters.Map<ClusterHandler>(cluster =>
+                {
+                    cluster.Map<ClusterInstanceHandler>();
+                });
+            });
             rds.MapLiteral<InstancesHandler>("instances", instances =>
             {
                 instances.Map<InstanceHandler>();

@@ -28,7 +28,7 @@ public class InstancesHandler : PathHandler, IGetChildItemParameters<InstancesPa
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         return _rds.DescribeDBInstances(GetFilters())
-            .Select(db => new DbInstanceItem(Path, db));
+            .Select(db => new InstanceItem(Path, db));
     }
 
     public override IEnumerable<IItem> GetChildItems(string filter)
@@ -38,7 +38,7 @@ public class InstancesHandler : PathHandler, IGetChildItemParameters<InstancesPa
             var filters = GetFilters().Concat(new[] { ParseKeyValueFilter(filter) });
         
             return _rds.DescribeDBInstances(filters)
-                .Select(db => new DbInstanceItem(Path, db));
+                .Select(db => new InstanceItem(Path, db));
         }
 
         return base.GetChildItems(filter);

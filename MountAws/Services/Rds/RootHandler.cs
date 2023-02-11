@@ -22,6 +22,7 @@ public class RootHandler : PathHandler
 
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
+        yield return ClustersHandler.CreateItem(Path);
         yield return InstancesHandler.CreateItem(Path);
     }
 }

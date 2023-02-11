@@ -7,6 +7,11 @@ namespace MountAws.Services.Rds;
 
 public static class ApiExtensions
 {
+    public static IEnumerable<DBInstance> DescribeDBInstances(this IAmazonRDS rds, Filter filter)
+    {
+        return rds.DescribeDBInstances(new[] { filter });
+    }
+    
     public static IEnumerable<DBInstance> DescribeDBInstances(this IAmazonRDS rds, IEnumerable<Filter>? filters = null)
     {
         return Paginate(nextToken =>
@@ -37,6 +42,42 @@ public static class ApiExtensions
                 .Single();
         }
         catch (DBInstanceNotFoundException)
+        {
+            return null;
+        }
+    }
+    
+    public static IEnumerable<DBCluster> DescribeDBClusters(this IAmazonRDS rds, IEnumerable<Filter>? filters = null)
+    {
+        return Paginate(nextToken =>
+        {
+            var response = rds.DescribeDBClustersAsync(new DescribeDBClustersRequest
+                {
+                    Filters = filters?.ToList(),
+                    Marker = nextToken,
+                    IncludeShared = true
+                })
+                .GetAwaiter()
+                .GetResult();
+
+            return (response.DBClusters, response.Marker);
+        });
+    }
+    
+    public static DBCluster? DescribeDBCluster(this IAmazonRDS rds, string dbClusterIdentifier)
+    {
+        try
+        {
+            return rds.DescribeDBClustersAsync(new DescribeDBClustersRequest
+                {
+                    DBClusterIdentifier = dbClusterIdentifier
+                })
+                .GetAwaiter()
+                .GetResult()
+                .DBClusters
+                .Single();
+        }
+        catch (DBClusterNotFoundException)
         {
             return null;
         }

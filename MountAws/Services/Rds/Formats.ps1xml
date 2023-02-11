@@ -3,7 +3,7 @@
     <View>
       <Name>RdsDbInstance</Name>
       <ViewSelectedBy>
-        <TypeName>MountAws.Services.Rds.DbInstanceItem</TypeName>
+        <TypeName>MountAws.Services.Rds.InstanceItem</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>
@@ -30,6 +30,42 @@
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>DBInstanceClass</PropertyName>
+              </TableColumnItem>
+            </TableColumnItems>
+          </TableRowEntry>
+        </TableRowEntries>
+      </TableControl>
+    </View>
+    <View>
+      <Name>RdsDbCluster</Name>
+      <ViewSelectedBy>
+        <TypeName>MountAws.Services.Rds.ClusterItem</TypeName>
+      </ViewSelectedBy>
+      <TableControl>
+        <TableHeaders>
+          <TableColumnHeader>
+          </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
+        </TableHeaders>
+        <TableRowEntries>
+          <TableRowEntry>
+            <TableColumnItems>
+              <TableColumnItem>
+                <PropertyName>Name</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>Engine</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>EngineVersion</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
+                <PropertyName>MemberCount</PropertyName>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>
