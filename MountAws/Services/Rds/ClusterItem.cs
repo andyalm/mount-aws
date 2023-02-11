@@ -16,4 +16,7 @@ public class ClusterItem : AwsItem<DBCluster>
     public override string ItemName { get; }
     
     public override bool IsContainer => true;
+    
+    public override string? WebUrl =>
+        UrlBuilder.CombineWith($"rds/home#database:id={UnderlyingObject.DBClusterIdentifier};is-cluster=true");
 }

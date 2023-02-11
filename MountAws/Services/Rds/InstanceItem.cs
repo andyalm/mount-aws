@@ -12,4 +12,6 @@ public class InstanceItem : AwsItem<DBInstance>
 
     public override string ItemName { get; }
     public override bool IsContainer => false;
+    public override string? WebUrl =>
+        UrlBuilder.CombineWith($"rds/home#database:id={UnderlyingObject.DBInstanceIdentifier};is-cluster=false");
 }
