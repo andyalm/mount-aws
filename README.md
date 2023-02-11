@@ -76,6 +76,7 @@ The following services are currently supported:
  * [Elasticache](docs/Services/Elasticache.md)
  * [ELBV2](docs/Services/ELBV2.md)
  * [IAM](docs/Services/IAM.md)
+ * [RDS](docs/Services/RDS.md)
  * [Route53](docs/Services/Route53.md)
  * [S3](docs/Services/S3.md)
  * [Service Discovery (aka Cloud Map)](docs/Services/ServiceDiscovery.md)
