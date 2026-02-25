@@ -9,7 +9,7 @@ Do *not* use an ARN though. They are too long and are not friendly to the paradi
 
 ## Adding support for a new service
 
-The code for each aws service is located in the `MountAws.Impl` project under the `Services` folder. To add
+The code for each aws service is located in the `MountAws` project under the `Services` folder. To add
 support for a new service, create a folder for the new service. Then create a `IServiceRoutes` implementation which should contain a
 method to build all of the routes, starting with a `.MapLiteral<XXXRootHandler>("xxx")`, where `XXX` is the name of the aws service.
 It should contain the routes for that service. You will need to create a `XXXRootHandler` class
