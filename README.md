@@ -68,7 +68,9 @@ $ gc my-file.json
 
 The following services are currently supported:
 
+ * [ACM](docs/Services/ACM.md)
  * [Cloudfront](docs/Services/Cloudfront.md)
+ * [CloudWatch Logs](docs/Services/CloudwatchLogs.md)
  * [DynamoDB](docs/Services/DynamoDb.md)
  * [EC2](docs/Services/EC2.md)
  * [ECR](docs/Services/ECR.md)
@@ -76,6 +78,7 @@ The following services are currently supported:
  * [Elasticache](docs/Services/Elasticache.md)
  * [ELBV2](docs/Services/ELBV2.md)
  * [IAM](docs/Services/IAM.md)
+ * [Lambda](docs/Services/Lambda.md)
  * [RDS](docs/Services/RDS.md)
  * [Route53](docs/Services/Route53.md)
  * [S3](docs/Services/S3.md)
