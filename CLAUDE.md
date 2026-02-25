@@ -38,12 +38,13 @@ MountAws/                 # Main project
     Elasticache/          # ElastiCache
     Elbv2/                # Application/Network Load Balancers
     Iam/                  # IAM roles, policies, users
+    Lambda/               # Lambda functions, aliases, versions, layers
     Rds/                  # RDS instances
     Route53/              # Route 53 hosted zones
     S3/                   # S3 buckets and objects
     ServiceDiscovery/     # Cloud Map service discovery
     Wafv2/                # WAFv2 web ACLs
-MountAws.UnitTests/       # Unit tests (xUnit + FluentAssertions)
+MountAws.UnitTests/       # Unit tests (xUnit + AwesomeAssertions)
 docs/                     # Service-specific documentation and developer guide
 ```
 
@@ -62,6 +63,15 @@ dotnet test
 # Interactive testing (PowerShell, imports the module and navigates to aws: drive)
 pwsh ./testenv.ps1
 ```
+
+## Development Workflow
+
+**After every code change**, always run:
+
+1. `dotnet build` — verify the solution compiles without errors
+2. `dotnet test` — verify all tests pass
+
+Fix any build errors or test failures before committing. Do not commit code that fails to build or has failing tests.
 
 ## CI/CD
 
@@ -123,7 +133,7 @@ route.MapLiteral<RootHandler>("service-name", root => {
 
 ## Testing
 
-Tests use xUnit with FluentAssertions. The test project references the main MountAws project. Current tests verify routing resolution (that paths resolve to the correct handler types) and the ItemNavigator logic. Run with `dotnet test`.
+Tests use xUnit with AwesomeAssertions. The test project references the main MountAws project. Current tests verify routing resolution (that paths resolve to the correct handler types) and the ItemNavigator logic. Run with `dotnet test`.
 
 ## Code Style
 

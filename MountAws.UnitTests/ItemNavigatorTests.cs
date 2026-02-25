@@ -29,9 +29,11 @@ public class ItemNavigatorTests
     {
         var childItems = _navigator.ListChildItems(new ItemPath("cloudwatch/log-groups/myloggroup/streams")).ToArray();
 
-        childItems.Should().HaveCount(1);
-        childItems[0].ItemName.Should().Be("gitlab-container");
+        childItems.Should().HaveCount(2);
+        childItems[0].ItemName.Should().Be("2018");
         childItems[0].ParentPath.FullName.Should().Be("cloudwatch/log-groups/myloggroup/streams");
+        childItems[1].ItemName.Should().Be("gitlab-container");
+        childItems[1].ParentPath.FullName.Should().Be("cloudwatch/log-groups/myloggroup/streams");
     }
     
     [Fact]
