@@ -47,11 +47,21 @@ public static class LambdaApiExtensions
     public static AliasConfiguration GetAlias(
         this IAmazonLambda lambda, string functionName, string aliasName)
     {
-        return lambda.GetAliasAsync(new GetAliasRequest
+        var response = lambda.GetAliasAsync(new GetAliasRequest
         {
             FunctionName = functionName,
             Name = aliasName
         }).GetAwaiter().GetResult();
+
+        return new AliasConfiguration
+        {
+            AliasArn = response.AliasArn,
+            Description = response.Description,
+            FunctionVersion = response.FunctionVersion,
+            Name = response.Name,
+            RevisionId = response.RevisionId,
+            RoutingConfig = response.RoutingConfig
+        };
     }
 
     public static IEnumerable<FunctionConfiguration> ListVersionsByFunction(
@@ -89,10 +99,23 @@ public static class LambdaApiExtensions
     public static EventSourceMappingConfiguration GetEventSourceMapping(
         this IAmazonLambda lambda, string uuid)
     {
-        return lambda.GetEventSourceMappingAsync(new GetEventSourceMappingRequest
+        var response = lambda.GetEventSourceMappingAsync(new GetEventSourceMappingRequest
         {
             UUID = uuid
         }).GetAwaiter().GetResult();
+
+        return new EventSourceMappingConfiguration
+        {
+            UUID = response.UUID,
+            EventSourceArn = response.EventSourceArn,
+            FunctionArn = response.FunctionArn,
+            State = response.State,
+            StateTransitionReason = response.StateTransitionReason,
+            BatchSize = response.BatchSize,
+            LastModified = response.LastModified,
+            LastProcessingResult = response.LastProcessingResult,
+            MaximumBatchingWindowInSeconds = response.MaximumBatchingWindowInSeconds
+        };
     }
 
     public static IEnumerable<LayersListItem> ListLayers(this IAmazonLambda lambda)
