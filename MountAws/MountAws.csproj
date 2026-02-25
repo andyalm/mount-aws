@@ -44,6 +44,7 @@
     <PackageReference Include="AWSSDK.IdentityManagement" Version="3.7.*" />
     <PackageReference Include="AWSSDK.DynamoDBv2" Version="3.7.*" />
     <PackageReference Include="AWSSDK.ElastiCache" Version="3.7.*" />
+    <PackageReference Include="AWSSDK.Lambda" Version="3.7.*" />
   </ItemGroup>
 
   <ItemGroup>
