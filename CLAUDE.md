@@ -6,11 +6,11 @@ MountAws is a PowerShell provider that exposes AWS services as a navigable virtu
 
 ## Tech Stack
 
-- **Language:** C# (.NET 6.0) with file-scoped namespaces and nullable reference types enabled
+- **Language:** C# (.NET 8.0) with file-scoped namespaces and nullable reference types enabled
 - **Framework:** MountAnything 0.7.0 (PowerShell provider framework)
 - **DI Container:** Autofac
 - **AWS SDKs:** AWSSDK.* packages (version 3.7.*)
-- **Testing:** xUnit + FluentAssertions
+- **Testing:** xUnit + AwesomeAssertions
 - **Publishing:** PowerShell Gallery module
 
 ## Repository Structure

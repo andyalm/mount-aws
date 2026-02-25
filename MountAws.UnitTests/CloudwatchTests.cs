@@ -1,6 +1,6 @@
 using System;
 using Autofac;
-using FluentAssertions;
+using AwesomeAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using MountAnything;
 using MountAnything.Routing;
