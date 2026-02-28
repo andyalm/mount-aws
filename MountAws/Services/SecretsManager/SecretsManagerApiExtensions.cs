@@ -1,0 +1,37 @@
+using Amazon.SecretsManager;
+using Amazon.SecretsManager.Model;
+using static MountAws.PagingHelper;
+
+namespace MountAws.Services.SecretsManager;
+
+public static class SecretsManagerApiExtensions
+{
+    public static IEnumerable<SecretListEntry> ListSecrets(this IAmazonSecretsManager secretsManager)
+    {
+        return Paginate(nextToken =>
+        {
+            var response = secretsManager.ListSecretsAsync(new ListSecretsRequest
+            {
+                NextToken = nextToken
+            }).GetAwaiter().GetResult();
+
+            return (response.SecretList, response.NextToken);
+        });
+    }
+
+    public static DescribeSecretResponse DescribeSecret(this IAmazonSecretsManager secretsManager, string secretId)
+    {
+        return secretsManager.DescribeSecretAsync(new DescribeSecretRequest
+        {
+            SecretId = secretId
+        }).GetAwaiter().GetResult();
+    }
+
+    public static GetSecretValueResponse GetSecretValue(this IAmazonSecretsManager secretsManager, string secretId)
+    {
+        return secretsManager.GetSecretValueAsync(new GetSecretValueRequest
+        {
+            SecretId = secretId
+        }).GetAwaiter().GetResult();
+    }
+}
