@@ -35,6 +35,18 @@ public static class SecretsManagerApiExtensions
         }).GetAwaiter().GetResult();
     }
 
+    public static DescribeSecretResponse? DescribeSecretOrDefault(this IAmazonSecretsManager secretsManager, string secretId)
+    {
+        try
+        {
+            return secretsManager.DescribeSecret(secretId);
+        }
+        catch (ResourceNotFoundException)
+        {
+            return null;
+        }
+    }
+
     public static void PutSecretValue(this IAmazonSecretsManager secretsManager, string secretId, string secretString)
     {
         secretsManager.PutSecretValueAsync(new PutSecretValueRequest

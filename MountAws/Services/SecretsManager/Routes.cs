@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using MountAnything.Routing;
 
 namespace MountAws.Services.SecretsManager;
@@ -10,9 +11,12 @@ public class Routes : IServiceRoutes
         {
             secretsManager.MapLiteral<SecretsHandler>("secrets", secrets =>
             {
-                secrets.Map<SecretHandler>(secret =>
+                secrets.MapRegex<SecretHandler>(@"(?<SecretPath>.+)", secret =>
                 {
-                    secret.Map<SecretValueHandler>();
+                    secret.ConfigureServices((services, match) =>
+                    {
+                        services.AddSingleton(new SecretPath(match.Values["SecretPath"]));
+                    });
                 });
             });
         });

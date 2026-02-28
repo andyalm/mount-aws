@@ -1,4 +1,3 @@
-using Amazon.SecretsManager;
 using MountAnything;
 using MountAws.Services.Core;
 
@@ -6,7 +5,7 @@ namespace MountAws.Services.SecretsManager;
 
 public class SecretsHandler : PathHandler
 {
-    private readonly IAmazonSecretsManager _secretsManager;
+    private readonly SecretNavigator _navigator;
 
     public static IItem CreateItem(ItemPath parentPath)
     {
@@ -14,9 +13,9 @@ public class SecretsHandler : PathHandler
             "Navigate secrets as a virtual filesystem");
     }
 
-    public SecretsHandler(ItemPath path, IPathHandlerContext context, IAmazonSecretsManager secretsManager) : base(path, context)
+    public SecretsHandler(ItemPath path, IPathHandlerContext context, SecretNavigator navigator) : base(path, context)
     {
-        _secretsManager = secretsManager;
+        _navigator = navigator;
     }
 
     protected override IItem? GetItemImpl()
@@ -26,7 +25,6 @@ public class SecretsHandler : PathHandler
 
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
-        return _secretsManager.ListSecrets()
-            .Select(s => new SecretItem(Path, s));
+        return _navigator.ListChildItems(Path);
     }
 }
