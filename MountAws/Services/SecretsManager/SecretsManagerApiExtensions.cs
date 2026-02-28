@@ -34,4 +34,13 @@ public static class SecretsManagerApiExtensions
             SecretId = secretId
         }).GetAwaiter().GetResult();
     }
+
+    public static void PutSecretValue(this IAmazonSecretsManager secretsManager, string secretId, string secretString)
+    {
+        secretsManager.PutSecretValueAsync(new PutSecretValueRequest
+        {
+            SecretId = secretId,
+            SecretString = secretString
+        }).GetAwaiter().GetResult();
+    }
 }

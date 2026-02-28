@@ -1,12 +1,14 @@
+using System.Management.Automation;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Nodes;
 using Amazon.SecretsManager;
 using MountAnything;
 using MountAnything.Content;
 
 namespace MountAws.Services.SecretsManager;
 
-public class SecretHandler : PathHandler, IContentReaderHandler
+public class SecretHandler : PathHandler, IContentReaderHandler, ISetItemPropertiesHandler
 {
     private readonly IAmazonSecretsManager _secretsManager;
     private readonly SecretsHandler _parentHandler;
@@ -45,6 +47,43 @@ public class SecretHandler : PathHandler, IContentReaderHandler
             throw new InvalidOperationException("Secret does not contain a string value");
         }
         return new StreamContentReader(new MemoryStream(Encoding.UTF8.GetBytes(secretString)));
+    }
+
+    public override IEnumerable<IItemProperty> GetItemProperties(HashSet<string> propertyNames, Func<ItemPath, string> pathResolver)
+    {
+        var secretString = GetSecretString();
+        if (secretString == null || !TryParseJsonObject(secretString, out var properties))
+        {
+            return base.GetItemProperties(propertyNames, pathResolver);
+        }
+
+        var psObject = new PSObject();
+        foreach (var property in properties)
+        {
+            psObject.Properties.Add(new PSNoteProperty(property.Key, property.Value));
+        }
+        return psObject.AsItemProperties().WherePropertiesMatch(propertyNames);
+    }
+
+    public void SetItemProperties(ICollection<IItemProperty> propertyValues)
+    {
+        var secretString = GetSecretString()
+            ?? throw new InvalidOperationException("Secret does not contain a string value");
+
+        var jsonNode = JsonNode.Parse(secretString)
+            ?? throw new InvalidOperationException("Secret value is not valid JSON");
+
+        if (jsonNode is not JsonObject jsonObject)
+        {
+            throw new InvalidOperationException("Secret value is not a JSON object");
+        }
+
+        foreach (var property in propertyValues)
+        {
+            jsonObject[property.Name] = JsonValue.Create(property.Value?.ToString());
+        }
+
+        _secretsManager.PutSecretValue(ItemName, jsonObject.ToJsonString());
     }
 
     private string? GetSecretString()
