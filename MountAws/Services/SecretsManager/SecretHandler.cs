@@ -8,7 +8,7 @@ using MountAnything.Content;
 
 namespace MountAws.Services.SecretsManager;
 
-public class SecretHandler : PathHandler, IContentReaderHandler, ISetItemPropertiesHandler
+public class SecretHandler : PathHandler, IContentReaderHandler, IContentWriterHandler, ISetItemPropertiesHandler
 {
     private readonly IAmazonSecretsManager _secretsManager;
     private readonly SecretsHandler _parentHandler;
@@ -63,6 +63,16 @@ public class SecretHandler : PathHandler, IContentReaderHandler, ISetItemPropert
             psObject.Properties.Add(new PSNoteProperty(property.Key, property.Value));
         }
         return psObject.AsItemProperties().WherePropertiesMatch(propertyNames);
+    }
+
+    public IStreamContentWriter GetContentWriter()
+    {
+        return new StreamContentWriter(stream =>
+        {
+            using var reader = new StreamReader(stream, Encoding.UTF8);
+            var secretString = reader.ReadToEnd();
+            _secretsManager.PutSecretValue(ItemName, secretString);
+        });
     }
 
     public void SetItemProperties(ICollection<IItemProperty> propertyValues)
