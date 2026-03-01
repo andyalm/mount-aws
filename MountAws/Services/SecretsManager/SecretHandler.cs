@@ -24,38 +24,20 @@ public class SecretHandler : PathHandler, IContentReaderHandler, IContentWriterH
 
     protected override IItem? GetItemImpl()
     {
-        var fullPath = new ItemPath(_secretPath.Value);
-
         // 1. Try as an actual secret
-        var secret = _secretsManager.DescribeSecretOrDefault(fullPath.FullName);
+        var secret = _secretsManager.DescribeSecretOrDefault(_secretPath.Path.FullName);
         if (secret != null)
         {
             return new SecretItem(ParentPath, secret);
         }
 
-        // 2. Check if the last segment is a JSON key of a parent secret
-        if (!fullPath.Parent.IsRoot)
-        {
-            var parentSecret = _secretsManager.DescribeSecretOrDefault(fullPath.Parent.FullName);
-            if (parentSecret != null)
-            {
-                var secretString = GetSecretString(fullPath.Parent.FullName);
-                if (secretString != null && TryParseJsonObject(secretString, out var props) &&
-                    props.TryGetValue(fullPath.Name, out _))
-                {
-                    return new SecretValueItem(ParentPath, fullPath.Parent.FullName, fullPath.Name);
-                }
-            }
-        }
-
-        var childSecrets = _secretsManager.ListSecrets(_secretPath.Value);
+        // 2. Check if it's a folder (prefix of other secrets)
+        var childSecrets = _secretsManager.ListSecrets(_secretPath.Path.FullName);
         if (childSecrets.Any())
         {
-            // if there are secrets that are a child of this path, then represent it as a folder
-            return new SecretFolderItem(ParentPath, fullPath);
+            return new SecretFolderItem(ParentPath, _secretPath.Path);
         }
-        
-        // doesn't match anything, so does not exist
+
         return null;
     }
 
@@ -63,103 +45,31 @@ public class SecretHandler : PathHandler, IContentReaderHandler, IContentWriterH
     {
         return GetItem() switch
         {
-            SecretItem => GetSecretChildren(),
-            SecretFolderItem => GetFolderChildren(),
+            SecretFolderItem => _navigator.ListChildItems(Path, _secretPath.Path),
             _ => Enumerable.Empty<IItem>()
         };
     }
 
-    private IEnumerable<IItem> GetSecretChildren()
-    {
-        var secretString = GetSecretString(_secretPath.Value);
-        if (secretString == null) yield break;
-
-        if (TryParseJsonObject(secretString, out var properties))
-        {
-            foreach (var property in properties)
-            {
-                yield return new SecretValueItem(Path, _secretPath.Value, property.Key);
-            }
-        }
-    }
-
-    private IEnumerable<IItem> GetFolderChildren()
-    {
-        return _navigator.ListChildItems(Path, new ItemPath(_secretPath.Value));
-    }
-
     public IStreamContentReader GetContentReader()
     {
-        var item = GetItem();
-        return item switch
-        {
-            SecretItem => GetSecretContentReader(),
-            SecretValueItem valueItem => new StreamContentReader(
-                new MemoryStream(Encoding.UTF8.GetBytes(GetSecretString(valueItem.SecretName)!))),
-            _ => throw new InvalidOperationException("Cannot read content from a folder")
-        };
-    }
-
-    private IStreamContentReader GetSecretContentReader()
-    {
-        var secretString = GetSecretString(_secretPath.Value);
-        if (secretString == null)
-        {
-            throw new InvalidOperationException("Secret does not contain a string value");
-        }
+        var secretString = GetSecretString()
+            ?? throw new InvalidOperationException("Secret does not contain a string value");
         return new StreamContentReader(new MemoryStream(Encoding.UTF8.GetBytes(secretString)));
     }
 
     public IStreamContentWriter GetContentWriter()
     {
-        var item = GetItem();
-        return item switch
-        {
-            SecretItem => GetSecretContentWriter(),
-            SecretValueItem => GetSecretValueContentWriter(),
-            _ => throw new InvalidOperationException("Cannot write content to a folder")
-        };
-    }
-
-    private IStreamContentWriter GetSecretContentWriter()
-    {
         return new StreamContentWriter(stream =>
         {
             using var reader = new StreamReader(stream, Encoding.UTF8);
             var secretString = reader.ReadToEnd();
-            _secretsManager.PutSecretValue(_secretPath.Value, secretString);
-        });
-    }
-
-    private IStreamContentWriter GetSecretValueContentWriter()
-    {
-        var itemPath = new ItemPath(_secretPath.Value);
-        var secretName = itemPath.Parent.FullName;
-        var keyName = itemPath.Name;
-
-        return new StreamContentWriter(stream =>
-        {
-            using var reader = new StreamReader(stream, Encoding.UTF8);
-            var newValue = reader.ReadToEnd();
-
-            var response = _secretsManager.GetSecretValue(secretName);
-            var jsonNode = JsonNode.Parse(response.SecretString)
-                ?? throw new InvalidOperationException("Secret value is not valid JSON");
-            if (jsonNode is not JsonObject jsonObject)
-            {
-                throw new InvalidOperationException("Secret value is not a JSON object");
-            }
-
-            jsonObject[keyName] = JsonValue.Create(newValue);
-            _secretsManager.PutSecretValue(secretName, jsonObject.ToJsonString());
+            _secretsManager.PutSecretValue(_secretPath.Path.FullName, secretString);
         });
     }
 
     public override IEnumerable<IItemProperty> GetItemProperties(HashSet<string> propertyNames, Func<ItemPath, string> pathResolver)
     {
-        if (GetItem() is not SecretItem) return base.GetItemProperties(propertyNames, pathResolver);
-
-        var secretString = GetSecretString(_secretPath.Value);
+        var secretString = GetSecretString();
         if (secretString == null || !TryParseJsonObject(secretString, out var properties))
         {
             return base.GetItemProperties(propertyNames, pathResolver);
@@ -175,12 +85,7 @@ public class SecretHandler : PathHandler, IContentReaderHandler, IContentWriterH
 
     public void SetItemProperties(ICollection<IItemProperty> propertyValues)
     {
-        if (GetItem() is not SecretItem)
-        {
-            throw new InvalidOperationException("Can only set properties on a secret");
-        }
-
-        var secretString = GetSecretString(_secretPath.Value)
+        var secretString = GetSecretString()
             ?? throw new InvalidOperationException("Secret does not contain a string value");
 
         var jsonNode = JsonNode.Parse(secretString)
@@ -196,14 +101,14 @@ public class SecretHandler : PathHandler, IContentReaderHandler, IContentWriterH
             jsonObject[property.Name] = JsonValue.Create(property.Value?.ToString());
         }
 
-        _secretsManager.PutSecretValue(_secretPath.Value, jsonObject.ToJsonString());
+        _secretsManager.PutSecretValue(_secretPath.Path.FullName, jsonObject.ToJsonString());
     }
 
-    private string? GetSecretString(string secretName)
+    private string? GetSecretString()
     {
         try
         {
-            var response = _secretsManager.GetSecretValue(secretName);
+            var response = _secretsManager.GetSecretValue(_secretPath.Path.FullName);
             return response.SecretString;
         }
         catch

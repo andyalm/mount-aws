@@ -1,16 +1,8 @@
+using MountAnything;
+
 namespace MountAws.Services.SecretsManager;
 
-public class SecretPath
+public class SecretPath : TypedItemPath
 {
-    public string Value { get; }
-
-    public SecretPath(string value)
-    {
-        Value = value;
-    }
-
-    public override string ToString()
-    {
-        return Value;
-    }
+    public SecretPath(ItemPath path) : base(path) { }
 }

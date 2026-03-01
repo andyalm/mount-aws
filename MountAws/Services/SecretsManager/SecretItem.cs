@@ -10,7 +10,7 @@ public class SecretItem : AwsItem
     {
         ItemName = new ItemPath(secret.Name).Name;
         SecretName = secret.Name;
-        ItemType = SecretsManagerItemTypes.SecretValue;
+        ItemType = SecretsManagerItemTypes.Secret;
         Description = secret.Description;
         Arn = secret.ARN;
         LastChangedDate = secret.LastChangedDate;
@@ -29,7 +29,7 @@ public class SecretItem : AwsItem
     }
 
     public override string ItemName { get; }
-    public override bool IsContainer => true;
+    public override bool IsContainer => false;
     protected override string TypeName => GetType().FullName!;
     public override string ItemType { get; }
     [ItemProperty]
