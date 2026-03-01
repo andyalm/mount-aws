@@ -9,9 +9,10 @@ public class SecretItem : AwsItem
     public SecretItem(ItemPath parentPath, SecretListEntry secret) : base(parentPath, new PSObject(secret))
     {
         ItemName = new ItemPath(secret.Name).Name;
-        Name = secret.Name;
+        SecretName = secret.Name;
+        ItemType = SecretsManagerItemTypes.SecretValue;
         Description = secret.Description;
-        ARN = secret.ARN;
+        Arn = secret.ARN;
         LastChangedDate = secret.LastChangedDate;
         CreatedDate = secret.CreatedDate;
     }
@@ -19,22 +20,29 @@ public class SecretItem : AwsItem
     public SecretItem(ItemPath parentPath, DescribeSecretResponse secret) : base(parentPath, new PSObject(secret))
     {
         ItemName = new ItemPath(secret.Name).Name;
-        Name = secret.Name;
+        SecretName = secret.Name;
+        ItemType = SecretsManagerItemTypes.Secret;
         Description = secret.Description;
-        ARN = secret.ARN;
+        Arn = secret.ARN;
         LastChangedDate = secret.LastChangedDate;
         CreatedDate = secret.CreatedDate;
     }
 
     public override string ItemName { get; }
     public override bool IsContainer => true;
-
-    public string Name { get; }
+    protected override string TypeName => GetType().FullName!;
+    public override string ItemType { get; }
+    [ItemProperty]
+    public string SecretName { get; }
+    [ItemProperty]
     public string? Description { get; }
-    public string ARN { get; }
+    [ItemProperty]
+    public string Arn { get; }
+    [ItemProperty]
     public DateTime? LastChangedDate { get; }
+    [ItemProperty]
     public DateTime? CreatedDate { get; }
 
     public override string? WebUrl =>
-        UrlBuilder.CombineWith($"secretsmanager/secret?name={Uri.EscapeDataString(Name)}");
+        UrlBuilder.CombineWith($"secretsmanager/secret?name={Uri.EscapeDataString(SecretName)}");
 }

@@ -24,33 +24,39 @@ public class SecretHandler : PathHandler, IContentReaderHandler, IContentWriterH
 
     protected override IItem? GetItemImpl()
     {
-        var fullPath = _secretPath.Value;
+        var fullPath = new ItemPath(_secretPath.Value);
 
         // 1. Try as an actual secret
-        var secret = _secretsManager.DescribeSecretOrDefault(fullPath);
+        var secret = _secretsManager.DescribeSecretOrDefault(fullPath.FullName);
         if (secret != null)
         {
             return new SecretItem(ParentPath, secret);
         }
 
         // 2. Check if the last segment is a JSON key of a parent secret
-        var itemPath = new ItemPath(fullPath);
-        if (!itemPath.Parent.IsRoot)
+        if (!fullPath.Parent.IsRoot)
         {
-            var parentSecret = _secretsManager.DescribeSecretOrDefault(itemPath.Parent.FullName);
+            var parentSecret = _secretsManager.DescribeSecretOrDefault(fullPath.Parent.FullName);
             if (parentSecret != null)
             {
-                var secretString = GetSecretString(itemPath.Parent.FullName);
+                var secretString = GetSecretString(fullPath.Parent.FullName);
                 if (secretString != null && TryParseJsonObject(secretString, out var props) &&
-                    props.TryGetValue(itemPath.Name, out var value))
+                    props.TryGetValue(fullPath.Name, out _))
                 {
-                    return new SecretValueItem(ParentPath, itemPath.Name, value);
+                    return new SecretValueItem(ParentPath, fullPath.Parent.FullName, fullPath.Name);
                 }
             }
         }
 
-        // 3. Must be a folder
-        return new SecretFolderItem(ParentPath, itemPath);
+        var childSecrets = _secretsManager.ListSecrets(_secretPath.Value);
+        if (childSecrets.Any())
+        {
+            // if there are secrets that are a child of this path, then represent it as a folder
+            return new SecretFolderItem(ParentPath, fullPath);
+        }
+        
+        // doesn't match anything, so does not exist
+        return null;
     }
 
     protected override IEnumerable<IItem> GetChildItemsImpl()
@@ -72,7 +78,7 @@ public class SecretHandler : PathHandler, IContentReaderHandler, IContentWriterH
         {
             foreach (var property in properties)
             {
-                yield return new SecretValueItem(Path, property.Key, property.Value);
+                yield return new SecretValueItem(Path, _secretPath.Value, property.Key);
             }
         }
     }
@@ -89,7 +95,7 @@ public class SecretHandler : PathHandler, IContentReaderHandler, IContentWriterH
         {
             SecretItem => GetSecretContentReader(),
             SecretValueItem valueItem => new StreamContentReader(
-                new MemoryStream(Encoding.UTF8.GetBytes(valueItem.Value))),
+                new MemoryStream(Encoding.UTF8.GetBytes(GetSecretString(valueItem.SecretName)!))),
             _ => throw new InvalidOperationException("Cannot read content from a folder")
         };
     }

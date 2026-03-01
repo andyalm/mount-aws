@@ -13,6 +13,8 @@
           </TableColumnHeader>
           <TableColumnHeader>
           </TableColumnHeader>
+          <TableColumnHeader>
+          </TableColumnHeader>
         </TableHeaders>
         <TableRowEntries>
           <TableRowEntry>
@@ -21,31 +23,13 @@
                 <PropertyName>Name</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
+                <PropertyName>ItemType</PropertyName>
+              </TableColumnItem>
+              <TableColumnItem>
                 <PropertyName>Description</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
                 <PropertyName>LastChangedDate</PropertyName>
-              </TableColumnItem>
-            </TableColumnItems>
-          </TableRowEntry>
-        </TableRowEntries>
-      </TableControl>
-    </View>
-    <View>
-      <Name>SecretFolderItem</Name>
-      <ViewSelectedBy>
-        <TypeName>MountAws.Services.SecretsManager.SecretFolderItem</TypeName>
-      </ViewSelectedBy>
-      <TableControl>
-        <TableHeaders>
-          <TableColumnHeader>
-          </TableColumnHeader>
-        </TableHeaders>
-        <TableRowEntries>
-          <TableRowEntry>
-            <TableColumnItems>
-              <TableColumnItem>
-                <PropertyName>ItemName</PropertyName>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>

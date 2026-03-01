@@ -30,6 +30,11 @@ public class SecretNavigator : ItemNavigator<SecretListEntry, IItem>
 
     protected override IEnumerable<SecretListEntry> ListItems(ItemPath? pathPrefix)
     {
-        return _secretsManager.ListSecrets();
+        if (pathPrefix == null || pathPrefix.IsRoot)
+        {
+            return _secretsManager.ListSecrets();
+        }
+
+        return _secretsManager.ListSecrets(pathPrefix.FullName);
     }
 }

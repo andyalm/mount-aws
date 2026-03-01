@@ -3,16 +3,11 @@ using MountAnything;
 
 namespace MountAws.Services.SecretsManager;
 
-public class SecretFolderItem : AwsItem
+public class SecretFolderItem(ItemPath parentPath, ItemPath directoryPath)
+    : AwsItem(parentPath.Combine(directoryPath).Parent, new PSObject())
 {
-    public SecretFolderItem(ItemPath parentPath, ItemPath directoryPath) : base(parentPath, new PSObject(new
-    {
-        Name = directoryPath.Name
-    }))
-    {
-        ItemName = directoryPath.Name;
-    }
-
-    public override string ItemName { get; }
+    public override string ItemName { get; } = directoryPath.Name;
     public override bool IsContainer => true;
+    protected override string TypeName => typeof(SecretItem).FullName!;
+    public override string ItemType => SecretsManagerItemTypes.Directory;
 }

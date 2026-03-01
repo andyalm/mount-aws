@@ -3,19 +3,11 @@ using MountAnything;
 
 namespace MountAws.Services.SecretsManager;
 
-public class SecretValueItem : AwsItem
+public class SecretValueItem(ItemPath parentPath, string secretName, string key) : AwsItem(parentPath, new PSObject())
 {
-    public SecretValueItem(ItemPath parentPath, string key, string value) : base(parentPath, new PSObject(new
-    {
-        Key = key,
-        Value = value
-    }))
-    {
-        ItemName = key;
-        Value = value;
-    }
-
-    public override string ItemName { get; }
+    public override string ItemName { get; } = key;
+    [ItemProperty]
+    public string SecretName { get; } = secretName;
     public override bool IsContainer => false;
-    public string Value { get; }
+    public override string ItemType => SecretsManagerItemTypes.SecretValue;
 }

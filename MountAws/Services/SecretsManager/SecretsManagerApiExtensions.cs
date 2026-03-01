@@ -18,6 +18,28 @@ public static class SecretsManagerApiExtensions
             return (response.SecretList, response.NextToken);
         });
     }
+    
+    public static IEnumerable<SecretListEntry> ListSecrets(this IAmazonSecretsManager secretsManager, string pathPrefix)
+    {
+        return Paginate(nextToken =>
+        {
+            var response = secretsManager.ListSecretsAsync(new ListSecretsRequest
+            {
+                Filters = [
+                    new Filter
+                    {
+                        Key = FilterNameStringType.Name,
+                        Values = [
+                            pathPrefix
+                        ]
+                    }
+                ],
+                NextToken = nextToken
+            }).GetAwaiter().GetResult();
+
+            return (response.SecretList, response.NextToken);
+        });
+    }
 
     public static DescribeSecretResponse DescribeSecret(this IAmazonSecretsManager secretsManager, string secretId)
     {
@@ -42,6 +64,10 @@ public static class SecretsManagerApiExtensions
             return secretsManager.DescribeSecret(secretId);
         }
         catch (ResourceNotFoundException)
+        {
+            return null;
+        }
+        catch (AmazonSecretsManagerException)
         {
             return null;
         }
