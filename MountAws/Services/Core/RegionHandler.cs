@@ -11,6 +11,7 @@ using MountAws.Services.Iam;
 using MountAws.Services.Lambda;
 using MountAws.Services.Route53;
 using MountAws.Services.S3;
+using MountAws.Services.SecretsManager;
 using MountAws.Services.ServiceDiscovery;
 using MountAws.Services.Wafv2;
 
@@ -49,6 +50,7 @@ public class RegionHandler : PathHandler
         yield return Services.Rds.RootHandler.CreateItem(Path);
         yield return Route53RootHandler.CreateItem(Path);
         yield return S3RootHandler.CreateItem(Path);
+        yield return SecretsManagerRootHandler.CreateItem(Path);
         yield return ServiceDiscoveryRootHandler.CreateItem(Path);
         yield return Wafv2RootHandler.CreateItem(Path);
     }
