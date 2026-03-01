@@ -82,6 +82,7 @@ The following services are currently supported:
  * [RDS](docs/Services/RDS.md)
  * [Route53](docs/Services/Route53.md)
  * [S3](docs/Services/S3.md)
+ * [Secrets Manager](docs/Services/SecretsManager.md)
  * [Service Discovery (aka Cloud Map)](docs/Services/ServiceDiscovery.md)
  * [WAFv2](docs/Services/WAFv2.md)
 
