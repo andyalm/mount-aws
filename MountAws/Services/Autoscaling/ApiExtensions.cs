@@ -19,4 +19,49 @@ public static class ApiExtensions
             return (response.ScalableTargets, response.NextToken);
         });
     }
+
+    public static IEnumerable<ScalingPolicy> DescribeScalingPolicies(this IAmazonApplicationAutoScaling autoScaling, ServiceNamespace serviceNamespace, string resourceId)
+    {
+        return Paginate(nextToken =>
+        {
+            var response = autoScaling.DescribeScalingPoliciesAsync(new DescribeScalingPoliciesRequest
+            {
+                ServiceNamespace = serviceNamespace,
+                ResourceId = resourceId,
+                NextToken = nextToken
+            }).GetAwaiter().GetResult();
+
+            return (response.ScalingPolicies, response.NextToken);
+        });
+    }
+
+    public static IEnumerable<ScalingActivity> DescribeScalingActivities(this IAmazonApplicationAutoScaling autoScaling, ServiceNamespace serviceNamespace, string resourceId)
+    {
+        return Paginate(nextToken =>
+        {
+            var response = autoScaling.DescribeScalingActivitiesAsync(new DescribeScalingActivitiesRequest
+            {
+                ServiceNamespace = serviceNamespace,
+                ResourceId = resourceId,
+                NextToken = nextToken
+            }).GetAwaiter().GetResult();
+
+            return (response.ScalingActivities, response.NextToken);
+        });
+    }
+
+    public static IEnumerable<ScheduledAction> DescribeScheduledActions(this IAmazonApplicationAutoScaling autoScaling, ServiceNamespace serviceNamespace, string resourceId)
+    {
+        return Paginate(nextToken =>
+        {
+            var response = autoScaling.DescribeScheduledActionsAsync(new DescribeScheduledActionsRequest
+            {
+                ServiceNamespace = serviceNamespace,
+                ResourceId = resourceId,
+                NextToken = nextToken
+            }).GetAwaiter().GetResult();
+
+            return (response.ScheduledActions, response.NextToken);
+        });
+    }
 }

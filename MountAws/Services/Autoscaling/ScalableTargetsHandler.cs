@@ -5,7 +5,7 @@ using MountAws.Services.Core;
 
 namespace MountAws.Services.Autoscaling;
 
-public class ScalableTargetsHandler(ItemPath path, IPathHandlerContext context, ServiceNamespace serviceNamespace, IAmazonApplicationAutoScaling autoScaling)
+public class ScalableTargetsHandler(ItemPath path, IPathHandlerContext context, CurrentServiceNamespace currentServiceNamespace, IAmazonApplicationAutoScaling autoScaling)
     : PathHandler(path, context)
 {
     public static Item CreateItem(ItemPath parentPath)
@@ -21,6 +21,7 @@ public class ScalableTargetsHandler(ItemPath path, IPathHandlerContext context, 
 
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
-        autoScaling.DescribeScalableTargets(serviceNamespace).Select(target => new ScalableTargetItem)
+        return autoScaling.DescribeScalableTargets(currentServiceNamespace.Value)
+            .Select(target => new ScalableTargetItem(Path, target));
     }
 }

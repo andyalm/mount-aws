@@ -1,4 +1,3 @@
-using System.Management.Automation;
 using Amazon.ApplicationAutoScaling;
 using MountAnything;
 

@@ -12,7 +12,11 @@ public class Routes : IServiceRoutes
             {
                 tables.Map<TableHandler>(table =>
                 {
-                    table.MapRegex<ItemHandler>(@"[a-z0-9-_\.\,]+");
+                    table.MapLiteral<TableAutoscalingHandler>("autoscaling");
+                    table.MapLiteral<TableItemsHandler>("items", items =>
+                    {
+                        items.MapRegex<ItemHandler>(@"[a-z0-9-_\.\,]+");
+                    });
                 });
             });
         });
