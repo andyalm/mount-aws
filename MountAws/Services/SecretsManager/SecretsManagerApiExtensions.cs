@@ -41,36 +41,12 @@ public static class SecretsManagerApiExtensions
         });
     }
 
-    public static DescribeSecretResponse DescribeSecret(this IAmazonSecretsManager secretsManager, string secretId)
-    {
-        return secretsManager.DescribeSecretAsync(new DescribeSecretRequest
-        {
-            SecretId = secretId
-        }).GetAwaiter().GetResult();
-    }
-
     public static GetSecretValueResponse GetSecretValue(this IAmazonSecretsManager secretsManager, string secretId)
     {
         return secretsManager.GetSecretValueAsync(new GetSecretValueRequest
         {
             SecretId = secretId
         }).GetAwaiter().GetResult();
-    }
-
-    public static DescribeSecretResponse? DescribeSecretOrDefault(this IAmazonSecretsManager secretsManager, string secretId)
-    {
-        try
-        {
-            return secretsManager.DescribeSecret(secretId);
-        }
-        catch (ResourceNotFoundException)
-        {
-            return null;
-        }
-        catch (AmazonSecretsManagerException)
-        {
-            return null;
-        }
     }
 
     public static void PutSecretValue(this IAmazonSecretsManager secretsManager, string secretId, string secretString)

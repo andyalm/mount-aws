@@ -8,34 +8,27 @@ using MountAnything.Content;
 
 namespace MountAws.Services.SecretsManager;
 
-public class SecretHandler : PathHandler, IContentReaderHandler, IContentWriterHandler, ISetItemPropertiesHandler
+public class SecretHandler(
+    ItemPath path,
+    IPathHandlerContext context,
+    IAmazonSecretsManager secretsManager,
+    SecretNavigator navigator,
+    SecretPath secretPath)
+    : PathHandler(path, context), IContentReaderHandler, IContentWriterHandler, ISetItemPropertiesHandler
 {
-    private readonly IAmazonSecretsManager _secretsManager;
-    private readonly SecretNavigator _navigator;
-    private readonly SecretPath _secretPath;
-
-    public SecretHandler(ItemPath path, IPathHandlerContext context, IAmazonSecretsManager secretsManager,
-        SecretNavigator navigator, SecretPath secretPath) : base(path, context)
-    {
-        _secretsManager = secretsManager;
-        _navigator = navigator;
-        _secretPath = secretPath;
-    }
-
     protected override IItem? GetItemImpl()
     {
-        // 1. Try as an actual secret
-        var secret = _secretsManager.DescribeSecretOrDefault(_secretPath.Path.FullName);
-        if (secret != null)
-        {
-            return new SecretItem(ParentPath, secret);
-        }
+        var childSecrets = secretsManager
+            .ListSecrets(secretPath.Path.FullName)
+            .ToArray();
 
-        // 2. Check if it's a folder (prefix of other secrets)
-        var childSecrets = _secretsManager.ListSecrets(_secretPath.Path.FullName);
+        if (childSecrets.Length == 1 && childSecrets[0].Name == secretPath.Path.FullName)
+        {
+            return new SecretItem(ParentPath, childSecrets[0]);
+        }
         if (childSecrets.Any())
         {
-            return new SecretFolderItem(ParentPath, _secretPath.Path);
+            return new SecretFolderItem(ParentPath, secretPath.Path);
         }
 
         return null;
@@ -45,7 +38,7 @@ public class SecretHandler : PathHandler, IContentReaderHandler, IContentWriterH
     {
         return GetItem() switch
         {
-            SecretFolderItem => _navigator.ListChildItems(Path, _secretPath.Path),
+            SecretFolderItem => navigator.ListChildItems(Path, secretPath.Path),
             _ => Enumerable.Empty<IItem>()
         };
     }
@@ -63,7 +56,7 @@ public class SecretHandler : PathHandler, IContentReaderHandler, IContentWriterH
         {
             using var reader = new StreamReader(stream, Encoding.UTF8);
             var secretString = reader.ReadToEnd();
-            _secretsManager.PutSecretValue(_secretPath.Path.FullName, secretString);
+            secretsManager.PutSecretValue(secretPath.Path.FullName, secretString);
         });
     }
 
@@ -101,14 +94,14 @@ public class SecretHandler : PathHandler, IContentReaderHandler, IContentWriterH
             jsonObject[property.Name] = JsonValue.Create(property.Value?.ToString());
         }
 
-        _secretsManager.PutSecretValue(_secretPath.Path.FullName, jsonObject.ToJsonString());
+        secretsManager.PutSecretValue(secretPath.Path.FullName, jsonObject.ToJsonString());
     }
 
     private string? GetSecretString()
     {
         try
         {
-            var response = _secretsManager.GetSecretValue(_secretPath.Path.FullName);
+            var response = secretsManager.GetSecretValue(secretPath.Path.FullName);
             return response.SecretString;
         }
         catch
