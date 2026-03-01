@@ -33,6 +33,8 @@ public class SecretItem : AwsItem
     protected override string TypeName => GetType().FullName!;
     public override string ItemType { get; }
     [ItemProperty]
+    public string Name => ItemName;
+    [ItemProperty]
     public string SecretName { get; }
     [ItemProperty]
     public string? Description { get; }
