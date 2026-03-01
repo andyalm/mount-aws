@@ -39,7 +39,7 @@ For secrets that contain a JSON object, use `Get-ItemProperty` to read individua
 Get-ItemProperty aws:/default/us-east-1/secretsmanager/secrets/my-app/prod/database-credentials
 
 # Get a specific property
-(Get-ItemProperty aws:/default/us-east-1/secretsmanager/secrets/my-app/prod/database-credentials).password
+Get-ItemProperty aws:/default/us-east-1/secretsmanager/secrets/my-app/prod/database-credentials -Name password
 ```
 
 ## Writing Secret Values
@@ -58,7 +58,7 @@ Set-ItemProperty aws:/default/us-east-1/secretsmanager/secrets/my-app/prod/datab
 
 ## Item Properties
 
-Each secret exposes the following properties:
+Each secret item contains all of the properties contained on a [SecretListEntry](https://docs.aws.amazon.com/secretsmanager/latest/apireference/API_SecretListEntry.html). This includes the following properties:
 
 | Property | Description |
 |---|---|
