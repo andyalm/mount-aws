@@ -11,12 +11,12 @@ public class Routes : IServiceRoutes
         {
             dynamodb.MapLiteral<TablesHandler>("tables", tables =>
             {
-                tables.Map<TableHandler>(table =>
+                tables.Map<TableHandler, CurrentTable>(table =>
                 {
                     table.MapAppAutoscaling<TableItem>("dynamodb", item => $"table/{item.ItemName}");
                     table.MapLiteral<TableItemsHandler>("items", items =>
                     {
-                        items.MapRegex<ItemHandler>(@"[a-z0-9-_\.\,]+");
+                        items.MapRegex<TableItemHandler>(@"[a-z0-9-_\.\,]+");
                     });
                 });
             });

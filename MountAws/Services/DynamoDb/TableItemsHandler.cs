@@ -5,7 +5,11 @@ using MountAws.Services.Core;
 
 namespace MountAws.Services.DynamoDb;
 
-public class TableItemsHandler(ItemPath path, IPathHandlerContext context, IAmazonDynamoDB dynamo) : PathHandler(path, context), IGetChildItemParameters<TableItemsChildItemParameters>
+public class TableItemsHandler(
+    ItemPath path,
+    IPathHandlerContext context,
+    CurrentTable currentTable,
+    IAmazonDynamoDB dynamo) : PathHandler(path, context), IGetChildItemParameters<TableItemsChildItemParameters>
 {
     public static IItem CreateItem(ItemPath parentPath)
     {
@@ -19,9 +23,9 @@ public class TableItemsHandler(ItemPath path, IPathHandlerContext context, IAmaz
 
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
-        var table = dynamo.DescribeTable(ItemName);
+        var table = dynamo.DescribeTable(currentTable.Name);
 
-        return dynamo.Scan(ItemName, GetChildItemParameters.Limit).Select(v => new DynamoItem(Path, table.KeySchema, v));
+        return dynamo.Scan(currentTable.Name, GetChildItemParameters.Limit).Select(v => new DynamoItem(Path, table.KeySchema, v));
     }
 
     // since we don't return the full child item set, we don't want the list of children cached

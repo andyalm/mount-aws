@@ -3,20 +3,18 @@ using MountAnything;
 
 namespace MountAws.Services.DynamoDb;
 
-public class ItemHandler : PathHandler
+public class TableItemHandler(
+    ItemPath path,
+    IPathHandlerContext context,
+    CurrentTable currentTable,
+    IAmazonDynamoDB dynamo)
+    : PathHandler(path, context)
 {
-    private readonly IAmazonDynamoDB _dynamo;
-
-    public ItemHandler(ItemPath path, IPathHandlerContext context, IAmazonDynamoDB dynamo) : base(path, context)
-    {
-        _dynamo = dynamo;
-    }
-
     protected override IItem? GetItemImpl()
     {
-        var table = _dynamo.DescribeTable(ParentPath.Name);
+        var table = dynamo.DescribeTable(currentTable.Name);
         var keys = ItemName.Split(",");
-        var item = _dynamo.GetItem(table, keys);
+        var item = dynamo.GetItem(table, keys);
 
         return new DynamoItem(ParentPath, table.KeySchema, item);
     }
