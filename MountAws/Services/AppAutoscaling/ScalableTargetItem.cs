@@ -1,7 +1,7 @@
 using Amazon.ApplicationAutoScaling.Model;
 using MountAnything;
 
-namespace MountAws.Services.Autoscaling;
+namespace MountAws.Services.AppAutoscaling;
 
 public class ScalableTargetItem(ItemPath parentPath, ScalableTarget underlyingObject)
     : AwsItem<ScalableTarget>(parentPath, underlyingObject)

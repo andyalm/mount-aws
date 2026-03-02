@@ -3,7 +3,7 @@ using Amazon.ApplicationAutoScaling;
 using Amazon.Runtime;
 using Autofac;
 
-namespace MountAws.Services.Autoscaling;
+namespace MountAws.Services.AppAutoscaling;
 
 public class Registrar : IServiceRegistrar
 {

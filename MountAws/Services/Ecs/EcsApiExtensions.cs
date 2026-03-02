@@ -35,11 +35,11 @@ public static class EcsApiExtensions
 
     public static IEnumerable<Cluster> DescribeClusters(this IAmazonECS ecs, IEnumerable<string> clusters, IEnumerable<string>? include = null)
     {
-        return ecs.DescribeClustersAsync(new DescribeClustersRequest
+        return clusters.Chunk(100).SelectMany(clustersPage => ecs.DescribeClustersAsync(new DescribeClustersRequest
         {
-            Clusters = clusters.ToList(),
+            Clusters = clustersPage.ToList(),
             Include = include?.ToList()
-        }).GetAwaiter().GetResult().Clusters;
+        }).GetAwaiter().GetResult().Clusters);
     }
 
     public static Cluster DescribeCluster(this IAmazonECS ecs, string cluster, IEnumerable<string>? include = null)

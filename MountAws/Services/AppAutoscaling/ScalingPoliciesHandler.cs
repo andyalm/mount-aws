@@ -2,9 +2,14 @@ using Amazon.ApplicationAutoScaling;
 using MountAnything;
 using MountAws.Services.Core;
 
-namespace MountAws.Services.Autoscaling;
+namespace MountAws.Services.AppAutoscaling;
 
-public class ScalingPoliciesHandler(ItemPath path, IPathHandlerContext context, CurrentServiceNamespace currentServiceNamespace, CurrentResourceId currentResourceId, IAmazonApplicationAutoScaling autoScaling)
+public class ScalingPoliciesHandler(
+    ItemPath path,
+    IPathHandlerContext context, 
+    CurrentServiceNamespace currentServiceNamespace,
+    IResourceIdResolver resourceIdResolver,
+    IAmazonApplicationAutoScaling autoScaling)
     : PathHandler(path, context)
 {
     public static Item CreateItem(ItemPath parentPath)
@@ -21,8 +26,7 @@ public class ScalingPoliciesHandler(ItemPath path, IPathHandlerContext context, 
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         var serviceNamespace = new ServiceNamespace(currentServiceNamespace.Value);
-        var resourceId = currentResourceId.Value.Replace(":", "/");
-        return autoScaling.DescribeScalingPolicies(serviceNamespace, resourceId)
+        return autoScaling.DescribeScalingPolicies(serviceNamespace, resourceIdResolver.ResourceId)
             .Select(p => new ScalingPolicyItem(Path, p));
     }
 }

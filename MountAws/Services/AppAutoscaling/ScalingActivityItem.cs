@@ -1,7 +1,7 @@
 using Amazon.ApplicationAutoScaling.Model;
 using MountAnything;
 
-namespace MountAws.Services.Autoscaling;
+namespace MountAws.Services.AppAutoscaling;
 
 public class ScalingActivityItem(ItemPath parentPath, ScalingActivity underlyingObject)
     : AwsItem<ScalingActivity>(parentPath, underlyingObject)

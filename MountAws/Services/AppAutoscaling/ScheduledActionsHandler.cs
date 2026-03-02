@@ -2,9 +2,14 @@ using Amazon.ApplicationAutoScaling;
 using MountAnything;
 using MountAws.Services.Core;
 
-namespace MountAws.Services.Autoscaling;
+namespace MountAws.Services.AppAutoscaling;
 
-public class ScheduledActionsHandler(ItemPath path, IPathHandlerContext context, CurrentServiceNamespace currentServiceNamespace, CurrentResourceId currentResourceId, IAmazonApplicationAutoScaling autoScaling)
+public class ScheduledActionsHandler(
+    ItemPath path,
+    IPathHandlerContext context,
+    CurrentServiceNamespace currentServiceNamespace,
+    IResourceIdResolver resourceIdResolver,
+    IAmazonApplicationAutoScaling autoScaling)
     : PathHandler(path, context)
 {
     public static Item CreateItem(ItemPath parentPath)
@@ -21,8 +26,7 @@ public class ScheduledActionsHandler(ItemPath path, IPathHandlerContext context,
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
         var serviceNamespace = new ServiceNamespace(currentServiceNamespace.Value);
-        var resourceId = currentResourceId.Value.Replace(":", "/");
-        return autoScaling.DescribeScheduledActions(serviceNamespace, resourceId)
+        return autoScaling.DescribeScheduledActions(serviceNamespace, resourceIdResolver.ResourceId)
             .Select(a => new ScheduledActionItem(Path, a));
     }
 }

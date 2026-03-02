@@ -1,5 +1,6 @@
 using Amazon;
 using MountAnything;
+using MountAws.Services.AppAutoscaling;
 using MountAws.Services.Cloudfront;
 using MountAws.Services.Core;
 using MountAws.Services.DynamoDb;
@@ -37,7 +38,7 @@ public class RegionHandler : PathHandler
 
     protected override IEnumerable<IItem> GetChildItemsImpl()
     {
-        yield return Services.Autoscaling.RootHandler.CreateItem(Path);
+        yield return RootHandler.CreateItem(Path);
         yield return CloudfrontRootHandler.CreateItem(Path);
         yield return Services.Cloudwatch.RootHandler.CreateItem(Path);
         yield return DynamoDbRootHandler.CreateItem(Path);

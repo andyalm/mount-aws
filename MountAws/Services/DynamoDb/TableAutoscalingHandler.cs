@@ -1,7 +1,7 @@
 using Amazon.ApplicationAutoScaling;
 using Amazon.ApplicationAutoScaling.Model;
 using MountAnything;
-using MountAws.Services.Autoscaling;
+using MountAws.Services.AppAutoscaling;
 using MountAws.Services.Core;
 
 namespace MountAws.Services.DynamoDb;

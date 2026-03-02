@@ -1,9 +1,8 @@
 using Amazon.ApplicationAutoScaling;
-using Amazon.ApplicationAutoScaling.Model;
 using MountAnything;
 using MountAws.Services.Core;
 
-namespace MountAws.Services.Autoscaling;
+namespace MountAws.Services.AppAutoscaling;
 
 public class ScalableTargetsHandler(ItemPath path, IPathHandlerContext context, CurrentServiceNamespace currentServiceNamespace, IAmazonApplicationAutoScaling autoScaling)
     : PathHandler(path, context)

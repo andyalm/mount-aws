@@ -1,6 +1,6 @@
 using MountAnything;
 
-namespace MountAws.Services.Autoscaling;
+namespace MountAws.Services.AppAutoscaling;
 
 public class CurrentServiceNamespace : TypedString
 {

@@ -3,7 +3,7 @@
     <View>
       <Name>ScalableTarget</Name>
       <ViewSelectedBy>
-        <TypeName>MountAws.Services.Autoscaling.ScalableTargetItem</TypeName>
+        <TypeName>MountAws.Services.AppAutoscaling.ScalableTargetItem</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>
@@ -35,7 +35,7 @@
     <View>
       <Name>ScalingPolicy</Name>
       <ViewSelectedBy>
-        <TypeName>MountAws.Services.Autoscaling.ScalingPolicyItem</TypeName>
+        <TypeName>MountAws.Services.AppAutoscaling.ScalingPolicyItem</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>
@@ -57,7 +57,7 @@
                 <PropertyName>ScalableDimension</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>CreationTime</PropertyName>
+                <PropertyName>Summary</PropertyName>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>
@@ -67,7 +67,7 @@
     <View>
       <Name>ScalingActivity</Name>
       <ViewSelectedBy>
-        <TypeName>MountAws.Services.Autoscaling.ScalingActivityItem</TypeName>
+        <TypeName>MountAws.Services.AppAutoscaling.ScalingActivityItem</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>
@@ -99,7 +99,7 @@
     <View>
       <Name>ScheduledAction</Name>
       <ViewSelectedBy>
-        <TypeName>MountAws.Services.Autoscaling.ScheduledActionItem</TypeName>
+        <TypeName>MountAws.Services.AppAutoscaling.ScheduledActionItem</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>

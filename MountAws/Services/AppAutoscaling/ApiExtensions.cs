@@ -2,7 +2,7 @@ using Amazon.ApplicationAutoScaling;
 using Amazon.ApplicationAutoScaling.Model;
 using static MountAws.PagingHelper;
 
-namespace MountAws.Services.Autoscaling;
+namespace MountAws.Services.AppAutoscaling;
 
 public static class ApiExtensions
 {

@@ -2,7 +2,7 @@ using Amazon.ApplicationAutoScaling;
 using MountAnything;
 using MountAws.Services.Core;
 
-namespace MountAws.Services.Autoscaling;
+namespace MountAws.Services.AppAutoscaling;
 
 public class ServicesHandler : PathHandler
 {
