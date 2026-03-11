@@ -1,4 +1,5 @@
 using MountAnything.Routing;
+using MountAws.Services.AppAutoscaling;
 
 namespace MountAws.Services.Ecs;
 
@@ -21,9 +22,13 @@ public class EcsRoutes : IServiceRoutes
                     });
                     cluster.MapLiteral<ServicesHandler>("services", services =>
                     {
-                        services.Map<ServiceHandler>(service =>
+                        services.Map<ServiceHandler, CurrentService>(service =>
                         {
-                            service.Map<TaskHandler>();
+                            service.MapAppAutoscaling<ServiceItem>("ecs", item => $"service/{item.UnderlyingObject.ClusterName()}/{item.ItemName}");
+                            service.MapLiteral<TasksHandler>("tasks", tasks =>
+                            {
+                                tasks.Map<TaskHandler>();
+                            });
                         });
                     });
                 });
